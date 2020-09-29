@@ -1,0 +1,27 @@
+.chatroom-list{
+    background-color: white;
+    box-shadow: $shadow;
+    border-radius: 1rem;
+}
+
+.chatroom{
+    .chat-input{
+        display: grid;
+        grid-template-columns: 3rem 1fr;
+        background: $white;
+        border-radius: 1rem 1rem 1rem 0;
+
+        .profile-image{
+            width: 2rem;
+            height: 2rem;
+            background: red;
+            border-radius: 1rem;
+        }
+        
+        textarea{
+            border-radius: 1rem 1rem 1rem 0;
+            
+        }
+    }
+    
+}
