@@ -80,7 +80,7 @@ html{
         .content{
             background-color: $white-hover;
             grid-column: 2 / 3;
-            padding: 2rem;
+            padding: 4rem;
         }
     }
 }
@@ -111,7 +111,7 @@ a > p {
 }
 .box-top-column{
     display: flex;
-    justify-content: center;
+    align-items: center;
     flex-direction: column;
 }
 .box-custom-1{ //for chat page
@@ -155,4 +155,9 @@ a > p {
 }
 .pd-vr{
     padding: 2rem 0;
+}
+
+.test{
+    outline: 1px solid blue;
+    
 }
