@@ -1,3 +1,4 @@
+
 .chatroom-list{
     background-color: $white;
     box-shadow: $shadow;
@@ -39,7 +40,6 @@
 .current-chatroom{
     display: flex;
     flex-direction: column;
-    justify-content: flex-end;
     .chat-input{
         margin-top: 2rem;
         display: grid;
@@ -60,60 +60,83 @@
             
         }
     }
-    .chat-log{
-        width: 100%;
-        display: flex;
-        &.opponentLog{
-            justify-content: flex-end;
-            .wrapper{
-                align-items: flex-end;
-                .text{
-                    background-color: #FDF6FF;
-                    border-radius: 1rem 1rem 0 1rem;
+    .chat-logs{
+        flex-grow: 1;
+        height: 100px;
+        overflow-y: scroll;
+        padding: 1rem;
+        &::-webkit-scrollbar {
+            width: 6px;
+            position: relative;
+            left: 10px;
+        }
+        &::-webkit-scrollbar-track {
+            background-color: transparent;
+        }
+        &::-webkit-scrollbar-thumb {
+            border-radius: 3px;
+            background-color: gray;
+        }
+        &::-webkit-scrollbar-button {
+            width: 0;
+            height: 0;
+        }
+        .chat-log{
+            width: 100%;
+            display: flex;
+            &.opponentLog{
+                justify-content: flex-end;
+                .wrapper{
+                    align-items: flex-end;
+                    .text{
+                        background-color: #FDF6FF;
+                        border-radius: 1rem 1rem 0 1rem;
+                    }
                 }
+                .profile-image{
+                    width: 3rem;
+                    height: 3rem;
+                    border-radius: 50%;
+                    background-color: red;
+                    margin-top: 2rem;
+                    margin-left: 1rem;
+                }
+            }
+            .wrapper{
+                max-width: 70%;
+                display: flex;
+                flex-direction: column;
+            }
+            .text{
+                display: inline-block;
+                padding: 1rem;
+                line-height: 1.5rem;
+                background-color: $white;
+                border-radius: 1rem 1rem 1rem 0;
+                box-shadow: $shadow;
+            }
+            .timestamp{
+                color: $black-hover;
+                margin: 0.5rem 0;
+                font-size: 0.8rem;
             }
             .profile-image{
                 width: 3rem;
                 height: 3rem;
-                border-radius: 50%;
-                background-color: red;
-                margin-top: 2rem;
-                margin-left: 1rem;
+                background: red;
+                border-radius: 3rem;
             }
-        }
-        .wrapper{
-            max-width: 70%;
-            display: flex;
-            flex-direction: column;
-        }
-        .text{
-            display: inline-block;
-            padding: 1rem;
-            line-height: 1.5rem;
-            background-color: $white;
-            border-radius: 1rem 1rem 1rem 0;
-            box-shadow: $shadow;
-        }
-        .timestamp{
-            color: $black-hover;
-            margin: 0.5rem 0;
-            font-size: 0.8rem;
-        }
-        .profile-image{
-            width: 3rem;
-            height: 3rem;
-            background: red;
-            border-radius: 3rem;
-        }
-        &.opponentLog{
-            .text{
-                float: right;
-            }
-            .timestamp{
-                float: right;
+            &.opponentLog{
+                .text{
+                    float: right;
+                }
+                .timestamp{
+                    float: right;
+                }
             }
         }
     }
+    
     
 }
 
