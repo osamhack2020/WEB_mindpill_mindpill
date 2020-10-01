@@ -1,0 +1,201 @@
+
+.chatroom-list{
+    background-color: $white;
+    box-shadow: $shadow;
+    border-radius: 1rem;
+    overflow: hidden;
+    .chatroom{
+        width: 100%;
+        padding: 2rem;
+        display: flex;
+        align-items: center;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.25);
+        &:hover{
+            background-color: $white-hover;
+            cursor: pointer;
+        }
+        .profile-image{
+            width: 3rem;
+            height: 3rem;
+            border-radius: 3rem;
+            background-color: red;
+            margin-right: 1rem;
+        }
+        .wrapper{
+            .name{
+                font-weight: 700;
+                margin-bottom: 0.5rem;
+            }
+            .last-message, .last-message-time{
+                font-size: 0.8rem;
+            }
+            .last-message-time{
+                margin-left: 0.5rem;
+                opacity: 0.7;
+            }
+        }
+    }
+}
+
+.current-chatroom{
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    .chat-input{
+        margin-top: 2rem;
+        display: grid;
+        grid-template-columns: 3rem 1fr;
+        background: $white;
+        border-radius: 1rem 1rem 1rem 0;
+        box-shadow: $shadow;
+
+        .profile-image{
+            width: 2rem;
+            height: 2rem;
+            background: red;
+            border-radius: 1rem;
+        }
+        
+        textarea{
+            border-radius: 1rem 1rem 1rem 0;
+            
+        }
+    }
+    .chat-logs{
+        flex-grow: 1;
+        height: 100px;
+        overflow-y: scroll;
+        overflow-x: hidden;
+        padding: 1rem;
+        position: relative;
+        
+        .chat-log{
+            width: 100%;
+            display: flex;
+            &.opponentLog{
+                justify-content: flex-end;
+                align-items: flex-end;
+                .wrapper{
+                    align-items: flex-end;
+                    .text{
+                        background-color: #FDF6FF;
+                        border-radius: 1rem 1rem 0 1rem;
+                    }
+                }
+                .profile-image{
+                    width: 3rem;
+                    height: 3rem;
+                    border-radius: 50%;
+                    background-color: red;
+                    margin-left: 1rem;
+                }
+            }
+            .wrapper{
+                max-width: 70%;
+                display: flex;
+                flex-direction: column;
+            }
+            .text{
+                display: inline-block;
+                padding: 1rem;
+                line-height: 1.5rem;
+                background-color: $white;
+                border-radius: 1rem 1rem 1rem 0;
+                box-shadow: $shadow;
+            }
+            .timestamp{
+                color: $black-hover;
+                margin: 0.5rem 0;
+                font-size: 0.8rem;
+            }
+            .profile-image{
+                width: 3rem;
+                height: 3rem;
+                background: red;
+                border-radius: 3rem;
+            }
+            &.opponentLog{
+                .text{
+                    float: right;
+                }
+                .timestamp{
+                    float: right;
+                }
+            }
+        }
+        &::before{
+            content: ' ';
+            width: 100%;
+            height: 1rem;
+            position: absolute;
+            top: 0rem;
+            background: linear-gradient($white-hover, rgba(0, 0, 0, 0));
+        }
+        &::after{
+            content: ' ';
+            width: 100%;
+            height: 1rem;
+            position: absolute;
+            bottom: 0rem;
+            background: linear-gradient(rgba(0, 0, 0, 0), $white-hover);
+        }
+        &::-webkit-scrollbar {
+            width: 6px;
+            position: relative;
+            left: 10px;
+        }
+        &::-webkit-scrollbar-track {
+            background-color: transparent;
+        }
+        &::-webkit-scrollbar-thumb {
+            border-radius: 3px;
+            background-color: gray;
+        }
+        &::-webkit-scrollbar-button {
+            width: 0;
+            height: 0;
+        }
+    }
+    
+    
+}
+
+.chatroom-info{
+    .profile-image{
+        width: 8rem;
+        height: 8rem;
+        border-radius: 50%;
+        background-color: red;
+        margin: 1rem 0 ;
+    }
+    .name{
+        font-size: 1.5rem;
+        margin-bottom: 0.5rem;
+    }
+    .regiment{
+        opacity: 0.6;
+        margin-bottom: 1rem;
+    }
+    .hr{
+        width: 80%;
+        border-top: 1px solid rgba(0, 0, 0, 0.5);
+        margin-bottom: 1rem;
+    }
+    .info-category{
+        font-weight: 700;
+        width: 80%;
+        margin-bottom: 1rem;
+    }
+    .wrapper{
+        margin-bottom: 1rem;
+        width: 80%;
+        display: flex;
+        justify-content: space-between;
+        .info-title{
+
+        }
+        .info-content{
+            opacity: 0.6;
+        }
+    }
+}

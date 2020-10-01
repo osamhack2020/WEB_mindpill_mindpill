@@ -7,6 +7,7 @@
   "scripts": {
     "test": "jest",
     "frontend:build": "webpack",
+    "frontend:style": "mkdir -p frontend/assets/css && node-sass --output-style compressed frontend/assets/scss/styles.scss > frontend/assets/css/style.css",
     "frontend:build-prod": "cross-env BUILD_ENV=production webpack",
     "backend:run": "cd backend && make run"
   },
@@ -39,8 +40,10 @@
     "eslint-plugin-react": "^7.21.2",
     "eslint-plugin-standard": "^4.0.1",
     "jest": "^26.4.2",
+    "node-sass": "^4.14.1",
     "prettier": "^2.1.2",
     "prettier-config-standard": "^1.0.1",
+    "sass-loader": "^10.0.2",
     "ts-jest": "^26.4.0",
     "typescript": "^4.0.3",
     "webpack": "^4.44.2",
