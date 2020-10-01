@@ -60,6 +60,15 @@ html{
                 align-items: flex-end;
                 a{
                     width: 100%;
+                    &.selected{
+                        background-color: $black;
+                        color: $white;
+                        li{
+                            &:hover{
+                                background-color: $black-hover;
+                            }
+                        }
+                    }
                     li{
                         font-size: 1.2rem;
                         font-weight: 500;

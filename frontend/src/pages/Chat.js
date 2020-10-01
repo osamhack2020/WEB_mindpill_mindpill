@@ -1,5 +1,4 @@
 import React from 'react'
-import Layout from './Layout';
 import PropTypes from 'prop-types';
 
 
@@ -152,13 +151,11 @@ class ChatRoomInfo extends React.Component {
 class Chat extends React.Component {
     render() {
         return (
-            <Layout>
-                <div className='box-custom-1 expand'>
-                    <ChatRoomList />
-                    <CurrentChatRoom />
-                    <ChatRoomInfo />
-                </div>
-            </Layout>
+            <div className='box-custom-1 expand'>
+                <ChatRoomList />
+                <CurrentChatRoom />
+                <ChatRoomInfo />
+            </div>
         )
     }
 }
