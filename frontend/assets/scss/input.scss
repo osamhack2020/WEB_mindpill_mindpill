@@ -1,0 +1,100 @@
+input[type='text'],
+input[type='email'],
+input[type='password'],
+input[type='submit'] {
+  background-color: $white;
+  width: 25rem;
+  height: 3.5rem;
+  box-shadow: $shadow;
+  border-radius: 1rem 1rem 1rem 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 2rem;
+  text-align: center;
+  &:disabled {
+    color: $black;
+  }
+}
+
+input[type='submit'] {
+  background-color: $black;
+  color: $white;
+  border-radius: 1rem 1rem 0 1rem;
+  font-weight: 900;
+  margin-top: 4rem;
+  &:hover {
+    background-color: $black-hover;
+    cursor: pointer;
+  }
+}
+
+.input-select {
+  position: relative;
+  margin-bottom: 2rem;
+  box-shadow: $shadow;
+  border-radius: 1rem 1rem 1rem 1rem;
+
+  input {
+    margin: 0;
+    background-color: $white;
+    width: 25rem;
+    height: 3.5rem;
+    border-radius: 1rem 1rem 1rem 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    box-shadow: none;
+  }
+  .options {
+    display: none;
+    height: 3.5rem * 5;
+    overflow-x: hidden;
+    overflow-y: scroll;
+    position: absolute;
+    z-index: 100;
+    top: 3.5rem;
+    .option {
+      background-color: $white;
+      width: 25rem;
+      height: 3.5rem;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      border-top: 1px solid rgba(0, 0, 0, 0.1);
+      &:hover {
+        background-color: $white-hover;
+        cursor: pointer;
+      }
+      &:last-child {
+        border-radius: 0 0 1rem 1rem;
+      }
+    }
+    &::-webkit-scrollbar {
+      width: 6px;
+      position: relative;
+      left: 10px;
+    }
+    &::-webkit-scrollbar-track {
+      background-color: transparent;
+    }
+    &::-webkit-scrollbar-thumb {
+      border-radius: 3px;
+      background-color: gray;
+    }
+    &::-webkit-scrollbar-button {
+      width: 0;
+      height: 0;
+    }
+  }
+  &:hover {
+    input {
+      border-radius: 1rem 1rem 0 0;
+    }
+    .options {
+      display: block;
+    }
+  }
+}
