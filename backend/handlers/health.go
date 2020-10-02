@@ -1,4 +1,4 @@
-package mindpill
+package handlers
 
 import (
 	"fmt"
@@ -6,10 +6,6 @@ import (
 
 	"github.com/valyala/fasthttp"
 )
-
-func init() {
-	r.GET("/health", HealthHandler)
-}
 
 // HealthHandler - 서비스가 살아있는지 여부를 확인할 수 있게 해주는 핸들러입니다.
 func HealthHandler(ctx *fasthttp.RequestCtx) {
