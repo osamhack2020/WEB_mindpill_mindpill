@@ -1,11 +1,6 @@
 const path = require('path')
 
 module.exports = {
-  entry: './frontend/browser.tsx',
-  output: {
-    path: path.resolve(__dirname, 'dist/frontend'),
-    filename: 'bundle.js'
-  },
   resolve: {
     extensions: ['.ts', '.tsx', '.js', '.jsx']
   },

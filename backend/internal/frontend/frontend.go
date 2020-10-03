@@ -1,72 +1,83 @@
 package frontend
 
 import (
-	"archive/tar"
-	"io"
+	"encoding/json"
+	"html/template"
 	"io/ioutil"
-	"mime"
-	"mindpill/dist"
-	"path"
+	"os/exec"
 
 	"github.com/valyala/fasthttp"
 	"go.uber.org/zap"
 )
 
-type Frontend map[string][]byte
+type Frontend struct {
+	fs        *fasthttp.FS
+	fsHandler fasthttp.RequestHandler
+	template  *template.Template
+}
 
-func New() (Frontend, error) {
-	m, err := parseFrontendArchive()
+func New(root string) (*Frontend, error) {
+	layout, err := ioutil.ReadFile("./frontend/index.html")
 	if err != nil {
 		return nil, err
 	}
-	return Frontend(m), nil
-}
-
-func (f Frontend) Handler(ctx *fasthttp.RequestCtx) {
-	// TODO: Implement SSR!
-	key := string(ctx.Path())
-	data, ok := f[key]
-	if !ok {
-		key = "/index.html"
-		data = f[key]
-	}
-	mimeType := mime.TypeByExtension(path.Ext(key))
-	ctx.SetStatusCode(fasthttp.StatusOK)
-	ctx.Response.Header.Set("Content-Type", mimeType)
-	ctx.Write(data)
-}
-
-func parseFrontendArchive() (map[string][]byte, error) {
-	fr, err := dist.NewFrontendTarReader()
+	tpl, err := template.New("layout").Parse(string(layout))
 	if err != nil {
 		return nil, err
 	}
-
-	fileMap := make(map[string][]byte)
-
-	r := tar.NewReader(fr)
-	for {
-		header, err := r.Next()
-		if err == io.EOF {
-			break
-		}
-		if err != nil {
-			return nil, &ErrRead{File: header.Name, Cause: err}
-		}
-		if header.Typeflag != tar.TypeReg { // Is Regular File
-			continue
-		}
-		buf, err := ioutil.ReadAll(r)
-		if err != nil {
-			return nil, &ErrRead{File: header.Name, Cause: err}
-		}
-		fileName := path.Join("/", header.Name)
-		logger.Debug(
-			"a frontend asset has been loaded",
-			zap.String("name", fileName),
-		)
-		fileMap[fileName] = buf
+	f := &Frontend{
+		fs: &fasthttp.FS{
+			Root:               root,
+			GenerateIndexPages: false,
+			Compress:           true,
+		},
+		template: tpl,
 	}
+	f.fs.PathNotFound = f.renderPage
+	f.fsHandler = f.fs.NewRequestHandler()
+	return f, nil
+}
 
-	return fileMap, nil
+func (f *Frontend) Handler(ctx *fasthttp.RequestCtx) {
+	path := string(ctx.Path())
+	switch path {
+	case "/", "/index.html":
+		f.renderPageWithPath(ctx, path)
+	default:
+		f.fsHandler(ctx)
+	}
+}
+
+type SSRResult struct {
+	Status int    `json:"status"`
+	Markup string `json:"markup"`
+}
+
+func (f *Frontend) renderPageWithPath(ctx *fasthttp.RequestCtx, p string) {
+	node := exec.Command("node", "./ssr.js", p)
+	stdout, err := node.StdoutPipe()
+	if err != nil {
+		logger.Error("failed to create stdout pipe", zap.Error(err))
+		return
+	}
+	if err := node.Start(); err != nil {
+		logger.Error("failed to start ssr process", zap.Error(err))
+		return
+	}
+	var result SSRResult
+	if err := json.NewDecoder(stdout).Decode(&result); err != nil {
+		logger.Error("failed to decode ssr result", zap.Error(err))
+		return
+	}
+	if err := node.Wait(); err != nil {
+		logger.Error("ssr process throws an error", zap.Error(err))
+		return
+	}
+	ctx.Response.Header.Set("Content-Type", "text/html;charset=utf-8")
+	ctx.Response.SetStatusCode(result.Status)
+	f.template.Execute(ctx, result)
+}
+
+func (f *Frontend) renderPage(ctx *fasthttp.RequestCtx) {
+	f.renderPageWithPath(ctx, string(ctx.Path()))
 }

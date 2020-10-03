@@ -9,14 +9,11 @@ import (
 )
 
 // FrontendHandler - 프론트엔드 핸들러입니다.
-var FrontendHandler fasthttp.RequestHandler = func() fasthttp.RequestHandler {
-	fr, err := frontend.New()
+var FrontendHandler = func() fasthttp.RequestHandler {
+	f, err := frontend.New("./frontend")
 	if err != nil {
-		logger.Error(
-			"failed to initialize frontend",
-			zap.Error(err),
-		)
+		logger.Error("failed to initialize frontend", zap.Error(err))
 		os.Exit(1)
 	}
-	return fr.Handler
+	return f.Handler
 }()
