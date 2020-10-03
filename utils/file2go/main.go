@@ -5,11 +5,12 @@ import (
 	"compress/gzip"
 	"flag"
 	"fmt"
+	"html/template"
 	"io"
+	"io/ioutil"
 	"log"
 	"os"
 	"strconv"
-	"text/template"
 )
 
 type TemplateContext struct {
@@ -18,7 +19,21 @@ type TemplateContext struct {
 	Content     string
 }
 
-const tplSrc = `package {{.PackageName}}
+const defaultTplSrc = `package {{.PackageName}}
+
+import (
+	"strings"
+	"io"
+)
+
+const {{.VarName}} = {{.Content}}
+
+func New{{.VarName}}Reader() (io.Reader, error) {
+	return strings.NewReader({{.VarName}}), nil
+}
+`
+
+const compressTplSrc = `package {{.PackageName}}
 
 import (
 	"bytes"
@@ -33,13 +48,12 @@ func New{{.VarName}}Reader() (io.Reader, error) {
 }
 `
 
-var tpl = template.Must(template.New("tpl").Parse(tplSrc))
-
 var (
-	inputFile   = flag.String("input", "", "input file")
-	outputFile  = flag.String("output", "", "output file")
-	packageName = flag.String("package", "", "variable name")
-	varName     = flag.String("var", "", "variable name")
+	inputFile      = flag.String("input", "", "input file")
+	outputFile     = flag.String("output", "", "output file")
+	packageName    = flag.String("package", "", "variable name")
+	varName        = flag.String("var", "", "variable name")
+	shouldCompress = flag.Bool("compress", false, "use gzip compress")
 )
 
 func run() error {
@@ -70,14 +84,33 @@ func run() error {
 		defer f.Close()
 		r = f
 	}
-	compressed, err := compressData(r)
+	var (
+		tplSrc string
+		data   []byte
+	)
+	if *shouldCompress {
+		compressed, err := compressData(r)
+		if err != nil {
+			return err
+		}
+		data = compressed
+		tplSrc = compressTplSrc
+	} else {
+		buf, err := ioutil.ReadAll(r)
+		if err != nil {
+			return err
+		}
+		data = buf
+		tplSrc = defaultTplSrc
+	}
+	tpl, err := template.New("tpl").Parse(tplSrc)
 	if err != nil {
 		return err
 	}
 	ctx := &TemplateContext{
 		PackageName: *packageName,
 		VarName:     *varName,
-		Content:     strconv.Quote(string(compressed)),
+		Content:     strconv.Quote(string(data)),
 	}
 	return tpl.Execute(w, ctx)
 }
