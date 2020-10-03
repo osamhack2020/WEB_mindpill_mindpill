@@ -12,7 +12,7 @@ interface AppState {
 }
 
 export default class App extends React.Component<any, AppState> {
-  constructor(props) {
+  constructor(props: any) {
     super(props)
     this.state = {
       isLoggedIn: true

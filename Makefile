@@ -13,7 +13,7 @@ PUBLIC_DIR := frontend/public
 PUBLIC_DIST := ${FRONTEND_DIR}
 PUBLIC_OUT := $(addprefix ${PUBLIC_DIST}/,$(PUBLIC_SRC:${PUBLIC_DIR}/%=%))
 
-BACKEND_SRC := $(shell find ./backend -name '*.go')
+BACKEND_SRC := ${FRONTEND_OUT} $(shell find ./backend -name '*.go')
 BACKEND_PKG := mindpill/backend
 
 run: ${BACKEND_SRC}
@@ -23,7 +23,7 @@ run: ${BACKEND_SRC}
 frontend: ${FRONTEND_OUT}
 
 ${FRONTEND_OUT}: ${UI_OUT} ${STYLE_OUT} ${PUBLIC_OUT}
-	tar -cO ${FRONTEND_DIR} | go run mindpill/utils/file2go -package dist -var FrontendTar -output $@
+	tar -C ${FRONTEND_DIR} -cO . | go run mindpill/utils/file2go -package dist -var FrontendTar -output $@
 
 .PHONY := ui
 ui: ${UI_OUT}
