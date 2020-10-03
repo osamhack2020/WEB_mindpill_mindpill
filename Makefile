@@ -1,11 +1,7 @@
 DIST_DIR := dist
 
-FRONTEND_OUT := ${DIST_DIR}/frontend.go
 FRONTEND_DIR := ${DIST_DIR}/frontend
 FRONTEND_COMMON_SRC := $(shell find ./frontend/src -name '*.tsx' -o -name '*.ts' -o -name '*.jsx' -o -name '*.js')
-
-SSR_SRC := frontend/server.tsx ${FRONTEND_COMMON_SRC}
-SSR_OUT := ${DIST_DIR}/ssr.js
 
 UI_SRC := frontend/browser.tsx ${FRONTEND_COMMON_SRC}
 UI_OUT := ${FRONTEND_DIR}/bundle.js
@@ -19,17 +15,27 @@ PUBLIC_DIR := frontend/public
 PUBLIC_DIST := ${FRONTEND_DIR}
 PUBLIC_OUT := $(addprefix ${PUBLIC_DIST}/,$(PUBLIC_SRC:${PUBLIC_DIR}/%=%))
 
-BACKEND_SRC := ${FRONTEND_OUT} $(shell find ./backend -name '*.go')
+FRONTEND_OUT := ${UI_OUT} ${STYLE_OUT} ${PUBLIC_OUT}
+
+SSR_SRC := frontend/server.tsx ${FRONTEND_COMMON_SRC}
+SSR_OUT := ${DIST_DIR}/ssr.js
+
+BACKEND_SRC := $(shell find ./backend -name '*.go')
+BACKEND_OUT := ${DIST_DIR}/mindpill
 BACKEND_PKG := mindpill/backend
 
-run: ${SSR_OUT} ${BACKEND_SRC}
+.PHONY := run
+run: ${SSR_OUT} ${FRONTEND_OUT} ${BACKEND_SRC}
 	cd ${DIST_DIR} && go run ${BACKEND_PKG}/cmd/mindpill
+
+.PHONY := build
+build: ${SSR_OUT} ${FRONTEND_OUT} ${BACKEND_OUT}
+
+${BACKEND_OUT}: ${BACKEND_SRC}
+	go build -o $@ ${BACKEND_PKG}
 
 .PHONY := frontend
 frontend: ${FRONTEND_OUT}
-
-${FRONTEND_OUT}: ${UI_OUT} ${STYLE_OUT} ${PUBLIC_OUT}
-	tar -C ${FRONTEND_DIR} -cO . | go run mindpill/utils/file2go -package dist -var FrontendTar -output $@
 
 .PHONY := ui
 ui: ${UI_OUT}
@@ -56,5 +62,6 @@ ${PUBLIC_DIST}/%: ${PUBLIC_DIR}/%
 	mkdir -p ${PUBLIC_DIST}
 	cp $< $@
 
+.PHONY := clean
 clean:
 	rm -rf dist/

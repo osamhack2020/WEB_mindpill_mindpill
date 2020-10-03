@@ -16,6 +16,9 @@ module.exports = {
       }
     ]
   },
+  watchOptions: {
+    ignored: /node_modules/
+  },
   devtool: 'source-map',
   mode: process.env.MINDPILL_ENV === 'production' ? 'production' : 'development'
 }
