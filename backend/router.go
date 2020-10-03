@@ -1,4 +1,4 @@
-package mindpill
+package backend
 
 import (
 	"mindpill/backend/handlers"
@@ -11,6 +11,7 @@ var r = func() *router.Router {
 	r := router.New()
 
 	r.GET("/health", handlers.HealthHandler)
+	r.NotFound = handlers.FrontendHandler
 
 	return r
 }()

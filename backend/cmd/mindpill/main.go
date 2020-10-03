@@ -1,10 +1,10 @@
-// Package main - Mindpill
-// Mindpill은 국군 장병들을 위한 원격 상담 플랫폼입니다.
+// Command mindpill - 국군 장병들을 위한 원격 상담 플랫폼.
 package main
 
 import (
-	mindpill "mindpill/backend"
+	"mindpill/backend"
 	"mindpill/backend/configs"
+	"mindpill/backend/internal/log"
 	"os"
 	"os/signal"
 	"syscall"
@@ -14,25 +14,11 @@ import (
 	"go.uber.org/zap"
 )
 
-var logger = func() *zap.Logger {
-	var (
-		log *zap.Logger
-		err error
-	)
-	if configs.Debug {
-		log, err = zap.NewDevelopment()
-	} else {
-		log, err = zap.NewProduction()
-	}
-	if err != nil {
-		panic(err)
-	}
-	return log
-}()
+var logger = log.Logger()
 
 func main() {
 	server := &fasthttp.Server{
-		Handler:      mindpill.Handler(),
+		Handler:      backend.Handler(),
 		ReadTimeout:  5 * time.Second,
 		WriteTimeout: 10 * time.Second,
 	}
