@@ -5,13 +5,7 @@
     "lib": "lib"
   },
   "scripts": {
-    "test": "npm run frontend:test",
-    "start": "npm run backend:run",
-    "frontend:build": "webpack",
-    "frontend:style": "mkdir -p frontend/assets/css && node-sass --output-style compressed frontend/assets/scss/styles.scss > frontend/assets/css/style.css",
-    "frontend:build-prod": "cross-env BUILD_ENV=production webpack",
-    "frontend:test": "jest",
-    "backend:run": "make run"
+    "start": "make run"
   },
   "license": "MIT",
   "devDependencies": {
