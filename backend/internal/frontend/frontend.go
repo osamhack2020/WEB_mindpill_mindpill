@@ -1,6 +1,7 @@
 package frontend
 
 import (
+	"bytes"
 	"encoding/json"
 	"html/template"
 	"io/ioutil"
@@ -48,6 +49,10 @@ func (f *Frontend) Handler(ctx *fasthttp.RequestCtx) {
 	}
 }
 
+type logPrinter struct {
+	buf *bytes.Buffer
+}
+
 type SSRResult struct {
 	Status int    `json:"status"`
 	Markup string `json:"markup"`
@@ -60,18 +65,35 @@ func (f *Frontend) renderPageWithPath(ctx *fasthttp.RequestCtx, p string) {
 		logger.Error("failed to create stdout pipe", zap.Error(err))
 		return
 	}
+	stderr := bytes.NewBuffer([]byte{})
+	node.Stderr = stderr
 	if err := node.Start(); err != nil {
-		logger.Error("failed to start ssr process", zap.Error(err))
+		logger.Error(
+			"failed to start ssr process",
+			zap.Error(err),
+			zap.String("message", stderr.String()),
+		)
 		return
 	}
 	var result SSRResult
 	if err := json.NewDecoder(stdout).Decode(&result); err != nil {
-		logger.Error("failed to decode ssr result", zap.Error(err))
+		logger.Error(
+			"failed to decode ssr result",
+			zap.Error(err),
+			zap.String("message", stderr.String()),
+		)
 		return
 	}
 	if err := node.Wait(); err != nil {
-		logger.Error("ssr process throws an error", zap.Error(err))
+		logger.Error(
+			"ssr process throws an error",
+			zap.Error(err),
+			zap.String("message", stderr.String()),
+		)
 		return
+	}
+	if stderr.Len() > 0 {
+		logger.Info("ssr process: ", zap.String("message", stderr.String()))
 	}
 	ctx.Response.Header.Set("Content-Type", "text/html;charset=utf-8")
 	ctx.Response.SetStatusCode(result.Status)
