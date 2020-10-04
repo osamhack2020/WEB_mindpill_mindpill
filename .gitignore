@@ -1,4 +1,7 @@
 /dist
+ent/*
+!ent/schema
+!ent/generate.go
 
 # Created by https://www.toptal.com/developers/gitignore/api/node,react,go,visualstudiocode
 # Edit at https://www.toptal.com/developers/gitignore?templates=node,react,go,visualstudiocode
