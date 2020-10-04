@@ -1,5 +1,5 @@
-import 'fast-text-encoding' // Polyfill for TextEncoder / TextDecoder
-import { bufToBigint, bigintToBuf } from 'bigint-conversion'
+import 'fast-text-encoding'
+import JSBI from 'jsbi'
 
 export class CursorView {
   private readonly _arr: Uint8Array
@@ -49,11 +49,11 @@ export class CursorView {
     return buf
   }
 
-  readInt64(): bigint {
-    const high = BigInt(this._view.getInt32(this.cursor))
-    const low = BigInt(this._view.getUint32(this.cursor + 4))
+  readInt64(): JSBI {
+    const high = JSBI.BigInt(this._view.getInt32(this.cursor))
+    const low = JSBI.BigInt(this._view.getUint32(this.cursor + 4))
     this.cursor += 8
-    return (high << 32n) + low
+    return JSBI.add(JSBI.leftShift(high, JSBI.BigInt(32)), low)
   }
 
   readUint8(): number {
@@ -72,11 +72,11 @@ export class CursorView {
     return buf
   }
 
-  readUint64(): bigint {
-    const high = BigInt(this._view.getUint32(this.cursor))
-    const low = BigInt(this._view.getUint32(this.cursor + 4))
+  readUint64(): JSBI {
+    const high = JSBI.BigInt(this._view.getUint32(this.cursor))
+    const low = JSBI.BigInt(this._view.getUint32(this.cursor + 4))
     this.cursor += 8
-    return (high << 32n) + low
+    return JSBI.add(JSBI.leftShift(high, JSBI.BigInt(32)), low)
   }
 
   writeFloat32(value: number): void {
@@ -104,9 +104,9 @@ export class CursorView {
     this.cursor += 4
   }
 
-  writeInt64(value: bigint): void {
-    const high = Number(value >> 32n)
-    const low = Number(value & 0xffff_ffffn)
+  writeInt64(value: JSBI): void {
+    const high = JSBI.toNumber(JSBI.signedRightShift(value, JSBI.BigInt(32)))
+    const low = JSBI.toNumber(JSBI.bitwiseAnd(value, JSBI.BigInt(0xffff_ffff)))
     this.writeInt32(high)
     this.writeUint32(low)
   }
@@ -126,9 +126,9 @@ export class CursorView {
     this.cursor += 4
   }
 
-  writeUint64(value: bigint): void {
-    const high = Number(value >> 32n)
-    const low = Number(value & 0xffff_ffffn)
+  writeUint64(value: JSBI): void {
+    const high = JSBI.toNumber(JSBI.signedRightShift(value, JSBI.BigInt(32)))
+    const low = JSBI.toNumber(JSBI.bitwiseAnd(value, JSBI.BigInt(0xffff_ffff)))
     this.writeUint32(high)
     this.writeUint32(low)
   }
