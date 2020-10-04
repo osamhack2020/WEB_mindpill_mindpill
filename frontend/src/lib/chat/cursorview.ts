@@ -1,5 +1,4 @@
 import 'fast-text-encoding' // Polyfill for TextEncoder / TextDecoder
-import { bufToBigint, bigintToBuf } from 'bigint-conversion'
 
 export class CursorView {
   private readonly _arr: Uint8Array
