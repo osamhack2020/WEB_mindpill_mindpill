@@ -3,9 +3,12 @@ import { Link } from 'react-router-dom'
 
 export interface LayoutProps {
   isLoggedIn: boolean
+  location: object
 }
 
-class Layout extends React.Component<LayoutProps> {
+export default class Layout extends React.Component <LayoutProps> {
+
+
   render() {
     return (
       <div className="app-container">
@@ -48,5 +51,3 @@ class Layout extends React.Component<LayoutProps> {
     )
   }
 }
-
-export default Layout

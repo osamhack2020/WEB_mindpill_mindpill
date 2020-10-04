@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import SelectBox from '../components/SelectBox'
 
 export default class Join extends React.Component {
+  
   handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     // const {

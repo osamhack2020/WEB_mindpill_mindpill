@@ -31,10 +31,12 @@ export interface SelectBoxState {
   chosenValue: string
 }
 
-export default class SelectBox extends React.Component<
-  SelectBoxProps,
-  SelectBoxState
-> {
+export default class SelectBox extends React.Component <SelectBoxProps, SelectBoxState>{
+
+  state = {
+    chosenValue: '',
+  }
+
   changeValue = (value: string) => {
     this.setState({ chosenValue: value })
   }
