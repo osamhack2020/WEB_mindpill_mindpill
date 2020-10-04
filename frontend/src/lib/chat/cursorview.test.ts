@@ -1,4 +1,5 @@
 import { CursorView } from './cursorview'
+import JSBI from 'jsbi'
 
 const helloworld = [
   0x0d, // Lenght
@@ -35,7 +36,7 @@ const int16 = 3
 const int16b = Uint8Array.from([0x00, 0x03])
 const int32 = 3
 const int32b = Uint8Array.from([0x00, 0x00, 0x00, 0x03])
-const int64 = 3n
+const int64 = JSBI.BigInt(3)
 const int64b = Uint8Array.from([0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x03])
 const uint8 = 3
 const uint8b = Uint8Array.from([0x03])
@@ -43,7 +44,7 @@ const uint16 = 3
 const uint16b = Uint8Array.from([0x00, 0x03])
 const uint32 = 3
 const uint32b = Uint8Array.from([0x00, 0x00, 0x00, 0x03])
-const uint64 = 3n
+const uint64 = JSBI.BigInt(3)
 const uint64b = Uint8Array.from([
   0x00,
   0x00,
