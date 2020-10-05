@@ -2,13 +2,13 @@ import React from 'react'
 
 export interface OptionProps {
   value: string
-  onChangeValue?: (value: string) => void
+  onClick?: (value: string) => void
 }
 
 export class Option extends React.Component<OptionProps> {
   handleClick = () => {
-    if (this.props.onChangeValue != null) {
-      this.props.onChangeValue(this.props.value)
+    if (this.props.onClick != null) {
+      this.props.onClick(this.props.value)
     }
   }
 
@@ -21,28 +21,40 @@ export class Option extends React.Component<OptionProps> {
   }
 }
 
-export interface SelectBoxProps {
+export interface SelectBySearchProps {
   name: string
   values: Array<string>
   placeholder?: string
   required?: boolean
 }
 
-export interface SelectBoxState {
+export interface SelectBySearchState {
   chosenValue: string
+  values: Array<string>
+  selected: boolean
 }
 
-export default class SelectBox extends React.Component<SelectBoxProps, SelectBoxState> {
+export default class SelectBySearch extends React.Component<SelectBySearchProps, SelectBySearchState> {
   state = {
-    chosenValue: ''
+    chosenValue: '',
+    values: this.props.values,
+    selected: true
   }
 
   changeValue = (value: string) => {
     this.setState({ chosenValue: value })
+    this.setState({ selected: true })
+    this.setState({ values: [] })
   }
+
   handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    e.preventDefault()
+    this.setState({
+      values: this.props.values.filter(value => value.includes(e.target.value))
+    })
+    this.setState({ chosenValue: e.target.value })
+    this.setState({ selected: false })
   }
+
   render() {
     return (
       <div className="input-select">
@@ -54,9 +66,9 @@ export default class SelectBox extends React.Component<SelectBoxProps, SelectBox
           onChange={this.handleChange}
           required={this.props.required}
         />
-        <div className="options">
-          {this.props.values.map((value, key) => (
-            <Option value={value} onChangeValue={this.changeValue} key={key} />
+        <div className={`options ${this.state.selected ? '' : 'search'}`}>
+          {this.state.values.map((value, key) => (
+            <Option value={value} onClick={this.changeValue} key={key} />
           ))}
         </div>
       </div>
