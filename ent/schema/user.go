@@ -40,6 +40,8 @@ func (User) Fields() []ent.Field {
 // Edges of the User.
 func (User) Edges() []ent.Edge {
 	return []ent.Edge{
+		edge.To("token", Token.Type).
+			Unique(),
 		edge.To("uploads", File.Type),
 		edge.From("admin", Admin.Type).
 			Ref("user").
