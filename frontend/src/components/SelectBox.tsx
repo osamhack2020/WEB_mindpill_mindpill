@@ -43,6 +43,9 @@ export default class SelectBox extends React.Component<SelectBoxProps, SelectBox
   handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     e.preventDefault()
   }
+  handleFocus = (e: React.ChangeEvent<HTMLInputElement>) => {
+    e.target.blur()
+  }
   render() {
     return (
       <div className="input-select">
@@ -53,6 +56,14 @@ export default class SelectBox extends React.Component<SelectBoxProps, SelectBox
           name={this.props.name}
           onChange={this.handleChange}
           required={this.props.required}
+          onFocus={this.handleFocus}
+          pattern={
+            '/' +
+            this.props.values.reduce((a, c) => {
+              return (a = a + '|' + c)
+            }) +
+            '/'
+          }
         />
         <div className="options">
           {this.props.values.map((value, key) => (

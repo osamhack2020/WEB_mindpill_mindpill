@@ -50,6 +50,7 @@
   },
   "dependencies": {
     "@babel/polyfill": "^7.11.5",
+    "axios": "^0.20.0",
     "bigint-conversion": "^2.1.11",
     "fast-text-encoding": "^1.0.3",
     "react": "^16.13.1",

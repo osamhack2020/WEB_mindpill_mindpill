@@ -7,43 +7,51 @@ export interface InputProps {
   type?: string
   required?: boolean
   value?: string
-  checkValidity?: (value: string) => boolean
+  helperMessage?: string
+  maxLength?: number
+  minLength?: number
+  pattern?: string
+  autofocus?: boolean
 }
 
 export interface InputState {
   helperMessageOn: boolean
+  focused: boolean
 }
 
 export default class Input extends React.Component<InputProps, InputState> {
   state = {
-    helperMessageOn: false
+    helperMessageOn: false,
+    focused: false
   }
 
-  handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (this.props.checkValidity) {
-      this.setState({ helperMessageOn: this.props.checkValidity(e.target.value) })
-    }
+  handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {}
+
+  handleFocus = (e: React.ChangeEvent<HTMLInputElement>) => {
+    this.setState({ focused: true })
+  }
+
+  handleBlur = (e: React.ChangeEvent<HTMLInputElement>) => {
+    this.setState({ focused: false })
   }
 
   render() {
     return (
       <div className="input-custom">
         <input
+          onChange={this.handleChange}
+          onFocus={this.handleFocus}
+          onBlur={this.handleBlur}
           defaultValue={this.props.defaultValue}
           placeholder={this.props.placeholder}
           type={this.props.type}
           name={this.props.name}
           required={this.props.required}
           value={this.props.value}
-          onChange={this.handleChange}
+          pattern={this.props.pattern}
+          autoFocus={this.props.autofocus}
         />
-        {this.state.helperMessageOn ? (
-          <div className="helper-message">
-            <span>값을 입력하세요.</span>
-          </div>
-        ) : (
-          <></>
-        )}
+        {this.props.helperMessage && this.state.focused && <div className="helper-message">{this.props.helperMessage}</div>}
       </div>
     )
   }

@@ -1,12 +1,16 @@
+$inputWidth: 20rem;
+$inputHeight: 3rem;
+
 .input-custom {
   margin-bottom: 1rem;
+  position: relative;
   input[type='text'],
   input[type='email'],
   input[type='password'],
   input[type='submit'] {
     background-color: $white;
-    width: 25rem;
-    height: 3.5rem;
+    width: $inputWidth;
+    height: $inputHeight;
     box-shadow: $shadow;
     border-radius: 1rem 1rem 1rem 0;
     display: flex;
@@ -26,10 +30,30 @@
     color: $white;
     border-radius: 1rem 1rem 0 1rem;
     font-weight: 900;
-    margin-top: 4rem;
+    margin-top: 2rem;
     &:hover {
       background-color: $black-hover;
       cursor: pointer;
+    }
+  }
+  .helper-message {
+    position: absolute;
+    line-height: 1.5rem;
+    bottom: 5rem;
+    right: 0rem;
+    background-color: $black;
+    color: $white;
+    padding: 1rem;
+    border-radius: 0.5rem;
+    &::after {
+      position: absolute;
+      bottom: -0.5rem;
+      right: 2rem;
+      content: ' ';
+      width: 1rem;
+      height: 1rem;
+      background-color: $black;
+      transform: rotateZ(45deg);
     }
   }
 }
@@ -39,35 +63,50 @@
   margin-bottom: 1rem;
   box-shadow: $shadow;
   border-radius: 1rem 1rem 1rem 1rem;
-
+  &.search {
+    & input:focus {
+      border-radius: 1rem 1rem 0 0;
+    }
+    & input:hover {
+      cursor: auto;
+    }
+    .options {
+      display: block;
+    }
+  }
   input {
     margin: 0;
     background-color: $white;
-    width: 25rem;
-    height: 3.5rem;
+    width: $inputWidth;
+    height: $inputHeight;
     border-radius: 1rem 1rem 1rem 0;
     display: flex;
     justify-content: center;
     align-items: center;
     text-align: center;
     box-shadow: none;
+    font-weight: 700;
+    &:hover {
+      cursor: default;
+    }
+
+    &::placeholder {
+      font-weight: 400;
+    }
   }
   &:hover {
     .options {
       display: block;
     }
-    input {
-      border-radius: 1rem 1rem 0 0;
-    }
   }
   .options {
     display: none;
-    max-height: 3.5rem * 5;
+    max-height: $inputHeight * 5;
     overflow-x: hidden;
     overflow-y: scroll;
     position: absolute;
     z-index: 100;
-    top: 3.5rem;
+    top: $inputHeight;
 
     &.search {
       display: block;
@@ -77,8 +116,8 @@
     }
     .option {
       background-color: $white;
-      width: 25rem;
-      height: 3.5rem;
+      width: $inputWidth;
+      height: $inputHeight;
       display: flex;
       justify-content: center;
       align-items: center;
