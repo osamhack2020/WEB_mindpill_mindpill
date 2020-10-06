@@ -20,7 +20,11 @@ FRONTEND_OUT := ${UI_OUT} ${STYLE_OUT} ${PUBLIC_OUT}
 SSR_SRC := frontend/server.tsx ${FRONTEND_COMMON_SRC}
 SSR_OUT := ${DIST_DIR}/ssr.js
 
-BACKEND_SRC := $(shell find ./backend -name '*.go')
+ENT_SRC := $(shell find ./ent/schema -name '*.go')
+ENT_OUT := ./ent/ent.go
+ENT_PKG := mindpill/ent
+
+BACKEND_SRC := $(shell find ./backend -name '*.go') ${ENT_OUT}
 BACKEND_OUT := ${DIST_DIR}/mindpill
 BACKEND_PKG := mindpill/backend
 
@@ -62,6 +66,13 @@ ${PUBLIC_DIST}/%: ${PUBLIC_DIR}/%
 	mkdir -p ${PUBLIC_DIST}
 	cp $< $@
 
+.PHONY := ent
+ent: ${ENT_OUT}
+
+${ENT_OUT}: ${ENT_SRC}
+	go generate ${ENT_PKG}
+
 .PHONY := clean
 clean:
 	rm -rf dist/
+	rm -rf $(filter-out ent/schema ent/generate.go,$(wildcard ent/*))

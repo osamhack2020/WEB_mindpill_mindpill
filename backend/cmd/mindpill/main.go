@@ -12,11 +12,19 @@ import (
 
 	"github.com/valyala/fasthttp"
 	"go.uber.org/zap"
+
+	_ "github.com/go-sql-driver/mysql"
 )
 
 var logger = log.Logger()
 
 func main() {
+	err := backend.Setup()
+	if err != nil {
+		logger.Error("Failed to setup", zap.Error(err))
+		return
+	}
+
 	server := &fasthttp.Server{
 		Handler:      backend.Handler(),
 		ReadTimeout:  5 * time.Second,
