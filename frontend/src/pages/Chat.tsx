@@ -16,13 +16,38 @@ export class ChatRoom extends React.Component {
   }
 }
 
-export class ChatRoomList extends React.Component {
+export class ChatBrowser extends React.Component {
   render() {
     return (
-      <div className="chatroom-list box-top-column expand">
-        <ChatRoom />
-        <ChatRoom />
-        <ChatRoom />
+      <div className="chat-browser box-top-column expand">
+        <div className="chat-browser-navbar expand">
+          <div className="profile-image-area">
+            <div className="profile-image">
+              <i className="fas fa-user"></i>
+            </div>
+          </div>
+          <ul>
+            <li>
+              <i className="fas fa-comment-alt"></i>
+            </li>
+            <li>
+              <i className="fas fa-users"></i>
+            </li>
+          </ul>
+        </div>
+        <div className="chat-browser-content">
+          <div className="chat-browser-search">
+            <div className="chat-browser-search-input">
+              <i className="fas fa-search"></i>
+              <input type="text" placeholder="검색"></input>
+            </div>
+          </div>
+          <div className="chatroom-list">
+            <ChatRoom />
+            <ChatRoom />
+            <ChatRoom />
+          </div>
+        </div>
       </div>
     )
   }
@@ -43,6 +68,36 @@ export class ChatLog extends React.Component<ChatLogProps> {
           <div className="timestamp">{this.props.timestamp}</div>
         </div>
         {this.props.myLog ? '' : <div className="profile-image"></div>}
+      </div>
+    )
+  }
+}
+
+export class ChatRoomInfo extends React.Component {
+  render() {
+    return (
+      <div className="chatroom-info box-top-column expand">
+        <div className="profile-image"></div>
+        <div className="name">홍길동 상담관</div>
+        <div className="regiment">12사단 00연대 00중대 심리상담관</div>
+        <hr className="hr"></hr>
+        <div className="info-category">연락처</div>
+        <div className="wrapper">
+          <div className="info-title">군전화</div>
+          <div className="info-content">1123-456-789</div>
+        </div>
+        <div className="wrapper">
+          <div className="info-title">군전화</div>
+          <div className="info-content">1123-456-789</div>
+        </div>
+        <div className="wrapper">
+          <div className="info-title">군전화</div>
+          <div className="info-content">1123-456-789</div>
+        </div>
+        <div className="wrapper">
+          <div className="info-title">군전화</div>
+          <div className="info-content">1123-456-789</div>
+        </div>
       </div>
     )
   }
@@ -103,54 +158,25 @@ export class CurrentChatRoom extends React.Component {
   render() {
     return (
       <div className="current-chatroom expand">
-        <div className="chat-logs">
-          {this.state.chatLogs.map((value, key) => {
-            return (
-              <ChatLog
-                key={key}
-                text={value.text}
-                timestamp={value.timestamp}
-                myLog={value.myLog}
-              />
-            )
-          })}
-        </div>
-        <div className="chat-input">
-          <div className="box-center expand">
-            <div className="profile-image"></div>
+        <div className="chat-area expand">
+          <div className="chat-logs">
+            {this.state.chatLogs.map((value, key) => {
+              return <ChatLog key={key} text={value.text} timestamp={value.timestamp} myLog={value.myLog} />
+            })}
           </div>
-          <textarea placeholder="대화를 입력하세요." rows={2} />
+          <div className="chat-input">
+            <div className="box-center expand">
+              <div className="attachment">
+                <i className="fas fa-paperclip"></i>
+              </div>
+            </div>
+            <input placeholder="대화를 입력하세요." />
+            <button className="chat-send">
+              <i className="fas fa-paper-plane"></i>
+            </button>
+          </div>
         </div>
-      </div>
-    )
-  }
-}
-
-export class ChatRoomInfo extends React.Component {
-  render() {
-    return (
-      <div className="chatroom-info box-top-column expand">
-        <div className="profile-image"></div>
-        <div className="name">홍길동 상담관</div>
-        <div className="regiment">12사단 00연대 00중대 심리상담관</div>
-        <hr className="hr"></hr>
-        <div className="info-category">연락처</div>
-        <div className="wrapper">
-          <div className="info-title">군전화</div>
-          <div className="info-content">1123-456-789</div>
-        </div>
-        <div className="wrapper">
-          <div className="info-title">군전화</div>
-          <div className="info-content">1123-456-789</div>
-        </div>
-        <div className="wrapper">
-          <div className="info-title">군전화</div>
-          <div className="info-content">1123-456-789</div>
-        </div>
-        <div className="wrapper">
-          <div className="info-title">군전화</div>
-          <div className="info-content">1123-456-789</div>
-        </div>
+        <ChatRoomInfo />
       </div>
     )
   }
@@ -159,10 +185,9 @@ export class ChatRoomInfo extends React.Component {
 export default class Chat extends React.Component {
   render() {
     return (
-      <div className="box-custom-1 expand">
-        <ChatRoomList />
+      <div className="box-page-chat expand">
+        <ChatBrowser />
         <CurrentChatRoom />
-        <ChatRoomInfo />
       </div>
     )
   }
