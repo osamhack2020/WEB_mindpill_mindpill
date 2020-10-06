@@ -155,26 +155,68 @@ export class CurrentChatRoom extends React.Component {
     ]
   }
 
+  goToBottom = () => {
+    let chatLogs = document.getElementById('chat-logs')
+    console.log(chatLogs)
+    if (chatLogs) {
+      chatLogs.scrollTop = chatLogs.scrollHeight
+    }
+  }
+
+  getTimestamp = () => {
+    let date = new Date()
+    let timestamp = `${date.getHours() < 10 ? '0' + date.getHours() : date.getHours()}:${
+      date.getMinutes() < 10 ? '0' + date.getMinutes() : date.getMinutes()
+    } ${date.getHours() < 12 ? 'am' : 'pm'}`
+    return timestamp
+  }
+
+  addMessage = (message: string) => {
+    this.setState(
+      {
+        chatLogs: [
+          ...this.state.chatLogs,
+          {
+            text: message,
+            timestamp: this.getTimestamp(),
+            myLog: true
+          }
+        ]
+      },
+      () => {
+        this.goToBottom()
+      }
+    )
+  }
+
+  handleSubmit = (e: React.FormEvent<HTMLFormElement> & { target: { message: HTMLInputElement } }) => {
+    e.preventDefault()
+    let message = e.target.message.value
+    this.addMessage(message)
+    e.target.message.value = ''
+  }
   render() {
     return (
       <div className="current-chatroom expand">
         <div className="chat-area expand">
-          <div className="chat-logs">
+          <div className="chat-logs" id="chat-logs">
+            <div className="chat-log-null"></div>
             {this.state.chatLogs.map((value, key) => {
               return <ChatLog key={key} text={value.text} timestamp={value.timestamp} myLog={value.myLog} />
             })}
+            <div className="chat-log-null"></div>
           </div>
-          <div className="chat-input">
+          <form className="chat-input" onSubmit={this.handleSubmit}>
             <div className="box-center expand">
               <div className="attachment">
                 <i className="fas fa-paperclip"></i>
               </div>
             </div>
-            <input placeholder="대화를 입력하세요." />
+            <input name="message" placeholder="대화를 입력하세요." />
             <button className="chat-send">
               <i className="fas fa-paper-plane"></i>
             </button>
-          </div>
+          </form>
         </div>
         <ChatRoomInfo />
       </div>

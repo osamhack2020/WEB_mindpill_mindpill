@@ -156,7 +156,9 @@
       overflow-x: hidden;
       height: 100px;
       flex-grow: 1;
-
+      .chat-log-null{
+        height: 1rem;
+      }
       .chat-log {
         width: 100%;
         display: flex;
