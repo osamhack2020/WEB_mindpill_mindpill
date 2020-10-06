@@ -1,10 +1,10 @@
 .chat-browser {
   box-shadow: $shadow;
-  overflow: hidden;
   display: grid;
   grid-template-columns: 5rem 1fr;
   position: relative;
-  z-index: 80;
+  z-index: 90;
+  background-color: $white;
   .chat-browser-navbar {
     box-shadow: $shadow;
     position: relative;
@@ -34,9 +34,15 @@
         display: flex;
         justify-content: center;
         align-items: center;
+        font-size: 1.5rem;
+        &.selected {
+          background-color: $gray;
+          border-left: 4px solid $black;
+        }
         &:hover {
           background-color: $white-hover;
-          border-left: 4px solid $black;
+          color: $black;
+          cursor: pointer;
         }
       }
     }
@@ -72,6 +78,7 @@
         display: flex;
         align-items: center;
         border-bottom: 1px solid rgba(0, 0, 0, 0.25);
+        background-color: $white;
         &:hover {
           background-color: $white-hover;
           cursor: pointer;
@@ -79,9 +86,13 @@
         .profile-image {
           width: 3rem;
           height: 3rem;
-          border-radius: 3rem;
-          background-color: red;
+          background-color: $black;
           margin-right: 1rem;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          color: $white;
+          border-radius: 50%;
         }
         .wrapper {
           .name {
@@ -97,6 +108,18 @@
             opacity: 0.7;
           }
         }
+        &.selected {
+          width: 103%;
+          background-color: $black;
+          border-bottom: none;
+          border-radius: 0 0.5rem 0.5rem 0;
+          box-shadow: $shadow;
+          color: $white;
+          .profile-image {
+            background-color: $white;
+            color: $black;
+          }
+        }
       }
     }
   }
@@ -104,7 +127,7 @@
 
 .current-chatroom {
   display: grid;
-  grid-template-columns: 2fr 1fr;
+  grid-template-columns: 1fr 3fr;
   width: 100%;
   .chat-area {
     display: flex;
@@ -152,17 +175,17 @@
       }
     }
     .chat-logs {
-      overflow-y: scroll;
+      overflow-y: auto;
       overflow-x: hidden;
       height: 100px;
       flex-grow: 1;
-      .chat-log-null{
-        height: 1rem;
+      .chat-log-null {
+        height: 2rem;
       }
       .chat-log {
         width: 100%;
         display: flex;
-        padding: 0 1rem;
+        padding: 0 2rem;
         &.opponentLog {
           justify-content: flex-end;
           align-items: flex-end;
@@ -174,11 +197,15 @@
             }
           }
           .profile-image {
+            margin-left: 1rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
             width: 3rem;
             height: 3rem;
+            color: $white;
+            background-color: $black;
             border-radius: 50%;
-            background-color: red;
-            margin-left: 1rem;
           }
         }
         .wrapper {
@@ -214,59 +241,48 @@
           }
         }
       }
-      &::-webkit-scrollbar {
-        width: 6px;
-        position: relative;
-        left: 10px;
-      }
-      &::-webkit-scrollbar-track {
-        background-color: transparent;
-      }
-      &::-webkit-scrollbar-thumb {
-        border-radius: 3px;
-        background-color: gray;
-      }
-      &::-webkit-scrollbar-button {
-        width: 0;
-        height: 0;
-      }
     }
   }
-}
-
-.chatroom-info {
-  .profile-image {
-    width: 8rem;
-    height: 8rem;
-    border-radius: 50%;
-    background-color: red;
-    margin: 1rem 0;
-  }
-  .name {
-    font-size: 1.5rem;
-    margin-bottom: 0.5rem;
-  }
-  .regiment {
-    opacity: 0.6;
-    margin-bottom: 1rem;
-  }
-  .hr {
-    width: 80%;
-    border-top: 1px solid rgba(0, 0, 0, 0.5);
-    margin-bottom: 1rem;
-  }
-  .info-category {
-    font-weight: 700;
-    width: 80%;
-    margin-bottom: 1rem;
-  }
-  .wrapper {
-    margin-bottom: 1rem;
-    width: 80%;
-    display: flex;
-    justify-content: space-between;
-    .info-content {
-      opacity: 0.6;
+  .chatroom-info {
+    box-shadow: $shadow;
+    position: relative;
+    z-index: 80;
+    background-color: $white;
+    padding: 4rem 3rem;
+    .profile-image {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 6rem;
+      height: 6rem;
+      color: $white;
+      background-color: $black;
+      border-radius: 50%;
+      margin-bottom: 2rem;
+      font-size: 3rem;
+    }
+    .name {
+      font-size: 1.5rem;
+      margin-bottom: 1rem;
+      font-weight: 700;
+    }
+    .regiment {
+      color: $black;
+      margin-bottom: 3rem;
+    }
+    .info-category {
+      width: 100%;
+      font-weight: 700;
+      margin-bottom: 1rem;
+    }
+    .wrapper {
+      margin-bottom: 1rem;
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      .info-content {
+        opacity: 0.6;
+      }
     }
   }
 }

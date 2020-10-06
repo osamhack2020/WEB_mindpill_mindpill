@@ -1,11 +1,18 @@
 import React from 'react'
 import Layout from './Layout'
 
-export class ChatRoom extends React.Component {
+export interface ChatRoomProps {
+  selected?: boolean
+}
+export interface ChatRoomStates {}
+
+export class ChatRoom extends React.Component<ChatRoomProps, ChatRoomStates> {
   render() {
     return (
-      <div className="chatroom">
-        <div className="profile-image"></div>
+      <div className={`chatroom ${this.props.selected && 'selected'}`}>
+        <div className="profile-image">
+          <i className="fas fa-user"></i>
+        </div>
         <div className="wrapper">
           <div className="name">홍길동 상담관</div>
           <span className="last-message">무슨 고민이 있나요?</span>
@@ -27,7 +34,7 @@ export class ChatBrowser extends React.Component {
             </div>
           </div>
           <ul>
-            <li>
+            <li className="selected">
               <i className="fas fa-comment-alt"></i>
             </li>
             <li>
@@ -43,7 +50,7 @@ export class ChatBrowser extends React.Component {
             </div>
           </div>
           <div className="chatroom-list">
-            <ChatRoom />
+            <ChatRoom selected />
             <ChatRoom />
             <ChatRoom />
           </div>
@@ -67,7 +74,11 @@ export class ChatLog extends React.Component<ChatLogProps> {
           <div className="text">{this.props.text}</div>
           <div className="timestamp">{this.props.timestamp}</div>
         </div>
-        {this.props.myLog ? '' : <div className="profile-image"></div>}
+        {!this.props.myLog && (
+          <div className="profile-image">
+            <i className="fas fa-user"></i>
+          </div>
+        )}
       </div>
     )
   }
@@ -77,10 +88,11 @@ export class ChatRoomInfo extends React.Component {
   render() {
     return (
       <div className="chatroom-info box-top-column expand">
-        <div className="profile-image"></div>
+        <div className="profile-image">
+          <i className="fas fa-user"></i>
+        </div>
         <div className="name">홍길동 상담관</div>
         <div className="regiment">12사단 00연대 00중대 심리상담관</div>
-        <hr className="hr"></hr>
         <div className="info-category">연락처</div>
         <div className="wrapper">
           <div className="info-title">군전화</div>
@@ -104,6 +116,9 @@ export class ChatRoomInfo extends React.Component {
 }
 
 export class CurrentChatRoom extends React.Component {
+  componentDidMount = () => {
+    this.goToBottom()
+  }
   state = {
     chatLogs: [
       {
@@ -157,7 +172,6 @@ export class CurrentChatRoom extends React.Component {
 
   goToBottom = () => {
     let chatLogs = document.getElementById('chat-logs')
-    console.log(chatLogs)
     if (chatLogs) {
       chatLogs.scrollTop = chatLogs.scrollHeight
     }
@@ -198,6 +212,7 @@ export class CurrentChatRoom extends React.Component {
   render() {
     return (
       <div className="current-chatroom expand">
+        <ChatRoomInfo />
         <div className="chat-area expand">
           <div className="chat-logs" id="chat-logs">
             <div className="chat-log-null"></div>
@@ -218,7 +233,6 @@ export class CurrentChatRoom extends React.Component {
             </button>
           </form>
         </div>
-        <ChatRoomInfo />
       </div>
     )
   }
