@@ -17,11 +17,15 @@
 
 ### /api/auth/token
 
-사용자의 인증 토큰을 발급받습니다.
+사용자의 인증 토큰을 발급하기 위한 엔드포인트입니다.
 
-| URI Parameter | Type                    | Description             |
-| ------------- | ----------------------- | ----------------------- |
-| request_type  | 'password' \| 'refresh' | 사용할 인증 방식입니다. |
+**URL Parameter**
+
+| Parameter    | Type                    | Description             |
+| ------------ | ----------------------- | ----------------------- |
+| request_type | 'password' \| 'refresh' | 사용할 인증 방식입니다. |
+
+**Request**
 
 | Parameter     | Type   | Description                                             |
 | ------------- | ------ | ------------------------------------------------------- |
@@ -29,7 +33,20 @@
 | password      | string | 사용자의 비밀번호입니다. `password` 인증에 필요합니다.  |
 | refresh_token | string | Refresh Token입니다. `refresh` 인증에 필요합니다.       |
 
-**예시**
+**Response**
+
+| Parameter     | Type   | Description                                               |
+| ------------- | ------ | --------------------------------------------------------- |
+| access_token  | string | 서비스 접근에 사용하는 Access Token입니다.                |
+| refresh_token | string | 새롭게 토큰을 발급받기 위해 사용하는 Refresh Token입니다. |
+
+**Note**
+
+- Access Token은 발급 시점부터 24시간동안 유효합니다.
+- Refresh Token은 만료되지 않지만 1회용입니다.
+  이를 사용해 새 토큰을 발급받을 경우 사용된 Refresh Token은 물론 연결된 Access Token 역시 사용할 수 없게 됩니다.
+
+**Examples**
 
 ```
 curl https://localhost:7080/api/auth/token?request_type=password --data '{"email": "recipient@example.com", "password": "1q2w3e4r!"}'
