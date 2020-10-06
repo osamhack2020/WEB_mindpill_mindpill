@@ -1,195 +1,288 @@
-.chatroom-list {
-  background-color: $white;
+.chat-browser {
   box-shadow: $shadow;
-  border-radius: 1rem;
-  overflow: hidden;
-  .chatroom {
-    width: 100%;
-    padding: 2rem;
-    display: flex;
-    align-items: center;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.25);
-    &:hover {
-      background-color: $white-hover;
-      cursor: pointer;
-    }
-    .profile-image {
-      width: 3rem;
-      height: 3rem;
-      border-radius: 3rem;
-      background-color: red;
-      margin-right: 1rem;
-    }
-    .wrapper {
-      .name {
-        font-weight: 700;
-        margin-bottom: 0.5rem;
+  display: grid;
+  grid-template-columns: 5rem 1fr;
+  position: relative;
+  z-index: 90;
+  background-color: $white;
+  .chat-browser-navbar {
+    box-shadow: $shadow;
+    position: relative;
+    z-index: 100;
+    .profile-image-area {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 100%;
+      height: 6rem;
+      .profile-image {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 3rem;
+        height: 3rem;
+        color: $white;
+        background-color: $black;
+        border-radius: 50%;
       }
-      .last-message,
-      .last-message-time {
-        font-size: 0.8rem;
+    }
+
+    ul {
+      li {
+        width: 100%;
+        height: 4rem;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 1.5rem;
+        &.selected {
+          background-color: $gray;
+          border-left: 4px solid $black;
+        }
+        &:hover {
+          background-color: $white-hover;
+          color: $black;
+          cursor: pointer;
+        }
       }
-      .last-message-time {
-        margin-left: 0.5rem;
-        opacity: 0.7;
+    }
+  }
+  .chat-browser-content {
+    height: 100%;
+    .chat-browser-search {
+      width: 100%;
+      height: 5rem;
+      padding: 1rem;
+      .chat-browser-search-input {
+        width: 100%;
+        height: 100%;
+        border-radius: 1.5rem;
+        background-color: $white-hover;
+        display: flex;
+        align-items: center;
+        padding: 0 1rem;
+        input {
+          font-weight: 700;
+          margin-left: 1rem;
+          background-color: transparent;
+          &::placeholder {
+            font-weight: 400;
+          }
+        }
+      }
+    }
+    .chatroom-list {
+      .chatroom {
+        width: 100%;
+        padding: 2rem;
+        display: flex;
+        align-items: center;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.25);
+        background-color: $white;
+        &:hover {
+          background-color: $white-hover;
+          cursor: pointer;
+        }
+        .profile-image {
+          width: 3rem;
+          height: 3rem;
+          background-color: $black;
+          margin-right: 1rem;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          color: $white;
+          border-radius: 50%;
+        }
+        .wrapper {
+          .name {
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+          }
+          .last-message,
+          .last-message-time {
+            font-size: 0.8rem;
+          }
+          .last-message-time {
+            margin-left: 0.5rem;
+            opacity: 0.7;
+          }
+        }
+        &.selected {
+          width: 103%;
+          background-color: $black;
+          border-bottom: none;
+          border-radius: 0 0.5rem 0.5rem 0;
+          box-shadow: $shadow;
+          color: $white;
+          .profile-image {
+            background-color: $white;
+            color: $black;
+          }
+        }
       }
     }
   }
 }
 
 .current-chatroom {
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-columns: 1fr 3fr;
   width: 100%;
-  .chat-input {
-    margin-top: 2rem;
-    display: grid;
-    grid-template-columns: 3rem 1fr;
-    background: $white;
-    border-radius: 1rem 1rem 1rem 0;
-    box-shadow: $shadow;
+  .chat-area {
+    display: flex;
+    flex-direction: column;
+    background-color: $white-hover;
+    .chat-input {
+      position: relative;
+      z-index: 60;
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      column-gap: 1rem;
+      background: $white;
+      box-shadow: $shadow;
 
-    .profile-image {
-      width: 2rem;
-      height: 2rem;
-      background: red;
-      border-radius: 1rem;
+      .attachment {
+        margin: 1rem;
+        margin-right: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+        color: $gray;
+        font-size: 1.5rem;
+        &:hover {
+          color: $black;
+          cursor: pointer;
+        }
+      }
+
+      input {
+        font-weight: 700;
+        background-color: transparent;
+        &::placeholder {
+          font-weight: 400;
+        }
+      }
+      button.chat-send {
+        width: 4rem;
+        background-color: $white-hover;
+        font-size: 1.5rem;
+        &:hover {
+          background-color: $gray;
+          cursor: pointer;
+        }
+      }
     }
-
-    textarea {
-      border-radius: 1rem 1rem 1rem 0;
-    }
-  }
-  .chat-logs {
-    flex-grow: 1;
-    height: 100px;
-    overflow-y: scroll;
-    overflow-x: hidden;
-    padding: 1rem;
-    position: relative;
-
-    .chat-log {
-      width: 100%;
-      display: flex;
-      &.opponentLog {
-        justify-content: flex-end;
-        align-items: flex-end;
-        .wrapper {
+    .chat-logs {
+      overflow-y: auto;
+      overflow-x: hidden;
+      height: 100px;
+      flex-grow: 1;
+      .chat-log-null {
+        height: 2rem;
+      }
+      .chat-log {
+        width: 100%;
+        display: flex;
+        padding: 0 2rem;
+        &.opponentLog {
+          justify-content: flex-end;
           align-items: flex-end;
-          .text {
-            background-color: #fdf6ff;
-            border-radius: 1rem 1rem 0 1rem;
+          .wrapper {
+            align-items: flex-end;
+            .text {
+              background-color: #fdf6ff;
+              border-radius: 1rem 1rem 0 1rem;
+            }
           }
+          .profile-image {
+            margin-left: 1rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 3rem;
+            height: 3rem;
+            color: $white;
+            background-color: $black;
+            border-radius: 50%;
+          }
+        }
+        .wrapper {
+          max-width: 70%;
+          display: flex;
+          flex-direction: column;
+        }
+        .text {
+          display: inline-block;
+          padding: 1rem;
+          line-height: 1.5rem;
+          background-color: $white;
+          border-radius: 1rem 1rem 1rem 0;
+          box-shadow: $shadow;
+        }
+        .timestamp {
+          color: $black-hover;
+          margin: 0.5rem 0;
+          font-size: 0.8rem;
         }
         .profile-image {
           width: 3rem;
           height: 3rem;
-          border-radius: 50%;
-          background-color: red;
-          margin-left: 1rem;
+          background: red;
+          border-radius: 3rem;
         }
-      }
-      .wrapper {
-        max-width: 70%;
-        display: flex;
-        flex-direction: column;
-      }
-      .text {
-        display: inline-block;
-        padding: 1rem;
-        line-height: 1.5rem;
-        background-color: $white;
-        border-radius: 1rem 1rem 1rem 0;
-        box-shadow: $shadow;
-      }
-      .timestamp {
-        color: $black-hover;
-        margin: 0.5rem 0;
-        font-size: 0.8rem;
-      }
-      .profile-image {
-        width: 3rem;
-        height: 3rem;
-        background: red;
-        border-radius: 3rem;
-      }
-      &.opponentLog {
-        .text {
-          float: right;
-        }
-        .timestamp {
-          float: right;
+        &.opponentLog {
+          .text {
+            float: right;
+          }
+          .timestamp {
+            float: right;
+          }
         }
       }
     }
-    &::before {
-      content: ' ';
+  }
+  .chatroom-info {
+    box-shadow: $shadow;
+    position: relative;
+    z-index: 80;
+    background-color: $white;
+    padding: 4rem 3rem;
+    .profile-image {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 6rem;
+      height: 6rem;
+      color: $white;
+      background-color: $black;
+      border-radius: 50%;
+      margin-bottom: 2rem;
+      font-size: 3rem;
+    }
+    .name {
+      font-size: 1.5rem;
+      margin-bottom: 1rem;
+      font-weight: 700;
+    }
+    .regiment {
+      color: $black;
+      margin-bottom: 3rem;
+    }
+    .info-category {
       width: 100%;
-      height: 1rem;
-      position: absolute;
-      top: 0rem;
-      background: linear-gradient($white-hover, rgba(0, 0, 0, 0));
+      font-weight: 700;
+      margin-bottom: 1rem;
     }
-    &::after {
-      content: ' ';
+    .wrapper {
+      margin-bottom: 1rem;
       width: 100%;
-      height: 1rem;
-      position: absolute;
-      bottom: 0rem;
-      background: linear-gradient(rgba(0, 0, 0, 0), $white-hover);
-    }
-    &::-webkit-scrollbar {
-      width: 6px;
-      position: relative;
-      left: 10px;
-    }
-    &::-webkit-scrollbar-track {
-      background-color: transparent;
-    }
-    &::-webkit-scrollbar-thumb {
-      border-radius: 3px;
-      background-color: gray;
-    }
-    &::-webkit-scrollbar-button {
-      width: 0;
-      height: 0;
-    }
-  }
-}
-
-.chatroom-info {
-  .profile-image {
-    width: 8rem;
-    height: 8rem;
-    border-radius: 50%;
-    background-color: red;
-    margin: 1rem 0;
-  }
-  .name {
-    font-size: 1.5rem;
-    margin-bottom: 0.5rem;
-  }
-  .regiment {
-    opacity: 0.6;
-    margin-bottom: 1rem;
-  }
-  .hr {
-    width: 80%;
-    border-top: 1px solid rgba(0, 0, 0, 0.5);
-    margin-bottom: 1rem;
-  }
-  .info-category {
-    font-weight: 700;
-    width: 80%;
-    margin-bottom: 1rem;
-  }
-  .wrapper {
-    margin-bottom: 1rem;
-    width: 80%;
-    display: flex;
-    justify-content: space-between;
-    .info-content {
-      opacity: 0.6;
+      display: flex;
+      justify-content: space-between;
+      .info-content {
+        opacity: 0.6;
+      }
     }
   }
 }
