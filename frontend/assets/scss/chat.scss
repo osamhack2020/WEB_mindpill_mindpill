@@ -109,6 +109,8 @@
           }
         }
         &.selected {
+          position: relative;
+          z-index: 100;
           width: 103%;
           background-color: $black;
           border-bottom: none;
@@ -243,7 +245,7 @@
       }
     }
   }
-  .chatroom-info {
+  .user-info {
     box-shadow: $shadow;
     position: relative;
     z-index: 80;
@@ -275,13 +277,43 @@
       font-weight: 700;
       margin-bottom: 1rem;
     }
-    .wrapper {
+    .info-wrapper {
       margin-bottom: 1rem;
       width: 100%;
       display: flex;
       justify-content: space-between;
       .info-content {
         opacity: 0.6;
+      }
+    }
+    .counsel-button {
+      margin-top: 1rem;
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      padding: 1rem;
+      border-radius: 2rem;
+      background-color: $gray;
+      &:hover {
+        cursor: pointer;
+        background-color: $white-hover;
+      }
+
+      .counsel-button-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 3rem;
+        height: 3rem;
+        background-color: $black;
+        color: $white;
+        border-radius: 50%;
+        margin-right: 1rem;
+      }
+      .counsel-button-text {
+        font-weight: 700;
+        font-size: 1.2rem;
       }
     }
   }

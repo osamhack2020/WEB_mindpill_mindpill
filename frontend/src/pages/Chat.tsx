@@ -1,5 +1,4 @@
 import React from 'react'
-import Layout from './Layout'
 
 export interface ChatRoomProps {
   selected?: boolean
@@ -84,32 +83,44 @@ export class ChatLog extends React.Component<ChatLogProps> {
   }
 }
 
-export class ChatRoomInfo extends React.Component {
+export class UserInfo extends React.Component {
   render() {
     return (
-      <div className="chatroom-info box-top-column expand">
+      <div className="user-info box-top-column expand">
         <div className="profile-image">
           <i className="fas fa-user"></i>
         </div>
         <div className="name">홍길동 상담관</div>
         <div className="regiment">12사단 00연대 00중대 심리상담관</div>
         <div className="info-category">연락처</div>
-        <div className="wrapper">
+        <div className="info-wrapper">
           <div className="info-title">군전화</div>
           <div className="info-content">1123-456-789</div>
         </div>
-        <div className="wrapper">
+        <div className="info-wrapper">
           <div className="info-title">군전화</div>
           <div className="info-content">1123-456-789</div>
         </div>
-        <div className="wrapper">
+        <div className="info-wrapper">
           <div className="info-title">군전화</div>
           <div className="info-content">1123-456-789</div>
         </div>
-        <div className="wrapper">
+        <div className="info-wrapper">
           <div className="info-title">군전화</div>
           <div className="info-content">1123-456-789</div>
         </div>
+        <button className="counsel-button">
+          <span className="counsel-button-icon">
+            <i className="fas fa-headset"></i>
+          </span>
+          <span className="counsel-button-text">상담하기</span>
+        </button>
+        <button className="counsel-button">
+          <span className="counsel-button-icon">
+            <i className="fas fa-headset"></i>
+          </span>
+          <span className="counsel-button-text">익명 상담하기</span>
+        </button>
       </div>
     )
   }
@@ -212,7 +223,7 @@ export class CurrentChatRoom extends React.Component {
   render() {
     return (
       <div className="current-chatroom expand">
-        <ChatRoomInfo />
+        <UserInfo />
         <div className="chat-area expand">
           <div className="chat-logs" id="chat-logs">
             <div className="chat-log-null"></div>
