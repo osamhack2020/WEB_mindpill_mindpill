@@ -1,5 +1,5 @@
 import React from 'react'
-import { Switch, Route, RouteProps } from 'react-router'
+import { Switch, Route, RouteProps, Redirect } from 'react-router'
 
 import PageHome from './pages/Home'
 import PageJoin from './pages/Join'
