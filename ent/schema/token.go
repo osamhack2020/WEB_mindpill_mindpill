@@ -18,8 +18,7 @@ type Token struct {
 func (Token) Fields() []ent.Field {
 	return []ent.Field{
 		field.Uint64("token_id"),
-		field.Uint64("refresh_id"),
-		field.Bool("expired").
+		field.Bool("revoked").
 			Default(false),
 		field.Time("created_at").
 			Immutable().
