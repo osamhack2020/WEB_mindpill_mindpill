@@ -10,4 +10,5 @@ require (
 	github.com/savsgio/gotils v0.0.0-20200909101946-939aa3fc74fb // indirect
 	github.com/valyala/fasthttp v1.16.0
 	go.uber.org/zap v1.16.0
+	golang.org/x/crypto v0.0.0-20201002170205-7f63de1d35b0 // indirect
 )

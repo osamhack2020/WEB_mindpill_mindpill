@@ -11,6 +11,7 @@ var r = func() *router.Router {
 	r := router.New()
 
 	r.GET("/health", handlers.HealthHandler)
+	r.GET("/api/auth/token", handlers.HealthHandler)
 	r.NotFound = handlers.FrontendHandler
 
 	return r
