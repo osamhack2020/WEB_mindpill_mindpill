@@ -58,7 +58,7 @@ func AuthTokenHandler(ctx *fasthttp.RequestCtx) {
 			ErrorString(401, "email or password is wrong").Write(ctx)
 			return
 		}
-		access, refresh, err := tokens.ClaimToken(ctx, user.ID)
+		access, refresh, err := tokens.Claim(ctx, user.ID)
 		if err != nil {
 			Error(500, err).Write(ctx)
 			return
