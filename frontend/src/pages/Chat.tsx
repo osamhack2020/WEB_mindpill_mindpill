@@ -1,4 +1,5 @@
 import React from 'react'
+import { NavLink, Route, Switch } from 'react-router-dom'
 
 export interface ChatRoomProps {
   selected?: boolean
@@ -8,7 +9,7 @@ export interface ChatRoomStates {}
 export class ChatRoom extends React.Component<ChatRoomProps, ChatRoomStates> {
   render() {
     return (
-      <div className={`chatroom ${this.props.selected && 'selected'}`}>
+      <>
         <div className="profile-image">
           <i className="fas fa-user"></i>
         </div>
@@ -17,44 +18,7 @@ export class ChatRoom extends React.Component<ChatRoomProps, ChatRoomStates> {
           <span className="last-message">무슨 고민이 있나요?</span>
           <span className="last-message-time">10분전</span>
         </div>
-      </div>
-    )
-  }
-}
-
-export class ChatBrowser extends React.Component {
-  render() {
-    return (
-      <div className="chat-browser box-top-column expand">
-        <div className="chat-browser-navbar expand">
-          <div className="profile-image-area">
-            <div className="profile-image">
-              <i className="fas fa-user"></i>
-            </div>
-          </div>
-          <ul>
-            <li className="selected">
-              <i className="fas fa-comment-alt"></i>
-            </li>
-            <li>
-              <i className="fas fa-users"></i>
-            </li>
-          </ul>
-        </div>
-        <div className="chat-browser-content">
-          <div className="chat-browser-search">
-            <div className="chat-browser-search-input">
-              <i className="fas fa-search"></i>
-              <input type="text" placeholder="검색"></input>
-            </div>
-          </div>
-          <div className="chatroom-list">
-            <ChatRoom selected />
-            <ChatRoom />
-            <ChatRoom />
-          </div>
-        </div>
-      </div>
+      </>
     )
   }
 }
@@ -128,7 +92,7 @@ export class UserInfo extends React.Component {
 
 export class CurrentChatRoom extends React.Component {
   componentDidMount = () => {
-    this.goToBottom()
+    this.scrollToBottom()
   }
   state = {
     chatLogs: [
@@ -181,7 +145,7 @@ export class CurrentChatRoom extends React.Component {
     ]
   }
 
-  goToBottom = () => {
+  scrollToBottom = () => {
     let chatLogs = document.getElementById('chat-logs')
     if (chatLogs) {
       chatLogs.scrollTop = chatLogs.scrollHeight
@@ -209,7 +173,7 @@ export class CurrentChatRoom extends React.Component {
         ]
       },
       () => {
-        this.goToBottom()
+        this.scrollToBottom()
       }
     )
   }
@@ -223,7 +187,6 @@ export class CurrentChatRoom extends React.Component {
   render() {
     return (
       <div className="current-chatroom expand">
-        <UserInfo />
         <div className="chat-area expand">
           <div className="chat-logs" id="chat-logs">
             <div className="chat-log-null"></div>
@@ -249,12 +212,74 @@ export class CurrentChatRoom extends React.Component {
   }
 }
 
+export class ChatRoomList extends React.Component {
+  render() {
+    return (
+      <div className="chatroom-list">
+        <NavLink to="/chat/chatrooms/1" className="chatroom" activeClassName="selected">
+          <ChatRoom />
+        </NavLink>
+        <NavLink to="/chat/chatrooms/2" className="chatroom" activeClassName="selected">
+          <ChatRoom />
+        </NavLink>
+        <NavLink to="/chat/chatrooms/3" className="chatroom" activeClassName="selected">
+          <ChatRoom />
+        </NavLink>
+      </div>
+    )
+  }
+}
+
+export class CounselorList extends React.Component {
+  render() {
+    return <div className="counselor-list">counselors</div>
+  }
+}
+
 export default class Chat extends React.Component {
   render() {
     return (
-      <div className="box-page-chat expand">
-        <ChatBrowser />
-        <CurrentChatRoom />
+      <div className="box-left expand">
+        <div className="chat">
+          <div className="chat-navbar">
+            <div className="profile-image-area">
+              <div className="profile-image">
+                <i className="fas fa-user"></i>
+              </div>
+            </div>
+            <ul>
+              <NavLink to="/chat/chatrooms" activeClassName="selected">
+                <li>
+                  <i className="fas fa-comment-alt"></i>
+                </li>
+              </NavLink>
+              <NavLink to="/chat/counselors" activeClassName="selected">
+                <li>
+                  <i className="fas fa-users"></i>
+                </li>
+              </NavLink>
+            </ul>
+          </div>
+          <div className="chat-navbar-content">
+            <div className="chat-search">
+              <div className="chat-search-input">
+                <i className="fas fa-search"></i>
+                <input type="text" placeholder="검색"></input>
+              </div>
+            </div>
+            <Switch>
+              <Route path="/chat/chatrooms" component={ChatRoomList} />
+              <Route path="/chat/counselors" component={CounselorList} />
+            </Switch>
+          </div>
+
+          <Route path="/chat/chatrooms/:id">
+            <div className="chat-content">
+              <UserInfo />
+              <CurrentChatRoom />
+            </div>
+          </Route>
+        </div>
       </div>
     )
   }

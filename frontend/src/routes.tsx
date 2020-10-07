@@ -31,10 +31,7 @@ export function makeSwitch() {
   return (
     <Switch>
       {routes.map(props => (
-        <Route
-          key={props.location ? props.location.pathname : '__notfound__'}
-          {...props}
-        />
+        <Route key={props.location ? props.location.pathname : '__notfound__'} {...props} />
       ))}
       <Route component={PageNotFound} />
     </Switch>

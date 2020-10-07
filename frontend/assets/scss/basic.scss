@@ -124,14 +124,11 @@ a > p {
   align-items: center;
   flex-direction: column;
 }
-.box-page-chat {
+.box-left {
   //for chat page
-  display: grid;
-  grid-template-columns: 1fr 3fr;
-  background-color: $white;
-  border-radius: 1rem;
-  overflow: hidden;
-  box-shadow: $shadow;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
 }
 .expand {
   width: 100%;
