@@ -13,9 +13,9 @@
 | 405           | 잘못된 HTTP 메소드로 요청했습니다.        |
 | 500           | 서버에서 처리하던 중 오류가 발생했습니다. |
 
-## 사용자 인증
+## Authentication API
 
-### /api/auth/token
+### /api/create_token
 
 사용자의 인증 토큰을 발급하기 위한 엔드포인트입니다.
 
@@ -51,3 +51,7 @@
 ```
 curl https://localhost:7080/api/auth/token?request_type=password --data '{"email": "recipient@example.com", "password": "1q2w3e4r!"}'
 ```
+
+## User API
+
+### /api/create_user
