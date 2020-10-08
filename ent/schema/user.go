@@ -27,6 +27,9 @@ func (User) Fields() []ent.Field {
 			Values("m", "f"),
 		field.String("rank").
 			NotEmpty(),
+		field.String("phone_number").
+			MinLen(10).
+			MaxLen(11),
 		field.Bool("is_admin").
 			Default(false),
 		field.Time("created_at").
