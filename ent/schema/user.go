@@ -25,8 +25,6 @@ func (User) Fields() []ent.Field {
 			NotEmpty(),
 		field.Enum("gender").
 			Values("m", "f"),
-		field.String("rank").
-			NotEmpty(),
 		field.String("phone_number").
 			MinLen(10).
 			MaxLen(11),
@@ -43,6 +41,9 @@ func (User) Fields() []ent.Field {
 // Edges of the User.
 func (User) Edges() []ent.Edge {
 	return []ent.Edge{
+		edge.To("rank", Rank.Type).
+			Unique().
+			Required(),
 		edge.To("token", Token.Type).
 			Unique(),
 		edge.To("uploads", File.Type),
