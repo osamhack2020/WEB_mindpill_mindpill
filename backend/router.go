@@ -2,6 +2,7 @@ package backend
 
 import (
 	"mindpill/backend/handlers"
+	"mindpill/backend/handlers/api"
 
 	"github.com/fasthttp/router"
 	"github.com/valyala/fasthttp"
@@ -10,8 +11,16 @@ import (
 var r = func() *router.Router {
 	r := router.New()
 
-	r.GET("/health", handlers.HealthHandler)
-	r.GET("/api/auth/token", handlers.HealthHandler)
+	// General APIs
+	r.GET("/api/health", handlers.HealthHandler)
+
+	// Authorization APIs
+	r.GET("/api/create_token", api.CreateToken)
+
+	// User APIs
+	r.GET("/api/create_user", api.CreateUser)
+
+	// Frontend
 	r.NotFound = handlers.FrontendHandler
 
 	return r

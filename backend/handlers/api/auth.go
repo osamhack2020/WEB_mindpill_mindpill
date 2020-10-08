@@ -23,7 +23,7 @@ type AuthTokenResponse struct {
 	RefreshToken string `json:"refresh_token"`
 }
 
-func AuthTokenHandler(ctx *fasthttp.RequestCtx) {
+func CreateToken(ctx *fasthttp.RequestCtx) {
 	var (
 		queries = ctx.QueryArgs()
 		req     AuthTokenRequest
@@ -44,6 +44,7 @@ func AuthTokenHandler(ctx *fasthttp.RequestCtx) {
 			Query().
 			Where(user.EmailEQ(req.Email)).
 			Only(ctx)
+
 		switch err.(type) {
 		case nil:
 			// Do nothing
