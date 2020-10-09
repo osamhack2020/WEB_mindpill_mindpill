@@ -49,7 +49,7 @@
 **Examples**
 
 ```
-curl https://localhost:7080/api/auth/token?request_type=password --data '{"email": "recipient@example.com", "password": "1q2w3e4r!"}'
+curl https://localhost:7080/api/create_token?request_type=password --data '{"email": "recipient@example.com", "password": "1q2w3e4r!"}'
 ```
 
 ## User API
