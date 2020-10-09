@@ -15,7 +15,7 @@ var r = func() *router.Router {
 
 	// Authorization APIs
 	r.POST("/api/create_token", api.CreateToken)
-	// r.POST("/api/describe_token", api.DescribeToken)
+	r.GET("/api/describe_token", api.DescribeToken)
 
 	// User APIs`
 	r.POST("/api/create_user", api.CreateUser)

@@ -94,10 +94,26 @@ func CreateToken(ctx *fasthttp.RequestCtx) {
 	}
 }
 
-// func DescribeToken(ctx *fasthttp.RequestCtx) {
-// 	tokenParts := bytes.SplitN(
-// 		ctx.Request.Header.Peek("Authorization"),
-// 		[]byte{' '},
-// 		2,
-// 	)
-// }
+func DescribeToken(ctx *fasthttp.RequestCtx) {
+	tokenParts := bytes.SplitN(
+		ctx.Request.Header.Peek("Authorization"),
+		[]byte{' '},
+		2,
+	)
+	if len(tokenParts) != 2 || !bytes.Equal(tokenParts[0], []byte("Bearer")) {
+		ErrorString(400, "invalid authorization header format").Write(ctx)
+		return
+	}
+	token, err := tokens.Validate(tokenParts[1])
+	if err != nil {
+		Error(400, err).Write(ctx)
+		return
+	}
+	var buf = bytes.NewBuffer(make([]byte, 0))
+	err = json.NewEncoder(buf).Encode(token)
+	if err != nil {
+		Error(500, err).Write(ctx)
+		return
+	}
+	ctx.Write(buf.Bytes())
+}
