@@ -44,8 +44,7 @@ func (User) Edges() []ent.Edge {
 		edge.To("rank", Rank.Type).
 			Unique().
 			Required(),
-		edge.To("token", Token.Type).
-			Unique(),
+		edge.To("tokens", Token.Type),
 		edge.To("uploads", File.Type),
 		edge.From("admin", Admin.Type).
 			Ref("user").
