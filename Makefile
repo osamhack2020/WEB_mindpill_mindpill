@@ -30,7 +30,7 @@ BACKEND_PKG := mindpill/backend
 
 .PHONY := run
 run: ${SSR_OUT} ${FRONTEND_OUT} ${BACKEND_SRC}
-	cd ${DIST_DIR} && go run ${BACKEND_PKG}/cmd/mindpill
+	cd ${DIST_DIR} && NODE_ID=0 go run ${BACKEND_PKG}/cmd/mindpill
 
 .PHONY := build
 build: ${SSR_OUT} ${FRONTEND_OUT} ${BACKEND_OUT}
