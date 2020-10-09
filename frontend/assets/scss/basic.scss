@@ -4,7 +4,7 @@ $white-hover: #f1f2f6;
 $gray: #dfe4ea;
 $black: #2d3436;
 $black-hover: #353b48;
-$shadow: 0px 0px 0.5rem rgba(0, 0, 0, 0.25);
+$shadow: 0px 0px 0.5rem rgba(0, 0, 0, 0.3);
 $swan-white: #fffbef;
 
 html {
@@ -124,14 +124,11 @@ a > p {
   align-items: center;
   flex-direction: column;
 }
-.box-page-chat {
+.box-left {
   //for chat page
-  display: grid;
-  grid-template-columns: 1fr 3fr;
-  background-color: $white;
-  border-radius: 1rem;
-  overflow: hidden;
-  box-shadow: $shadow;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
 }
 .expand {
   width: 100%;

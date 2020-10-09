@@ -1,5 +1,5 @@
 import React from 'react'
-import { Link, withRouter, RouteComponentProps } from 'react-router-dom'
+import { Link, withRouter, RouteComponentProps, NavLink } from 'react-router-dom'
 import logger from '../lib/log'
 
 export interface LayoutProps {
@@ -18,29 +18,29 @@ function Layout({ isLoggedIn, children }: LayoutProps) {
       <div className="content-container">
         <div className="navbar">
           <ul>
-            <Link to="/login">
+            <NavLink to="/login" activeClassName="selected">
               <li>로그인</li>
-            </Link>
-            <Link to="/join">
+            </NavLink>
+            <NavLink to="/join" activeClassName="selected">
               <li>회원가입</li>
-            </Link>
-            <Link to="/chat">
+            </NavLink>
+            <NavLink to="/chat" activeClassName="selected">
               <li>상담하기</li>
-            </Link>
-            <Link to="/">
+            </NavLink>
+            <NavLink to="/userInfo" activeClassName="selected">
               <li>내정보</li>
-            </Link>
+            </NavLink>
           </ul>
           <ul>
-            <Link to="/setting">
+            <NavLink to="/setting" activeClassName="selected">
               <li>설정</li>
-            </Link>
-            <Link to="/support">
+            </NavLink>
+            <NavLink to="/support" activeClassName="selected">
               <li>지원</li>
-            </Link>
-            <Link to="/logout">
+            </NavLink>
+            <NavLink to="/logout" activeClassName="selected">
               <li>로그아웃</li>
-            </Link>
+            </NavLink>
           </ul>
         </div>
         <div className="content box-center">{children}</div>
