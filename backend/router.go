@@ -5,7 +5,6 @@ import (
 	"mindpill/backend/handlers/api"
 
 	"github.com/fasthttp/router"
-	"github.com/valyala/fasthttp"
 )
 
 var r = func() *router.Router {
@@ -16,6 +15,7 @@ var r = func() *router.Router {
 
 	// Authorization APIs
 	r.POST("/api/create_token", api.CreateToken)
+	// r.POST("/api/describe_token", api.DescribeToken)
 
 	// User APIs`
 	r.POST("/api/create_user", api.CreateUser)
@@ -25,7 +25,3 @@ var r = func() *router.Router {
 
 	return r
 }()
-
-func Handler() fasthttp.RequestHandler {
-	return r.Handler
-}

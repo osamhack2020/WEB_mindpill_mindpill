@@ -12,6 +12,8 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
+var tokenGenerator = tokens.NewGenerator()
+
 type AuthTokenRequest struct {
 	Email        string `json:"email,omitempty"`
 	Password     string `json:"password,omitempty"`
@@ -59,7 +61,7 @@ func CreateToken(ctx *fasthttp.RequestCtx) {
 			ErrorString(401, "email or password is wrong").Write(ctx)
 			return
 		}
-		access, refresh, err := tokens.Claim(ctx, user.ID)
+		access, refresh, err := tokenGenerator.Claim(ctx, user.ID)
 		if err != nil {
 			Error(500, err).Write(ctx)
 			return
@@ -76,8 +78,8 @@ func CreateToken(ctx *fasthttp.RequestCtx) {
 		}
 		var buf = bytes.NewBuffer(make([]byte, 0))
 		err = json.NewEncoder(buf).Encode(&AuthTokenResponse{
-			AccessToken:  accessToken,
-			RefreshToken: refreshToken,
+			AccessToken:  string(accessToken),
+			RefreshToken: string(refreshToken),
 		})
 		if err != nil {
 			Error(500, err).Write(ctx)
@@ -91,3 +93,11 @@ func CreateToken(ctx *fasthttp.RequestCtx) {
 		ErrorString(400, "unsupported request type").Write(ctx)
 	}
 }
+
+// func DescribeToken(ctx *fasthttp.RequestCtx) {
+// 	tokenParts := bytes.SplitN(
+// 		ctx.Request.Header.Peek("Authorization"),
+// 		[]byte{' '},
+// 		2,
+// 	)
+// }
