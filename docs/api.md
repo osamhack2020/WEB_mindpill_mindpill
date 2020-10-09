@@ -23,7 +23,7 @@
 
 | Parameter    | Type                    | Description             |
 | ------------ | ----------------------- | ----------------------- |
-| request_type | 'password' \| 'refresh' | 사용할 인증 방식입니다. |
+| request_type | `password` \| `refresh` | 사용할 인증 방식입니다. |
 
 **Request**
 
@@ -55,3 +55,30 @@ curl https://localhost:7080/api/create_token?request_type=password --data '{"ema
 ## User API
 
 ### /api/create_user
+
+새 사용자를 만들기 위한 엔드포인트입니다.
+
+**Request**
+
+| Parameter    | Type       | Description                                                            |
+| ------------ | ---------- | ---------------------------------------------------------------------- |
+| email        | string     | 사용자의 메일 주소. 이 필드는 반드시 필요합니다.                       |
+| password     | string     | 사용자의 비밀번호. 이 필드는 반드시 필요합니다.                        |
+| name         | string     | 사용자의 이름. 이 필드는 반드시 필요합니다.                            |
+| sv_number    | string     | 사용자의 군번. 군번은 중복될 수 있습니다. 이 필드는 반드시 필요합니다. |
+| gender       | `m` \| `f` | 사용자의 성별. 이 필드는 반드시 필요합니다.                            |
+| phone_number | string     | 사용자의 연락처. 전화번호 혹은 군 VoIP 번호입니다.                     |
+| rank_id      | `Rank.id`  | 사용자가 속한 계급 ID. 이 필드는 반드시 필요합니다.                    |
+| group_id     | `Group.id` | 사용자가 속한 그룹(부대)의 ID. 이 필드는 반드시 필요합니다.            |
+
+**Response**
+
+| Parameter | Type      | Description               |
+| --------- | --------- | ------------------------- |
+| user_id   | `User.id` | 가입된 사용자의 id입니다. |
+
+**Examples**
+
+```
+curl https://localhost:7080/api/create_user --data '{"email": "recipient@example.com", "password": "1q2w3e4r!", "name": "Example", "sv_number": "00-00000000", "gender": "m", "phone_number": "000-0000", "rank_id": 0, "group_id": 0}'
+```
