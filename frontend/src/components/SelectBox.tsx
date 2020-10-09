@@ -5,8 +5,8 @@ export interface OptionProps {
   onChangeValue?: (value: string) => void
 }
 
-export class SelectOption extends React.Component<OptionProps> {
-  handleClick() {
+export class Option extends React.Component<OptionProps> {
+  handleClick = () => {
     if (this.props.onChangeValue != null) {
       this.props.onChangeValue(this.props.value)
     }
@@ -25,21 +25,26 @@ export interface SelectBoxProps {
   name: string
   values: Array<string>
   placeholder?: string
+  required?: boolean
 }
 
 export interface SelectBoxState {
   chosenValue: string
 }
 
-export default class SelectBox extends React.Component<
-  SelectBoxProps,
-  SelectBoxState
-> {
+export default class SelectBox extends React.Component<SelectBoxProps, SelectBoxState> {
+  state = {
+    chosenValue: ''
+  }
+
   changeValue = (value: string) => {
     this.setState({ chosenValue: value })
   }
   handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     e.preventDefault()
+  }
+  handleFocus = (e: React.ChangeEvent<HTMLInputElement>) => {
+    e.target.blur()
   }
   render() {
     return (
@@ -50,15 +55,19 @@ export default class SelectBox extends React.Component<
           type="text"
           name={this.props.name}
           onChange={this.handleChange}
-          disabled
+          required={this.props.required}
+          onFocus={this.handleFocus}
+          pattern={
+            '/' +
+            this.props.values.reduce((a, c) => {
+              return (a = a + '|' + c)
+            }) +
+            '/'
+          }
         />
         <div className="options">
           {this.props.values.map((value, key) => (
-            <SelectOption
-              value={value}
-              onChangeValue={this.changeValue}
-              key={key}
-            />
+            <Option value={value} onChangeValue={this.changeValue} key={key} />
           ))}
         </div>
       </div>

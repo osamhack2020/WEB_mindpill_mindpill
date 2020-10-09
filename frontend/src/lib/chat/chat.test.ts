@@ -1,5 +1,6 @@
 import { Message } from './message'
 import { decode } from './chat'
+import JSBI from 'jsbi'
 
 const helloworld = [
   0x0d, // Lenght
@@ -18,7 +19,7 @@ const helloworld = [
   0x21
 ]
 const dummyid = [0x08, 0x07, 0x06, 0x05, 0x04, 0x03, 0x02, 0x01]
-const dummytime = 1601191007260n
+const dummytime = JSBI.BigInt('1601191007260')
 const dummytimeb = [0x00, 0x00, 0x01, 0x74, 0xce, 0x6b, 0xd4, 0x1c]
 
 test('Decoder#fixstr', () => {
