@@ -18,8 +18,6 @@ import (
 	"go.uber.org/zap"
 )
 
-const TokenLifetime = 24 * time.Hour
-
 var (
 	b64encode     = base64.RawURLEncoding.EncodeToString
 	b64decode     = base64.RawURLEncoding.DecodeString
@@ -52,6 +50,7 @@ func Claim(ctx context.Context, uid int) (*Token, *Token, error) {
 	id := tid.Generate()
 	record, err := database.Ent().Token.
 		Create().
+		SetTokenID(id).
 		SetUserID(uid).
 		Save(ctx)
 	if err != nil {

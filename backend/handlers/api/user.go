@@ -20,8 +20,8 @@ type CreateUserRequest struct {
 
 	// Edges
 
-	Rank  int
-	Group int
+	RankID  int `json:"rank_id"`
+	GroupID int `json:"group_id"`
 }
 
 type CreateUserResponse struct {
@@ -55,9 +55,14 @@ func CreateUser(ctx *fasthttp.RequestCtx) {
 		SetName(req.Name).
 		SetSvNumber(req.SvNumber).
 		SetGender(req.Gender).
-		SetGroupID(req.Group).
-		SetRankID(req.Rank).
+		SetPhoneNumber(req.PhoneNumber).
+		SetGroupID(req.GroupID).
+		SetRankID(req.RankID).
 		Save(ctx)
+	if err != nil {
+		Error(500, err).Write(ctx)
+		return
+	}
 
 	var buf = bytes.NewBuffer(make([]byte, 0))
 	err = json.NewEncoder(buf).Encode(&CreateUserResponse{

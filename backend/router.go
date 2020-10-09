@@ -15,10 +15,10 @@ var r = func() *router.Router {
 	r.GET("/api/health", handlers.HealthHandler)
 
 	// Authorization APIs
-	r.GET("/api/create_token", api.CreateToken)
+	r.POST("/api/create_token", api.CreateToken)
 
-	// User APIs
-	r.GET("/api/create_user", api.CreateUser)
+	// User APIs`
+	r.POST("/api/create_user", api.CreateUser)
 
 	// Frontend
 	r.NotFound = handlers.FrontendHandler
