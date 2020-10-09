@@ -30,7 +30,7 @@ func (Token) Fields() []ent.Field {
 func (Token) Edges() []ent.Edge {
 	return []ent.Edge{
 		edge.From("user", User.Type).
-			Ref("token").
+			Ref("tokens").
 			Unique(),
 	}
 }
