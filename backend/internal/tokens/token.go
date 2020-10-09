@@ -7,24 +7,25 @@ import (
 	"encoding/base64"
 	"encoding/json"
 	"errors"
-	"mindpill/backend/configs"
 	"mindpill/backend/internal/database"
 	"mindpill/backend/internal/ids"
 	"os"
 	"strconv"
-	"strings"
 	"time"
 
 	"go.uber.org/zap"
 )
 
 var (
-	b64encode     = base64.RawURLEncoding.EncodeToString
-	b64decode     = base64.RawURLEncoding.DecodeString
+	b64           = base64.RawURLEncoding
 	hashAlgorithm = sha512.New512_256
 )
 
-var tid = func() *ids.Node {
+type TokenGenerator struct {
+	idgen *ids.Node
+}
+
+func NewGenerator() *TokenGenerator {
 	nodeID, err := strconv.ParseUint(os.Getenv("NODE_ID"), 10, 32)
 	if err != nil {
 		nodeID = 0
@@ -34,8 +35,10 @@ var tid = func() *ids.Node {
 		"Token id generater is initialized",
 		zap.Uint64("node id", nodeID),
 	)
-	return ids.NewNode(nodeID)
-}()
+	return &TokenGenerator{
+		idgen: ids.NewNode(nodeID),
+	}
+}
 
 type Token struct {
 	ID        uint64    `json:"tid"`
@@ -46,8 +49,8 @@ type Token struct {
 	signature []byte
 }
 
-func Claim(ctx context.Context, uid int) (*Token, *Token, error) {
-	id := tid.Generate()
+func (g *TokenGenerator) Claim(ctx context.Context, uid int) (*Token, *Token, error) {
+	id := g.idgen.Generate()
 	record, err := database.Ent().Token.
 		Create().
 		SetTokenID(id).
@@ -71,7 +74,7 @@ func Claim(ctx context.Context, uid int) (*Token, *Token, error) {
 	return accessToken, refreshToken, nil
 }
 
-func Parse(src string) (*Token, error) {
+func Parse(src []byte) (*Token, error) {
 	var token Token
 	if err := token.parse(src, false); err != nil {
 		return nil, err
@@ -79,7 +82,7 @@ func Parse(src string) (*Token, error) {
 	return &token, nil
 }
 
-func Validate(src string) (*Token, error) {
+func Validate(src []byte) (*Token, error) {
 	var token Token
 	if err := token.parse(src, true); err != nil {
 		return nil, err
@@ -87,44 +90,53 @@ func Validate(src string) (*Token, error) {
 	return &token, nil
 }
 
-func (t *Token) parse(src string, validate bool) error {
-	payloadStr, signatureStr, err := splitToken(src)
+func (t *Token) parse(src []byte, validate bool) error {
+	payloadSrc, signatureSrc, err := splitToken(src)
 	if err != nil {
 		return err
 	}
-	payloadRaw, err := b64decode(payloadStr)
+
+	payload, err := b64decode(payloadSrc)
 	if err != nil {
 		return err
 	}
-	if err = json.Unmarshal(payloadRaw, t); err != nil {
+	if err = json.Unmarshal(payload, t); err != nil {
 		return err
 	}
-	signature, err := b64decode(signatureStr)
+
+	signature, err := b64decode(signatureSrc)
 	if err != nil {
 		return err
 	}
 	t.signature = signature
+
 	if validate {
-		if err := t.validate(payloadRaw); err != nil {
+		if err := t.validate(payload); err != nil {
 			return err
 		}
 	}
 	return nil
 }
 
-func (t *Token) Sign() (string, error) {
-	var buf strings.Builder
+func (t *Token) Sign() ([]byte, error) {
 	payload, err := json.Marshal(t)
 	if err != nil {
-		return "", err
+		return nil, err
 	}
-	buf.WriteString(b64encode(payload))
-	buf.WriteByte('.')
-	hasher := hmac.New(hashAlgorithm, []byte(configs.TokenSecret))
-	hasher.Write(payload)
-	t.signature = hasher.Sum(nil)
-	buf.WriteString(b64encode(t.signature))
-	return buf.String(), nil
+	signature := hashData(hashAlgorithm, payload)
+
+	var (
+		payloadLen   = b64.EncodedLen(len(payload))
+		signatureLen = b64.EncodedLen(len(signature))
+		buf          = make(
+			[]byte,
+			payloadLen+signatureLen+1,
+		)
+	)
+	b64.Encode(buf[:payloadLen], payload)
+	buf[payloadLen] = '.'
+	b64.Encode(buf[payloadLen+1:], signature)
+	return buf, nil
 }
 
 func (t *Token) Validate() error {
@@ -142,9 +154,7 @@ func (t *Token) validate(payload []byte) error {
 	if t.signature == nil {
 		return nil
 	}
-	hasher := hmac.New(hashAlgorithm, []byte(configs.TokenSecret))
-	hasher.Write(payload)
-	signature := hasher.Sum(nil)
+	signature := hashData(hashAlgorithm, payload)
 	if !hmac.Equal(signature, t.signature) {
 		return errors.New("invalid token")
 	}
