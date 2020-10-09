@@ -17,8 +17,9 @@ var r = func() *router.Router {
 	r.POST("/api/create_token", api.CreateToken)
 	r.GET("/api/describe_token", api.DescribeToken)
 
-	// User APIs`
+	// User APIs
 	r.POST("/api/create_user", api.CreateUser)
+	r.GET("/api/describe_user", api.DescribeUser)
 
 	// Frontend
 	r.NotFound = handlers.FrontendHandler

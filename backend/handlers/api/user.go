@@ -3,8 +3,11 @@ package api
 import (
 	"bytes"
 	"encoding/json"
+	"fmt"
 	"mindpill/backend/internal/database"
 	"mindpill/ent/user"
+	"strconv"
+	"time"
 
 	"github.com/valyala/fasthttp"
 	"golang.org/x/crypto/bcrypt"
@@ -73,4 +76,59 @@ func CreateUser(ctx *fasthttp.RequestCtx) {
 		return
 	}
 	ctx.Write(buf.Bytes())
+}
+
+type DescribeUserResponse struct {
+	Name string `json:"name"`
+}
+
+type FullDescribeUserResponse struct {
+	SvNumber    string      `json:"sv_number,omitempty"`
+	Email       string      `json:"email,omitempty"`
+	Name        string      `json:"name,omitempty"`
+	Gender      user.Gender `json:"gender,omitempty"`
+	PhoneNumber *string     `json:"phone_number,omitempty"`
+	CreatedAt   time.Time   `json:"created_at,omitempty"`
+	UpdatedAt   time.Time   `json:"updated_at,omitempty"`
+}
+
+func DescribeUser(ctx *fasthttp.RequestCtx) {
+	var queries = ctx.QueryArgs()
+	userID, err := strconv.ParseInt(string(queries.Peek("user_id")), 10, 64)
+	if err != nil {
+		BadRequest(ctx, err, "user_id must be int")
+		return
+	}
+
+	u, err := database.Ent().
+		User.Query().
+		Where(user.IDEQ(int(userID))).
+		Only(ctx)
+	if err != nil {
+		NotFound(ctx, nil, "user not found")
+	}
+
+	var resp interface{}
+
+	// Check user permission
+	token, _ := ParseAuthorization(ctx)
+	fmt.Println(IsAdmin(ctx, token.UserID))
+	if token == nil || (u.ID != token.UserID && !IsAdmin(ctx, token.UserID)) {
+		resp = &DescribeUserResponse{
+			Name: u.Name,
+		}
+	} else {
+		resp = &FullDescribeUserResponse{
+			SvNumber:    u.SvNumber,
+			Email:       u.Email,
+			Name:        u.Name,
+			Gender:      u.Gender,
+			PhoneNumber: u.PhoneNumber,
+			CreatedAt:   u.CreatedAt,
+			UpdatedAt:   u.UpdatedAt,
+		}
+	}
+
+	// Remove the hashed password for security reason.
+	SendResponse(ctx, resp)
 }
