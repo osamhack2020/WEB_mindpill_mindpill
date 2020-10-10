@@ -3,7 +3,6 @@ package api
 import (
 	"bytes"
 	"encoding/json"
-	"errors"
 	"mindpill/backend/internal/database"
 	"mindpill/backend/internal/tokens"
 	"mindpill/ent"
@@ -47,15 +46,11 @@ func CreateToken(ctx *fasthttp.RequestCtx) {
 		if err == nil {
 			err = bcrypt.CompareHashAndPassword(user.PasswordHash, []byte(req.Password))
 		}
-		switch {
-		case err == nil:
-		// Do nothing
-		case errors.Is(err, bcrypt.ErrMismatchedHashAndPassword),
-			errors.As(err, &ent.NotFoundError{}):
-			BadRequest(ctx, err, "email or password is wrong")
+		if _, ok := err.(*ent.NotFoundError); ok ||
+			err == bcrypt.ErrMismatchedHashAndPassword {
+			BadRequest(ctx, err, "wrong email or password")
 			return
-
-		default:
+		} else if err != nil {
 			InternalServerError(ctx, err, "login failed")
 			return
 		}
