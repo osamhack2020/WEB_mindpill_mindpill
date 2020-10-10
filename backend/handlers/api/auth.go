@@ -26,9 +26,6 @@ type AuthTokenResponse struct {
 }
 
 func CreateToken(ctx *fasthttp.RequestCtx) {
-	var queries = ctx.QueryArgs()
-	var requestType = queries.Peek("request_type")
-
 	var req AuthTokenRequest
 	err := ParseRequestBody(ctx, &req)
 	if err != nil {
@@ -36,7 +33,11 @@ func CreateToken(ctx *fasthttp.RequestCtx) {
 		return
 	}
 
-	switch string(requestType) {
+	var (
+		accessToken, refreshToken *tokens.Token
+	)
+
+	switch string(ctx.QueryArgs().Peek("request_type")) {
 	case "password":
 		user, err := database.Ent().
 			User.
@@ -55,33 +56,45 @@ func CreateToken(ctx *fasthttp.RequestCtx) {
 			return
 		}
 
-		access, refresh, err := tokenGenerator.Claim(ctx, user)
+		accessToken, refreshToken, err = tokenGenerator.Claim(ctx, user)
 		if err != nil {
 			InternalServerError(ctx, err, "failed to claim token")
 			return
 		}
-		accessToken, err := access.Sign()
-		if err != nil {
-			InternalServerError(ctx, err, "failed to sign access token")
-			return
-		}
-		refreshToken, err := refresh.Sign()
-		if err != nil {
-			InternalServerError(ctx, err, "failed to sign refresh token")
-			return
-		}
-
-		SendResponse(ctx, &AuthTokenResponse{
-			AccessToken:  string(accessToken),
-			RefreshToken: string(refreshToken),
-		})
 
 	case "refresh":
-		InternalServerError(ctx, nil, "refresh method is not implemented yet")
+		token, err := tokens.Validate([]byte(req.RefreshToken))
+		if err != nil {
+			Unauthorized(ctx, err, "token is not valid")
+			return
+		}
+
+		accessToken, refreshToken, err = tokenGenerator.ClaimFromRefresh(ctx, token)
+		if err != nil {
+			InternalServerError(ctx, err, "failed to claim token")
+			return
+		}
 
 	default:
 		InternalServerError(ctx, nil, "unsupported request type")
+		return
 	}
+
+	accessTokenBuf, err := accessToken.Sign()
+	if err != nil {
+		InternalServerError(ctx, err, "failed to sign access token")
+		return
+	}
+	refreshTokenBuf, err := refreshToken.Sign()
+	if err != nil {
+		InternalServerError(ctx, err, "failed to sign refresh token")
+		return
+	}
+
+	SendResponse(ctx, &AuthTokenResponse{
+		AccessToken:  string(accessTokenBuf),
+		RefreshToken: string(refreshTokenBuf),
+	})
 }
 
 func DescribeToken(ctx *fasthttp.RequestCtx) {

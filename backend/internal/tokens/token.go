@@ -20,6 +20,8 @@ import (
 	"go.uber.org/zap"
 )
 
+var ErrNotRefresh = errors.New("tokens: provided token is not refresh token")
+
 var (
 	b64           = base64.RawURLEncoding
 	hashAlgorithm = sha512.New512_256
@@ -109,6 +111,42 @@ func (g *TokenGenerator) Claim(ctx context.Context, userRecord *ent.User) (*Toke
 		GroupID:   groupRecord.ID,
 		IsAdmin:   isAdmin,
 		IsManager: isManager,
+		IsRefresh: true,
+		CreatedAt: record.CreatedAt,
+	}
+	return accessToken, refreshToken, nil
+}
+
+func (g *TokenGenerator) ClaimFromRefresh(ctx context.Context, t *Token) (*Token, *Token, error) {
+	if !t.IsRefresh {
+		return nil, nil, ErrNotRefresh
+	}
+
+	tokenID := g.idgen.Generate()
+	record, err := database.Ent().Token.
+		Create().
+		SetTokenID(tokenID).
+		SetUserID(t.UserID).
+		Save(ctx)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	accessToken := &Token{
+		ID:        tokenID,
+		UserID:    t.UserID,
+		GroupID:   t.GroupID,
+		IsAdmin:   t.IsAdmin,
+		IsManager: t.IsManager,
+		IsRefresh: false,
+		CreatedAt: record.CreatedAt,
+	}
+	refreshToken := &Token{
+		ID:        tokenID,
+		UserID:    t.UserID,
+		GroupID:   t.GroupID,
+		IsAdmin:   t.IsAdmin,
+		IsManager: t.IsManager,
 		IsRefresh: true,
 		CreatedAt: record.CreatedAt,
 	}
