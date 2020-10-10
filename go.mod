@@ -10,4 +10,9 @@ require (
 	github.com/savsgio/gotils v0.0.0-20200909101946-939aa3fc74fb // indirect
 	github.com/valyala/fasthttp v1.16.0
 	go.uber.org/zap v1.16.0
+	golang.org/x/crypto v0.0.0-20201002170205-7f63de1d35b0
+	golang.org/x/tools v0.0.0-20201009010951-9ab7e515274e // indirect
+	gopkg.in/check.v1 v1.0.0-20190902080502-41f04d3bba15 // indirect
+	gopkg.in/yaml.v2 v2.2.4 // indirect
+	honnef.co/go/tools v0.0.1-2020.1.5 // indirect
 )

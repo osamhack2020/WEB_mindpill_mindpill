@@ -5,6 +5,8 @@ import (
 	"encoding/binary"
 	"sync"
 	"time"
+
+	"go.uber.org/zap"
 )
 
 const (
@@ -21,6 +23,12 @@ type Node struct {
 }
 
 func NewNode(id uint64) *Node {
+	if id != id&nidMask {
+		logger.Fatal(
+			"ids: invalid node id is provided",
+			zap.Uint64("node id", id),
+		)
+	}
 	return &Node{
 		nodeID: id,
 	}
