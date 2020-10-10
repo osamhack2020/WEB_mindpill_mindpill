@@ -30,6 +30,9 @@ function Layout({ isLoggedIn, children }: LayoutProps) {
             <NavLink to="/userInfo" activeClassName="selected">
               <li>내정보</li>
             </NavLink>
+            <NavLink to="/manage" activeClassName="selected">
+              <li>회원관리</li>
+            </NavLink>
           </ul>
           <ul>
             <NavLink to="/setting" activeClassName="selected">
