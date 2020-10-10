@@ -4,35 +4,16 @@ import (
 	"bytes"
 	"encoding/json"
 	"errors"
-	"mindpill/backend/internal/database"
 	"mindpill/backend/internal/tokens"
-	"mindpill/ent/user"
 
 	"mindpill/backend/internal/log"
 
 	"github.com/valyala/fasthttp"
-	"go.uber.org/zap"
 )
 
 var logger = log.Logger()
 
 // Permission
-
-func IsAdmin(ctx *fasthttp.RequestCtx, userID int) bool {
-	r, err := database.Ent().
-		User.Query().
-		Where(user.IDEQ(userID)).
-		QueryAdmin().
-		Exist(ctx)
-	if err != nil {
-		logger.Error(
-			"api: admin query failed",
-			zap.Error(err),
-		)
-		return false
-	}
-	return r
-}
 
 // Token
 
@@ -74,6 +55,11 @@ func BadRequest(ctx *fasthttp.RequestCtx, err error, msg string) {
 
 func Unauthorized(ctx *fasthttp.RequestCtx, err error, msg string) {
 	resp := &ErrorResp{fasthttp.StatusUnauthorized, err, msg}
+	resp.Write(ctx)
+}
+
+func Forbidden(ctx *fasthttp.RequestCtx, err error, msg string) {
+	resp := &ErrorResp{fasthttp.StatusForbidden, err, msg}
 	resp.Write(ctx)
 }
 

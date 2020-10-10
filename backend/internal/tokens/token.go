@@ -9,6 +9,10 @@ import (
 	"errors"
 	"mindpill/backend/internal/database"
 	"mindpill/backend/internal/ids"
+	"mindpill/ent"
+	"mindpill/ent/group"
+	"mindpill/ent/manager"
+	"mindpill/ent/user"
 	"os"
 	"strconv"
 	"time"
@@ -43,31 +47,68 @@ func NewGenerator() *TokenGenerator {
 type Token struct {
 	ID        uint64    `json:"tid"`
 	UserID    int       `json:"uid"`
+	GroupID   int       `json:"gid"`
+	IsAdmin   bool      `json:"isadm"`
+	IsManager bool      `json:"isman"`
 	IsRefresh bool      `json:"refresh"`
 	CreatedAt time.Time `json:"cat"`
 
 	signature []byte
 }
 
-func (g *TokenGenerator) Claim(ctx context.Context, uid int) (*Token, *Token, error) {
-	id := g.idgen.Generate()
+func (g *TokenGenerator) Claim(ctx context.Context, userRecord *ent.User) (*Token, *Token, error) {
+	groupRecord, err := userRecord.QueryGroup().
+		Only(ctx)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	isAdmin, err := userRecord.QueryAdmin().
+		Exist(ctx)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	isManager, err := database.Ent().
+		Manager.Query().
+		Where(
+			manager.HasUserWith(
+				user.IDEQ(userRecord.ID),
+			),
+			manager.HasGroupWith(
+				group.IDEQ(groupRecord.ID),
+			),
+		).
+		Exist(ctx)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	tokenID := g.idgen.Generate()
 	record, err := database.Ent().Token.
 		Create().
-		SetTokenID(id).
-		SetUserID(uid).
+		SetTokenID(tokenID).
+		SetUserID(userRecord.ID).
 		Save(ctx)
 	if err != nil {
 		return nil, nil, err
 	}
+
 	accessToken := &Token{
-		ID:        id,
-		UserID:    uid,
+		ID:        tokenID,
+		UserID:    userRecord.ID,
+		GroupID:   groupRecord.ID,
+		IsAdmin:   isAdmin,
+		IsManager: isManager,
 		IsRefresh: false,
 		CreatedAt: record.CreatedAt,
 	}
 	refreshToken := &Token{
-		ID:        id,
-		UserID:    uid,
+		ID:        tokenID,
+		UserID:    userRecord.ID,
+		GroupID:   groupRecord.ID,
+		IsAdmin:   isAdmin,
+		IsManager: isManager,
 		IsRefresh: true,
 		CreatedAt: record.CreatedAt,
 	}

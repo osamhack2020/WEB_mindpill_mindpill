@@ -99,7 +99,7 @@ func DescribeUser(ctx *fasthttp.RequestCtx) {
 		return
 	}
 
-	u, err := database.Ent().
+	userRecord, err := database.Ent().
 		User.Query().
 		Where(user.IDEQ(int(userID))).
 		Only(ctx)
@@ -107,24 +107,33 @@ func DescribeUser(ctx *fasthttp.RequestCtx) {
 		NotFound(ctx, err, "user not found")
 		return
 	}
+	groupRecord, err := userRecord.QueryGroup().
+		Only(ctx)
+	if err != nil {
+		InternalServerError(ctx, err, "this user is not joined any group")
+		return
+	}
 
 	var resp interface{}
 
 	// Check user permission
 	token, _ := ParseAuthorization(ctx)
-	if token == nil || (u.ID != token.UserID && !IsAdmin(ctx, token.UserID)) {
-		resp = &DescribeUserResponse{
-			Name: u.Name,
+	if token != nil &&
+		(token.IsAdmin ||
+			(token.IsManager && token.GroupID == groupRecord.ID) ||
+			token.UserID == userRecord.ID) {
+		resp = &FullDescribeUserResponse{
+			SvNumber:    userRecord.SvNumber,
+			Email:       userRecord.Email,
+			Name:        userRecord.Name,
+			Gender:      userRecord.Gender,
+			PhoneNumber: userRecord.PhoneNumber,
+			CreatedAt:   userRecord.CreatedAt,
+			UpdatedAt:   userRecord.UpdatedAt,
 		}
 	} else {
-		resp = &FullDescribeUserResponse{
-			SvNumber:    u.SvNumber,
-			Email:       u.Email,
-			Name:        u.Name,
-			Gender:      u.Gender,
-			PhoneNumber: u.PhoneNumber,
-			CreatedAt:   u.CreatedAt,
-			UpdatedAt:   u.UpdatedAt,
+		resp = &DescribeUserResponse{
+			Name: userRecord.Name,
 		}
 	}
 
@@ -133,9 +142,10 @@ func DescribeUser(ctx *fasthttp.RequestCtx) {
 }
 
 type UpdateUserRequest struct {
-	SvNumber    *string `json:"sv_number,omitempty"`
-	Name        *string `json:"name,omitempty"`
-	PhoneNumber *string `json:"phone_number,omitempty"`
+	UserID      int     `json:"user_id"`
+	SvNumber    *string `json:"sv_number"`
+	Name        *string `json:"name"`
+	PhoneNumber *string `json:"phone_number"`
 }
 
 func UpdateUser(ctx *fasthttp.RequestCtx) {
@@ -148,6 +158,11 @@ func UpdateUser(ctx *fasthttp.RequestCtx) {
 	var req UpdateUserRequest
 	if err := ParseRequestBody(ctx, &req); err != nil {
 		BadRequest(ctx, err, "failed to parse request body")
+		return
+	}
+
+	if token.UserID != req.UserID && !token.IsAdmin {
+		Forbidden(ctx, nil, "you can not modify this user")
 		return
 	}
 
@@ -166,7 +181,7 @@ func UpdateUser(ctx *fasthttp.RequestCtx) {
 	}
 
 	if err := query.Exec(ctx); err != nil {
-		InternalServerError(ctx, err, "update filed")
+		InternalServerError(ctx, err, "update failed")
 		return
 	}
 

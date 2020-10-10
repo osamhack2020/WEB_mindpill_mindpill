@@ -3,6 +3,7 @@ package api
 import (
 	"bytes"
 	"encoding/json"
+	"errors"
 	"mindpill/backend/internal/database"
 	"mindpill/backend/internal/tokens"
 	"mindpill/ent"
@@ -26,19 +27,16 @@ type AuthTokenResponse struct {
 }
 
 func CreateToken(ctx *fasthttp.RequestCtx) {
-	var (
-		queries = ctx.QueryArgs()
-		req     AuthTokenRequest
-	)
+	var queries = ctx.QueryArgs()
+	var requestType = queries.Peek("request_type")
 
-	body := ctx.PostBody()
-	err := json.Unmarshal(body, &req)
+	var req AuthTokenRequest
+	err := ParseRequestBody(ctx, &req)
 	if err != nil {
-		Error(400, err).Write(ctx)
+		BadRequest(ctx, err, "failed to parse request body")
 		return
 	}
 
-	var requestType = queries.Peek("request_type")
 	switch string(requestType) {
 	case "password":
 		user, err := database.Ent().
@@ -46,51 +44,48 @@ func CreateToken(ctx *fasthttp.RequestCtx) {
 			Query().
 			Where(user.EmailEQ(req.Email)).
 			Only(ctx)
+		if err == nil {
+			err = bcrypt.CompareHashAndPassword(user.PasswordHash, []byte(req.Password))
+		}
+		switch {
+		case err == nil:
+		// Do nothing
+		case errors.Is(err, bcrypt.ErrMismatchedHashAndPassword),
+			errors.As(err, &ent.NotFoundError{}):
+			BadRequest(ctx, err, "email or password is wrong")
+			return
 
-		switch err.(type) {
-		case nil:
-			// Do nothing
-		case *ent.NotFoundError:
-			ErrorString(404, "email or password is wrong").Write(ctx)
-			return
 		default:
-			Error(500, err).Write(ctx)
+			InternalServerError(ctx, err, "login failed")
 			return
 		}
-		if err = bcrypt.CompareHashAndPassword(user.PasswordHash, []byte(req.Password)); err != nil {
-			ErrorString(401, "email or password is wrong").Write(ctx)
-			return
-		}
-		access, refresh, err := tokenGenerator.Claim(ctx, user.ID)
+
+		access, refresh, err := tokenGenerator.Claim(ctx, user)
 		if err != nil {
-			Error(500, err).Write(ctx)
+			InternalServerError(ctx, err, "failed to claim token")
 			return
 		}
 		accessToken, err := access.Sign()
 		if err != nil {
-			Error(500, err).Write(ctx)
+			InternalServerError(ctx, err, "failed to sign access token")
 			return
 		}
 		refreshToken, err := refresh.Sign()
 		if err != nil {
-			Error(500, err).Write(ctx)
+			InternalServerError(ctx, err, "failed to sign refresh token")
 			return
 		}
-		var buf = bytes.NewBuffer(make([]byte, 0))
-		err = json.NewEncoder(buf).Encode(&AuthTokenResponse{
+
+		SendResponse(ctx, &AuthTokenResponse{
 			AccessToken:  string(accessToken),
 			RefreshToken: string(refreshToken),
 		})
-		if err != nil {
-			Error(500, err).Write(ctx)
-			return
-		}
-		ctx.Write(buf.Bytes())
 
 	case "refresh":
+		InternalServerError(ctx, nil, "refresh method is not implemented yet")
 
 	default:
-		ErrorString(400, "unsupported request type").Write(ctx)
+		InternalServerError(ctx, nil, "unsupported request type")
 	}
 }
 
