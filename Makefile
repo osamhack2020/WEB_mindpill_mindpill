@@ -30,7 +30,13 @@ BACKEND_PKG := mindpill/backend
 
 .PHONY := run
 run: ${SSR_OUT} ${FRONTEND_OUT} ${BACKEND_SRC}
-	cd ${DIST_DIR} && NODE_ID=0 go run ${BACKEND_PKG}/cmd/mindpill
+	mkdir -p ${DIST_DIR}
+  cd ${DIST_DIR} && NODE_ID=0 go run ${BACKEND_PKG}/cmd/mindpill
+
+.PHONY := setup-database
+setup-database: ${SSR_OUT} ${FRONTEND_OUT} ${BACKEND_SRC}
+	mkdir -p ${DIST_DIR}
+	cd ${DIST_DIR} && go run ${BACKEND_PKG}/cmd/setup-database
 
 .PHONY := build
 build: ${SSR_OUT} ${FRONTEND_OUT} ${BACKEND_OUT}

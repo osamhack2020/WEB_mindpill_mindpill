@@ -6,7 +6,7 @@ import axios from 'axios'
 class Login extends React.Component {
   handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    
+
     let query = {
       email: e.target.email.value,
       password: e.target.password.value
@@ -26,7 +26,7 @@ class Login extends React.Component {
     return (
       <div className="box-center-column">
         <form id="form-login" onSubmit={this.handleSubmit}>
-          <Input name="email" type="text" placeholder="이메일" required />
+          <Input name="email" type="text" placeholder="이메일" autofocus required />
           <Input name="password" type="password" placeholder="비밀번호" required />
           <Input type="submit" value="로그인" />
         </form>

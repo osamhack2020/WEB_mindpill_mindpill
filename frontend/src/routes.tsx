@@ -1,5 +1,5 @@
 import React from 'react'
-import { Switch, Route, RouteProps } from 'react-router'
+import { Switch, Route, RouteProps, Redirect } from 'react-router'
 
 import PageHome from './pages/Home'
 import PageJoin from './pages/Join'
@@ -31,10 +31,7 @@ export function makeSwitch() {
   return (
     <Switch>
       {routes.map(props => (
-        <Route
-          key={props.location ? props.location.pathname : '__notfound__'}
-          {...props}
-        />
+        <Route key={props.location ? props.location.pathname : '__notfound__'} {...props} />
       ))}
       <Route component={PageNotFound} />
     </Switch>
