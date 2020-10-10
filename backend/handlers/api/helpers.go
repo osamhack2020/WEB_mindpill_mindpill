@@ -45,7 +45,18 @@ func ParseAuthorization(ctx *fasthttp.RequestCtx) (*tokens.Token, error) {
 	return tokens.Validate(headerParts[1])
 }
 
-// Responses
+// Request
+
+func ParseRequestBody(ctx *fasthttp.RequestCtx, dst interface{}) error {
+	body := ctx.PostBody()
+	err := json.Unmarshal(body, dst)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+// Response
 
 func SendResponse(ctx *fasthttp.RequestCtx, data interface{}) {
 	buf, err := json.Marshal(data)

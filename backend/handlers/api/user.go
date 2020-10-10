@@ -3,7 +3,6 @@ package api
 import (
 	"bytes"
 	"encoding/json"
-	"fmt"
 	"mindpill/backend/internal/database"
 	"mindpill/ent/user"
 	"strconv"
@@ -105,14 +104,14 @@ func DescribeUser(ctx *fasthttp.RequestCtx) {
 		Where(user.IDEQ(int(userID))).
 		Only(ctx)
 	if err != nil {
-		NotFound(ctx, nil, "user not found")
+		NotFound(ctx, err, "user not found")
+		return
 	}
 
 	var resp interface{}
 
 	// Check user permission
 	token, _ := ParseAuthorization(ctx)
-	fmt.Println(IsAdmin(ctx, token.UserID))
 	if token == nil || (u.ID != token.UserID && !IsAdmin(ctx, token.UserID)) {
 		resp = &DescribeUserResponse{
 			Name: u.Name,
@@ -131,4 +130,45 @@ func DescribeUser(ctx *fasthttp.RequestCtx) {
 
 	// Remove the hashed password for security reason.
 	SendResponse(ctx, resp)
+}
+
+type UpdateUserRequest struct {
+	SvNumber    *string `json:"sv_number,omitempty"`
+	Name        *string `json:"name,omitempty"`
+	PhoneNumber *string `json:"phone_number,omitempty"`
+}
+
+func UpdateUser(ctx *fasthttp.RequestCtx) {
+	token, err := ParseAuthorization(ctx)
+	if err != nil {
+		Unauthorized(ctx, err, "token is not valid")
+		return
+	}
+
+	var req UpdateUserRequest
+	if err := ParseRequestBody(ctx, &req); err != nil {
+		BadRequest(ctx, err, "failed to parse request body")
+		return
+	}
+
+	query := database.Ent().
+		User.Update().
+		Where(user.IDEQ(token.UserID))
+
+	if req.Name != nil {
+		query.SetName(*req.Name)
+	}
+	if req.PhoneNumber != nil {
+		query.SetPhoneNumber(*req.PhoneNumber)
+	}
+	if req.SvNumber != nil {
+		query.SetSvNumber(*req.SvNumber)
+	}
+
+	if err := query.Exec(ctx); err != nil {
+		InternalServerError(ctx, err, "update filed")
+		return
+	}
+
+	SendResponse(ctx, map[string]string{"status": "ok"})
 }
