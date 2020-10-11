@@ -82,3 +82,53 @@ curl https://localhost:7080/api/create_token?request_type=password --data '{"ema
 ```
 curl https://localhost:7080/api/create_user --data '{"email": "recipient@example.com", "password": "1q2w3e4r!", "name": "Example", "sv_number": "00-00000000", "gender": "m", "phone_number": "000-0000", "rank_id": 0, "group_id": 0}'
 ```
+
+## Group APIs
+
+### POST /api/create_group
+
+새 그룹을 생성합니다.
+
+인증이 필요하며, 관리자 권한으로만 실행할 수 있습니다.
+
+**Request**
+
+| Parameter | Type     | Required | Description        |
+| --------- | -------- | -------- | ------------------ |
+| name      | `string` | `true`   | 그룹의 이름입니다. |
+
+**Response**
+
+| Parameter | Type       | Description               |
+| --------- | ---------- | ------------------------- |
+| user_id   | `Group.id` | 만들어진 그룹의 ID입니다. |
+
+**Examples**
+
+```
+curl -X POST -H "Authorization: Bearer (token)" https://localhost:7080/api/create_group --data '{"name": "Group Name"}'
+```
+
+### GET /api/describe_group
+
+그룹의 정보를 받아옵니다.
+
+**Query**
+
+| Parameter | Type       | Required | Description |
+| --------- | ---------- | -------- | ----------- |
+| group_id  | `Group.id` | `true`   | 그룹의 ID.  |
+
+**Response**
+
+| Parameter  | Type     | Description                                                  |
+| ---------- | -------- | ------------------------------------------------------------ |
+| name       | `string` | 그룹의 이름입니다.                                           |
+| created_at | `time`   | 그룹이 만들어진 시각입니다.                                  |
+| updated_at | `time`   | 그룹의 데이터가 변경된 시각입니다. (관리자 추가 등은 미포함) |
+
+**Examples**
+
+```
+curl -X GET https://localhost:7080/api/describe_group?group_id=1
+```
