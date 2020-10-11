@@ -1,4 +1,5 @@
 import React from 'react'
+import axios from 'axios'
 import { Link } from 'react-router-dom'
 import Input from '../components/Input'
 import SelectBox from '../components/SelectBox'
@@ -26,7 +27,33 @@ export default class Join extends React.Component<JoinProps, JoinStates> {
     console.log(query)
   }
 
+  createUser = () => {
+    axios({
+      method: 'post',
+      url: '/api/create_user',
+      data: {
+        email: 'recipient@example.com',
+        password: '1q2w3e4r!',
+        name: 'Example',
+        sv_number: '00-00000000',
+        gender: 'm',
+        phone_number: '000-0000',
+        rank_id: 0,
+        group_id: 0
+      }
+    })
+      .then(response => {
+        const { user_id } = response.data
+        console.log(user_id)
+        // accessToken을 localStorage, cookie 등에 저장하지 않는다!
+      })
+      .catch(error => {
+        console.log(error)
+      })
+  }
+
   render() {
+    this.createUser()
     return (
       <div className="box-center-column">
         <form className="box-center-column" id="form-join" onSubmit={this.handleSubmit}>
