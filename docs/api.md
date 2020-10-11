@@ -15,11 +15,11 @@
 
 ## Authentication API
 
-### /api/create_token
+### POST /api/create_token
 
 사용자의 인증 토큰을 발급하기 위한 엔드포인트입니다.
 
-**URL Parameter**
+**Query**
 
 | Parameter    | Type                    | Description             |
 | ------------ | ----------------------- | ----------------------- |
@@ -54,22 +54,24 @@ curl https://localhost:7080/api/create_token?request_type=password --data '{"ema
 
 ## User API
 
-### /api/create_user
+### POST /api/create_user
 
-새 사용자를 만들기 위한 엔드포인트입니다.
+새 사용자를 만듭니다.
+
+만든 유저는 인증 대기상태가 되며, 부대 관리자가 허가하기 전에는 로그인 할 수 없습니다.
 
 **Request**
 
-| Parameter    | Type       | Description                                                            |
-| ------------ | ---------- | ---------------------------------------------------------------------- |
-| email        | string     | 사용자의 메일 주소. 이 필드는 반드시 필요합니다.                       |
-| password     | string     | 사용자의 비밀번호. 이 필드는 반드시 필요합니다.                        |
-| name         | string     | 사용자의 이름. 이 필드는 반드시 필요합니다.                            |
-| sv_number    | string     | 사용자의 군번. 군번은 중복될 수 있습니다. 이 필드는 반드시 필요합니다. |
-| gender       | `m` \| `f` | 사용자의 성별. 이 필드는 반드시 필요합니다.                            |
-| phone_number | string     | 사용자의 연락처. 전화번호 혹은 군 VoIP 번호입니다.                     |
-| rank_id      | `Rank.id`  | 사용자가 속한 계급 ID. 이 필드는 반드시 필요합니다.                    |
-| group_id     | `Group.id` | 사용자가 속한 그룹(부대)의 ID. 이 필드는 반드시 필요합니다.            |
+| Parameter    | Type       | Description                                                                             |
+| ------------ | ---------- | --------------------------------------------------------------------------------------- |
+| email        | string     | 사용자의 메일 주소. 이 필드는 반드시 필요합니다.                                        |
+| password     | string     | 사용자의 비밀번호. 이 필드는 반드시 필요합니다.                                         |
+| name         | string     | 사용자의 이름. 이 필드는 반드시 필요합니다.                                             |
+| sv_number    | string     | 사용자의 군번. 이 필드는 반드시 필요합니다.                                             |
+| gender       | `m` \| `f` | 사용자의 성별. 이 필드는 반드시 필요합니다.                                             |
+| phone_number | string     | 사용자의 연락처. 개인 연락처 혹은 군 VoIP 번호입니다. 대시(`-`) 문자를 포함해야 합니다. |
+| rank_id      | `Rank.id`  | 사용자가 속한 계급 ID. 이 필드는 반드시 필요합니다.                                     |
+| group_id     | `Group.id` | 사용자가 속한 그룹(부대)의 ID. 이 필드는 반드시 필요합니다.                             |
 
 **Response**
 
