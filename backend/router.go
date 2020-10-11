@@ -22,6 +22,10 @@ func CreateRouter() *router.Router {
 	r.GET("/api/describe_user", api.DescribeUser)
 	r.GET("/api/update_user", api.UpdateUser)
 
+	// Group APIs
+	r.POST("/api/create_group", api.CreateGroup)
+	r.GET("/api/describe_group", api.DescribeGroup)
+
 	// Frontend
 	r.NotFound = handlers.FrontendHandler()
 

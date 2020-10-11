@@ -13,8 +13,6 @@ import (
 
 var logger = log.Logger()
 
-// Permission
-
 // Token
 
 func ParseAuthorization(ctx *fasthttp.RequestCtx) (*tokens.Token, error) {
