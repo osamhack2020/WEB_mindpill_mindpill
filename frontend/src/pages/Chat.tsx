@@ -1,10 +1,6 @@
 import React from 'react'
 import { NavLink, Redirect, Route, Switch } from 'react-router-dom'
-
-export interface ChatRoomProps {
-  selected?: boolean
-}
-export interface ChatRoomStates {}
+import database from '../tempDatabase'
 
 export class UserInfo extends React.Component {
   // 이곳에 있는 모든 정보를 Props에서 가져올 수 있도록 바꿔야 합니다.
@@ -175,42 +171,76 @@ export class CurrentChatRoom extends React.Component {
   }
 }
 
+export interface ChatRoomProps {
+  chatRoomInfo: {
+    opponent: {
+      id: number
+      email: string
+      name: string
+      sv_number: string
+      phone_number: string
+      authority: number
+    }
+    id: number
+    last_message: {
+      text: string
+      timestamp: Date
+    }
+  }
+}
+export interface ChatRoomStates {}
 //채팅방 목록에 들어가는 채팅방 셀 한개
 export class ChatRoom extends React.Component<ChatRoomProps, ChatRoomStates> {
   //이곳에 있는 모든 정보를 Props에서 가져올 수 있도록 변경해야 합니다.
+
   render() {
     return (
-      <>
+      <NavLink to={`/chat/chatrooms/${this.props.chatRoomInfo.id}`} className="chatroom" activeClassName="selected">
         <div className="profile-image">
           <i className="fas fa-user"></i>
         </div>
         <div className="wrapper">
-          <div className="name">홍길동 상담관</div>
-          <span className="last-message">무슨 고민이 있나요?</span>
-          <span className="last-message-time">10분전</span>
+          <div className="name">
+            {this.props.chatRoomInfo.opponent.name} {this.props.chatRoomInfo.opponent.authority == 4 ? '상담관' : '알수없음'}
+          </div>
+          <span className="last-message">{this.props.chatRoomInfo.last_message.text}</span>
+          <span className="last-message-time">{this.props.chatRoomInfo.last_message.timestamp.getDate()}</span> {/** Format을 맞춰줘야 합니다 */}
         </div>
-      </>
+      </NavLink>
     )
   }
 }
 
-export interface ChatRoomListProps {}
+export interface ChatRoomListProps {
+  chatRooms: [
+    {
+      opponent: {
+        id: number
+        email: string
+        name: string
+        sv_number: string
+        phone_number: string
+        authority: number
+      }
+      id: number
+      last_message: {
+        text: string
+        timestamp: Date
+      }
+    }
+  ]
+}
+export interface ChatRoomListStates {}
 
-export class ChatRoomList extends React.Component {
+export class ChatRoomList extends React.Component<ChatRoomListProps, ChatRoomListStates> {
   //현재 사용자가 열람할 수 있는 모든 채팅방을 가져올 수 있는 API가 필요합니다.
 
   render() {
     return (
       <div className="chatroom-list">
-        <NavLink to="/chat/chatrooms/1" className="chatroom" activeClassName="selected">
-          <ChatRoom />
-        </NavLink>
-        <NavLink to="/chat/chatrooms/2" className="chatroom" activeClassName="selected">
-          <ChatRoom />
-        </NavLink>
-        <NavLink to="/chat/chatrooms/3" className="chatroom" activeClassName="selected">
-          <ChatRoom />
-        </NavLink>
+        {this.props.chatRooms.map((chatRoom, index) => {
+          return <ChatRoom key={index} chatRoomInfo={chatRoom} />
+        })}
       </div>
     )
   }
@@ -222,57 +252,82 @@ export class CounselorList extends React.Component {
   }
 }
 
-export interface ChatBrowserProps {}
-export class ChatBrowser extends React.Component {
-  render() {
-    return (
-      <>
-        <div className="chat-navbar">
-          <div className="profile-image-area">
-            <div className="profile-image">
-              <i className="fas fa-user"></i>
-            </div>
-          </div>
-          <ul>
-            <NavLink to="/chat/chatrooms" activeClassName="selected">
-              <li>
-                <i className="fas fa-comment-alt"></i>
-              </li>
-            </NavLink>
-            <NavLink to="/chat/counselors" activeClassName="selected">
-              <li>
-                <i className="fas fa-users"></i>
-              </li>
-            </NavLink>
-          </ul>
-        </div>
-        <div className="chat-navbar-content">
-          <div className="chat-search">
-            <div className="chat-search-input">
-              <i className="fas fa-search"></i>
-              <input type="text" placeholder="검색"></input>
-            </div>
-          </div>
-          <Switch>
-            <Redirect exact path="/chat" to="/chat/chatrooms" /> {/** /chat/chatrooms 를 기본 페이지로 설정하기 위함. */}
-            <Route path="/chat/chatrooms" component={ChatRoomList} />
-            <Route path="/chat/counselors" component={CounselorList} />
-          </Switch>
-        </div>
-      </>
-    )
+export interface ChatProps {}
+export interface ChatStates {
+  chatData: {
+    chatRooms: [
+      {
+        opponent: {
+          id: number
+          email: string
+          name: string
+          sv_number: string
+          phone_number: string
+          authority: number
+        }
+        id: number
+        last_message: {
+          text: string
+          timestamp: Date
+        }
+      }
+    ]
   }
 }
 
-export interface ChatProps {}
-export interface ChatStates {}
-
 export default class Chat extends React.Component<ChatRoomProps, ChatRoomStates> {
+  state = {
+    chatData: { chatRooms: [] }
+  }
+
+  getChatData = () => {
+    //임시 데이터베이스에서 가져온 정보입니다.
+    let data = database.API_CHAT_SELF
+    return data
+  }
+
+  componentDidMount = () => {
+    this.setState({ chatData: this.getChatData() })
+  }
+
   render() {
     return (
       <div className="box-left expand">
         <div className="chat">
-          <ChatBrowser />
+          <div className="chat-navbar">
+            <div className="profile-image-area">
+              <div className="profile-image">
+                <i className="fas fa-user"></i>
+              </div>
+            </div>
+            <ul>
+              <NavLink to="/chat/chatrooms" activeClassName="selected">
+                <li>
+                  <i className="fas fa-comment-alt"></i>
+                </li>
+              </NavLink>
+              <NavLink to="/chat/counselors" activeClassName="selected">
+                <li>
+                  <i className="fas fa-users"></i>
+                </li>
+              </NavLink>
+            </ul>
+          </div>
+          <div className="chat-navbar-content">
+            <div className="chat-search">
+              <div className="chat-search-input">
+                <i className="fas fa-search"></i>
+                <input type="text" placeholder="검색"></input>
+              </div>
+            </div>
+            <Switch>
+              <Redirect exact path="/chat" to="/chat/chatrooms" /> {/** /chat/chatrooms 를 기본 페이지로 설정하기 위함. */}
+              <Route path="/chat/chatrooms">
+                <ChatRoomList chatRooms={this.state.chatData.chatRooms} />
+              </Route>
+              <Route path="/chat/counselors" component={CounselorList} />
+            </Switch>
+          </div>
 
           <Route path="/chat/chatrooms/:id">
             <div className="chat-content">
