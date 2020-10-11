@@ -5,6 +5,7 @@ import PageHome from './pages/Home'
 import PageJoin from './pages/Join'
 import PageLogin from './pages/Login'
 import PageChat from './pages/Chat'
+import PageManage from './pages/Manage'
 import PageNotFound from './pages/NotFound'
 
 const routes: RouteProps[] = [
@@ -24,6 +25,10 @@ const routes: RouteProps[] = [
   {
     path: '/chat',
     component: PageChat
+  },
+  {
+    path: '/manage',
+    component: PageManage
   }
 ]
 

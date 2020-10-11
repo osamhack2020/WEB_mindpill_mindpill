@@ -6,7 +6,7 @@
 
 TODO: (INSERT_LOGO_HERE)
 
-<!-- ![MindPill Logo]() -->
+![MindPill Logo](./MindPill-Logo.png)
 
 ## 팀소개 및 프로잭트 설명 동영상
 
