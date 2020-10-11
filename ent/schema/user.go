@@ -25,10 +25,11 @@ func (User) Fields() []ent.Field {
 			NotEmpty(),
 		field.Enum("gender").
 			Values("m", "f"),
-		field.String("rank").
-			NotEmpty(),
-		field.Bool("is_admin").
-			Default(false),
+		field.String("phone_number").
+			MinLen(7).
+			MaxLen(13).
+			Nillable().
+			Optional(),
 		field.Time("created_at").
 			Immutable().
 			Default(time.Now),
@@ -40,6 +41,10 @@ func (User) Fields() []ent.Field {
 // Edges of the User.
 func (User) Edges() []ent.Edge {
 	return []ent.Edge{
+		edge.To("rank", Rank.Type).
+			Unique().
+			Required(),
+		edge.To("tokens", Token.Type),
 		edge.To("uploads", File.Type),
 		edge.From("admin", Admin.Type).
 			Ref("user").
