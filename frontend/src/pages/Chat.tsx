@@ -4,13 +4,16 @@ import { RouteComponentProps } from 'react-router'
 import database from '../tempDatabase'
 
 export interface friend {
-  user_id: number
+  id: number
+  email: string
   name: string
+  sv_number: string
+  phone_number: string
   authority: number
 }
 
 export interface chatRoom {
-  chat_room_id: number
+  id: number
   friend: friend
   last_message: {
     text: string
@@ -22,8 +25,7 @@ export interface UserInfoMatchParams {
   id: string
 }
 
-export interface UserInfoProps {
-}
+export interface UserInfoProps {}
 
 export class UserInfo extends React.Component<UserInfoProps & RouteComponentProps<UserInfoMatchParams>> {
   // 이곳에 있는 모든 정보를 Props에서 가져올 수 있도록 바꿔야 합니다.
@@ -71,7 +73,7 @@ export class UserInfo extends React.Component<UserInfoProps & RouteComponentProp
   }
 }
 
-export const UserInfoRouted = withRouter(UserInfo);
+export const UserInfoRouted = withRouter(UserInfo)
 
 export interface ChatLogProps {
   text: string
@@ -140,8 +142,9 @@ export class CurrentChatRoom extends React.Component {
 
   getTimestamp = () => {
     let date = new Date()
-    let timestamp = `${date.getHours() < 10 ? '0' + date.getHours() : date.getHours()}:${date.getMinutes() < 10 ? '0' + date.getMinutes() : date.getMinutes()
-      } ${date.getHours() < 12 ? 'am' : 'pm'}`
+    let timestamp = `${date.getHours() < 10 ? '0' + date.getHours() : date.getHours()}:${
+      date.getMinutes() < 10 ? '0' + date.getMinutes() : date.getMinutes()
+    } ${date.getHours() < 12 ? 'am' : 'pm'}`
     return timestamp
   }
 
@@ -197,36 +200,10 @@ export class CurrentChatRoom extends React.Component {
   }
 }
 
-export interface ChatRoomProps {
-  chatRoomInfo: chatRoom
-}
-export interface ChatRoomStates { }
-//채팅방 목록에 들어가는 채팅방 셀 한개
-export class ChatRoom extends React.Component<ChatRoomProps, ChatRoomStates> {
-  //이곳에 있는 모든 정보를 Props에서 가져올 수 있도록 변경해야 합니다.
-
-  render() {
-    return (
-      <NavLink to={`/chat/chatrooms/${this.props.chatRoomInfo.chat_room_id}`} className="chatroom" activeClassName="selected">
-        <div className="profile-image">
-          <i className="fas fa-user"></i>
-        </div>
-        <div className="wrapper">
-          <div className="name">
-            {this.props.chatRoomInfo.friend.name} {this.props.chatRoomInfo.friend.authority == 4 ? '상담관' : '알수없음'}
-          </div>
-          <span className="last-message">{this.props.chatRoomInfo.last_message.text}</span>
-          <span className="last-message-time">{this.props.chatRoomInfo.last_message.timestamp.getDate()}</span> {/** Format을 맞춰줘야 합니다 */}
-        </div>
-      </NavLink>
-    )
-  }
-}
-
 export interface ChatRoomListProps {
   chatRooms: chatRoom[]
 }
-export interface ChatRoomListStates { }
+export interface ChatRoomListStates {}
 
 export class ChatRoomList extends React.Component<ChatRoomListProps, ChatRoomListStates> {
   //현재 사용자가 열람할 수 있는 모든 채팅방을 가져올 수 있는 API가 필요합니다.
@@ -235,29 +212,59 @@ export class ChatRoomList extends React.Component<ChatRoomListProps, ChatRoomLis
     return (
       <div className="chatroom-list">
         {this.props.chatRooms.map((chatRoom, index) => {
-          return <ChatRoom key={index} chatRoomInfo={chatRoom} />
+          return (
+            <NavLink key={index} to={`/chat/chatrooms/${chatRoom.id}`} className="chatroom" activeClassName="selected">
+              <div className="profile-image">
+                <i className="fas fa-user"></i>
+              </div>
+              <div className="wrapper">
+                <div className="name">
+                  {chatRoom.friend.name} {chatRoom.friend.authority == 4 ? '상담관' : '알수없음'}
+                </div>
+                <span className="last-message">{chatRoom.last_message.text}</span>
+                <span className="last-message-time">{chatRoom.last_message.timestamp.getDate()}</span> {/** Format을 맞춰줘야 합니다 */}
+              </div>
+            </NavLink>
+          )
         })}
       </div>
     )
   }
 }
 
-export class CounselorList extends React.Component {
+export interface FriendListProps {
+  friends: friend[]
+}
+export class FriendList extends React.Component<FriendListProps> {
   render() {
-    return <div className="counselor-list">counselors</div>
+    return (
+      <div className="friend-list">
+        {this.props.friends.map((friend, index) => {
+          return (
+            <NavLink key={index} to={`/chat/friends/${friend.id}`} className="friend" activeClassName="selected">
+              <span className="profile-image"></span>
+              <span className="friend-name">
+                {friend.name} {friend.authority == 4 ? '상담관' : ''}
+              </span>
+            </NavLink>
+          )
+        })}
+      </div>
+    )
   }
 }
 
-export interface ChatProps { }
+export interface ChatProps {}
 export interface ChatStates {
   chatData: {
     chatRooms: chatRoom[]
+    friends: friend[]
   }
 }
 
-export default class Chat extends React.Component<ChatRoomProps, ChatRoomStates> {
+export default class Chat extends React.Component<ChatProps, ChatStates> {
   state = {
-    chatData: { chatRooms: [] }
+    chatData: { chatRooms: [], friends: [] }
   }
 
   getChatData = () => {
@@ -286,7 +293,7 @@ export default class Chat extends React.Component<ChatRoomProps, ChatRoomStates>
                   <i className="fas fa-comment-alt"></i>
                 </li>
               </NavLink>
-              <NavLink to="/chat/counselors" activeClassName="selected">
+              <NavLink to="/chat/friends" activeClassName="selected">
                 <li>
                   <i className="fas fa-users"></i>
                 </li>
@@ -305,14 +312,17 @@ export default class Chat extends React.Component<ChatRoomProps, ChatRoomStates>
               <Route path="/chat/chatrooms">
                 <ChatRoomList chatRooms={this.state.chatData.chatRooms} />
               </Route>
-              <Route path="/chat/counselors" component={CounselorList} />
+              <Route path="/chat/friends">
+                <FriendList friends={this.state.chatData.friends} />
+              </Route>
             </Switch>
           </div>
-
-          <Route path="/chat/chatrooms/:id">
+          <Route path={['/chat/chatrooms/:id', '/chat/friends/:id']}>
             <div className="chat-content">
               <UserInfoRouted />
-              <CurrentChatRoom />
+              <Route path="/chat/chatrooms/:id">
+                <CurrentChatRoom />
+              </Route>
             </div>
           </Route>
         </div>
