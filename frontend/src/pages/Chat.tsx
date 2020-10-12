@@ -1,11 +1,35 @@
 import React from 'react'
-import { NavLink, Redirect, Route, Switch } from 'react-router-dom'
+import { NavLink, Redirect, Route, Switch, withRouter } from 'react-router-dom'
+import { RouteComponentProps } from 'react-router'
 import database from '../tempDatabase'
 
-export class UserInfo extends React.Component {
+export interface friend {
+  user_id: number
+  name: string
+  authority: number
+}
+
+export interface chatRoom {
+  chat_room_id: number
+  friend: friend
+  last_message: {
+    text: string
+    timestamp: Date
+  }
+}
+
+export interface UserInfoMatchParams {
+  id: string
+}
+
+export interface UserInfoProps {
+}
+
+export class UserInfo extends React.Component<UserInfoProps & RouteComponentProps<UserInfoMatchParams>> {
   // 이곳에 있는 모든 정보를 Props에서 가져올 수 있도록 바꿔야 합니다.
 
   render() {
+    console.log(this.props.match.params.id)
     return (
       <div className="user-info box-top-column expand">
         <div className="profile-image">
@@ -47,6 +71,8 @@ export class UserInfo extends React.Component {
   }
 }
 
+export const UserInfoRouted = withRouter(UserInfo);
+
 export interface ChatLogProps {
   text: string
   timestamp: string
@@ -54,6 +80,7 @@ export interface ChatLogProps {
 }
 
 export class ChatLog extends React.Component<ChatLogProps> {
+  // 여기서 opponent라는 말을 써야하나 키워드 정리부터
   render() {
     return (
       <div className={`chat-log ${this.props.myLog ? 'myLog' : 'opponentLog'}`}>
@@ -91,13 +118,13 @@ export class CurrentChatRoom extends React.Component {
       },
       {
         text:
-          '안녕하세요. 이것은 상대방 테스트 텍스트입니다안녕하세요. 이것은 상대방 테스트 텍스트입니다안녕하세요. 이것은 상대방 테스트 텍스트입니다',
+          '안녕하세요. 이것은 상대방 테스트 텍스트입니다. 안녕하세요. 이것은 상대방 테스트 텍스트입니다안녕하세요. 이것은 상대방 테스트 텍스트입니다',
         timestamp: '10:12 am',
         myLog: false
       },
       {
         text:
-          '안녕하세요. 이것은 상대방 테스트 텍스트입니다안녕하세요. 이것은 상대방 테스트 텍스트입니다안녕하세요. 이것은 상대방 테스트 텍스트입니다',
+          '안녕하세요. 이것은 상대방 테스트 텍스트입니다. 안녕하세요. 이것은 상대방 테스트 텍스트입니다안녕하세요. 이것은 상대방 테스트 텍스트입니다',
         timestamp: '10:12 am',
         myLog: false
       }
@@ -113,9 +140,8 @@ export class CurrentChatRoom extends React.Component {
 
   getTimestamp = () => {
     let date = new Date()
-    let timestamp = `${date.getHours() < 10 ? '0' + date.getHours() : date.getHours()}:${
-      date.getMinutes() < 10 ? '0' + date.getMinutes() : date.getMinutes()
-    } ${date.getHours() < 12 ? 'am' : 'pm'}`
+    let timestamp = `${date.getHours() < 10 ? '0' + date.getHours() : date.getHours()}:${date.getMinutes() < 10 ? '0' + date.getMinutes() : date.getMinutes()
+      } ${date.getHours() < 12 ? 'am' : 'pm'}`
     return timestamp
   }
 
@@ -172,36 +198,22 @@ export class CurrentChatRoom extends React.Component {
 }
 
 export interface ChatRoomProps {
-  chatRoomInfo: {
-    opponent: {
-      id: number
-      email: string
-      name: string
-      sv_number: string
-      phone_number: string
-      authority: number
-    }
-    id: number
-    last_message: {
-      text: string
-      timestamp: Date
-    }
-  }
+  chatRoomInfo: chatRoom
 }
-export interface ChatRoomStates {}
+export interface ChatRoomStates { }
 //채팅방 목록에 들어가는 채팅방 셀 한개
 export class ChatRoom extends React.Component<ChatRoomProps, ChatRoomStates> {
   //이곳에 있는 모든 정보를 Props에서 가져올 수 있도록 변경해야 합니다.
 
   render() {
     return (
-      <NavLink to={`/chat/chatrooms/${this.props.chatRoomInfo.id}`} className="chatroom" activeClassName="selected">
+      <NavLink to={`/chat/chatrooms/${this.props.chatRoomInfo.chat_room_id}`} className="chatroom" activeClassName="selected">
         <div className="profile-image">
           <i className="fas fa-user"></i>
         </div>
         <div className="wrapper">
           <div className="name">
-            {this.props.chatRoomInfo.opponent.name} {this.props.chatRoomInfo.opponent.authority == 4 ? '상담관' : '알수없음'}
+            {this.props.chatRoomInfo.friend.name} {this.props.chatRoomInfo.friend.authority == 4 ? '상담관' : '알수없음'}
           </div>
           <span className="last-message">{this.props.chatRoomInfo.last_message.text}</span>
           <span className="last-message-time">{this.props.chatRoomInfo.last_message.timestamp.getDate()}</span> {/** Format을 맞춰줘야 합니다 */}
@@ -212,25 +224,9 @@ export class ChatRoom extends React.Component<ChatRoomProps, ChatRoomStates> {
 }
 
 export interface ChatRoomListProps {
-  chatRooms: [
-    {
-      opponent: {
-        id: number
-        email: string
-        name: string
-        sv_number: string
-        phone_number: string
-        authority: number
-      }
-      id: number
-      last_message: {
-        text: string
-        timestamp: Date
-      }
-    }
-  ]
+  chatRooms: chatRoom[]
 }
-export interface ChatRoomListStates {}
+export interface ChatRoomListStates { }
 
 export class ChatRoomList extends React.Component<ChatRoomListProps, ChatRoomListStates> {
   //현재 사용자가 열람할 수 있는 모든 채팅방을 가져올 수 있는 API가 필요합니다.
@@ -252,26 +248,10 @@ export class CounselorList extends React.Component {
   }
 }
 
-export interface ChatProps {}
+export interface ChatProps { }
 export interface ChatStates {
   chatData: {
-    chatRooms: [
-      {
-        opponent: {
-          id: number
-          email: string
-          name: string
-          sv_number: string
-          phone_number: string
-          authority: number
-        }
-        id: number
-        last_message: {
-          text: string
-          timestamp: Date
-        }
-      }
-    ]
+    chatRooms: chatRoom[]
   }
 }
 
@@ -331,7 +311,7 @@ export default class Chat extends React.Component<ChatRoomProps, ChatRoomStates>
 
           <Route path="/chat/chatrooms/:id">
             <div className="chat-content">
-              <UserInfo />
+              <UserInfoRouted />
               <CurrentChatRoom />
             </div>
           </Route>
