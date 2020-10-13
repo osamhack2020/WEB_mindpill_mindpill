@@ -248,7 +248,7 @@ export default function Counsel() {
 
   function getCounselData() {
     //임시 데이터베이스에서 가져온 정보입니다.
-    let data = database.API_CHAT_SELF
+    let data = database.API_COUNSEL_SELF
     return data
   }
 
