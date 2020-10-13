@@ -1,4 +1,4 @@
-.chat {
+.counsel {
   position: relative;
   z-index: 90;
   background-color: $white;
@@ -8,7 +8,7 @@
   height: 100%;
   display: grid;
   grid-template-columns: 5rem 25rem 1fr;
-  .chat-navbar {
+  .counsel-navbar {
     height: 100%;
     width: 100%;
     box-shadow: $shadow;
@@ -54,13 +54,13 @@
       }
     }
   }
-  .chat-navbar-content {
+  .counsel-navbar-content {
     height: 100%;
-    .chat-search {
+    .counsel-search {
       width: 100%;
       height: 5rem;
       padding: 1rem;
-      .chat-search-input {
+      .counsel-search-input {
         width: 100%;
         height: 100%;
         border-radius: 1.5rem;
@@ -78,8 +78,8 @@
         }
       }
     }
-    .chatroom-list {
-      .chatroom {
+    .counselroom-list {
+      .counselroom {
         width: 100%;
         padding: 2rem;
         display: flex;
@@ -174,7 +174,7 @@
       }
     }
   }
-  .chat-content {
+  .counsel-content {
     display: grid;
     grid-template-columns: 25rem 1fr;
     .user-info {
@@ -250,13 +250,13 @@
         }
       }
     }
-    .current-chatroom {
+    .current-counselroom {
       width: 100%;
-      .chat-area {
+      .counsel-area {
         display: flex;
         flex-direction: column;
         background-color: $white-hover;
-        .chat-input {
+        .counsel-input {
           position: relative;
           z-index: 60;
           display: grid;
@@ -287,7 +287,7 @@
               font-weight: 400;
             }
           }
-          button.chat-send {
+          button.counsel-send {
             width: 4rem;
             background-color: $white-hover;
             font-size: 1.5rem;
@@ -297,15 +297,15 @@
             }
           }
         }
-        .chat-logs {
+        .counsel-logs {
           overflow-y: auto;
           overflow-x: hidden;
           height: 100px;
           flex-grow: 1;
-          .chat-log-null {
+          .counsel-log-null {
             height: 2rem;
           }
-          .chat-log {
+          .counsel-log {
             width: 100%;
             display: flex;
             padding: 0 2rem;

@@ -4,7 +4,7 @@ import { Switch, Route, RouteProps, Redirect } from 'react-router'
 import PageHome from './pages/Home'
 import PageJoin from './pages/Join'
 import PageLogin from './pages/Login'
-import PageChat from './pages/Chat'
+import PageCounsel from './pages/Counsel'
 import PageManage from './pages/Manage'
 import PageNotFound from './pages/NotFound'
 
@@ -23,8 +23,8 @@ const routes: RouteProps[] = [
     component: PageLogin
   },
   {
-    path: '/chat',
-    component: PageChat
+    path: '/counsel',
+    component: PageCounsel
   },
   {
     path: '/manage',
