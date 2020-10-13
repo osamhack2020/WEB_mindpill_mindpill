@@ -1,22 +1,13 @@
-import React from 'react'
+import React, { useState } from 'react'
 
 import Layout from './pages/Layout'
 import { makeSwitch } from './routes'
 import axios from 'axios'
 
-interface AppState {
-  isLoggedIn: boolean
-}
+export default function App() {
+  const [isLoggedIn, setIsLoggedIn] = useState(true)
 
-export default class App extends React.Component<any, AppState> {
-  constructor(props: any) {
-    super(props)
-    this.state = {
-      isLoggedIn: true
-    }
-  }
-
-  handleLogin = (email: string, password: string) => {
+  function handleLogin(email: string, password: string) {
     axios.defaults.headers.common['Authorization'] = `Bearer`
     axios({
       method: 'post',
@@ -39,7 +30,5 @@ export default class App extends React.Component<any, AppState> {
       })
   }
 
-  render() {
-    return <Layout isLoggedIn={this.state.isLoggedIn}>{makeSwitch()}</Layout>
-  }
+  return <Layout isLoggedIn={isLoggedIn}>{makeSwitch()}</Layout>
 }
