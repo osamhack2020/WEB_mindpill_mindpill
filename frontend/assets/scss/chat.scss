@@ -131,10 +131,52 @@
         }
       }
     }
+    .friend-list {
+      .friend {
+        width: 100%;
+        padding: 1rem;
+        display: flex;
+        align-items: center;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.25);
+        background-color: $white;
+        &:hover {
+          background-color: $white-hover;
+          cursor: pointer;
+        }
+        .profile-image {
+          width: 2rem;
+          height: 2rem;
+          background-color: $black;
+          margin-right: 1rem;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          color: $white;
+          border-radius: 50%;
+        }
+        .friend-name {
+          font-weight: 700;
+        }
+        &.selected {
+          position: relative;
+          z-index: 100;
+          width: 103%;
+          background-color: $black;
+          border-bottom: none;
+          border-radius: 0 0.5rem 0.5rem 0;
+          box-shadow: $shadow;
+          color: $white;
+          .profile-image {
+            background-color: $white;
+            color: $black;
+          }
+        }
+      }
+    }
   }
   .chat-content {
     display: grid;
-    grid-template-columns: 20rem 1fr;
+    grid-template-columns: 25rem 1fr;
     .user-info {
       box-shadow: $shadow;
       position: relative;
