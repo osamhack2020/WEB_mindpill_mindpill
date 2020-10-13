@@ -12,7 +12,7 @@ type friend = {
   authority: number
 }
 
-type chatRoom = {
+type counselRoom = {
   id: number
   friend: friend
   last_message: {
@@ -70,16 +70,16 @@ export function UserInfo() {
   )
 }
 
-type ChatLogProps = {
+type CounselLogProps = {
   text: string
   timestamp: string
   myLog: boolean
 }
 
-export function ChatLog({ text, timestamp, myLog }: ChatLogProps) {
+export function CounselLog({ text, timestamp, myLog }: CounselLogProps) {
   // 여기서 opponent라는 말을 써야하나 키워드 정리부터
   return (
-    <div className={`chat-log ${myLog ? 'myLog' : 'opponentLog'}`}>
+    <div className={`counsel-log ${myLog ? 'myLog' : 'opponentLog'}`}>
       <div className="wrapper">
         <div className="text">{text}</div>
         <div className="timestamp">{timestamp}</div>
@@ -93,12 +93,12 @@ export function ChatLog({ text, timestamp, myLog }: ChatLogProps) {
   )
 }
 
-export function CurrentChatRoom() {
-  const [chatLogs, setChatLogs] = useState<ChatLogProps[]>([])
+export function CurrentCounselRoom() {
+  const [counselLogs, setCounselLogs] = useState<CounselLogProps[]>([])
 
   useEffect(() => {
     scrollToBottom()
-    setChatLogs([
+    setCounselLogs([
       {
         text: '이것은 테스트 텍스트입니다세요. 이것은 테스트 텍스트입니다',
         timestamp: '10:10 am',
@@ -126,13 +126,13 @@ export function CurrentChatRoom() {
 
   useEffect(() => {
     scrollToBottom()
-  }, [chatLogs])
+  }, [counselLogs])
   // 채팅내역을 로드할 수 있는 API가 필요합니다. (채팅방 id)
 
   function scrollToBottom() {
-    let chatLogs = document.getElementById('chat-logs')
-    if (chatLogs) {
-      chatLogs.scrollTop = chatLogs.scrollHeight
+    let counselLogs = document.getElementById('counsel-logs')
+    if (counselLogs) {
+      counselLogs.scrollTop = counselLogs.scrollHeight
     }
   }
 
@@ -145,8 +145,8 @@ export function CurrentChatRoom() {
   }
 
   function addMessage(message: string) {
-    setChatLogs([
-      ...chatLogs, //기존 채팅로그
+    setCounselLogs([
+      ...counselLogs, //기존 채팅로그
       {
         text: message,
         timestamp: getTimestamp(),
@@ -164,24 +164,24 @@ export function CurrentChatRoom() {
     e.target.message.value = ''
   }
   return (
-    <div className="current-chatroom expand">
-      <div className="chat-area expand">
-        <div className="chat-logs" id="chat-logs">
-          <div className="chat-log-null"></div>
-          {chatLogs &&
-            chatLogs.map((value, key) => {
-              return <ChatLog key={key} text={value.text} timestamp={value.timestamp} myLog={value.myLog} />
+    <div className="current-counselroom expand">
+      <div className="counsel-area expand">
+        <div className="counsel-logs" id="counsel-logs">
+          <div className="counsel-log-null"></div>
+          {counselLogs &&
+            counselLogs.map((value, key) => {
+              return <CounselLog key={key} text={value.text} timestamp={value.timestamp} myLog={value.myLog} />
             })}
-          <div className="chat-log-null"></div>
+          <div className="counsel-log-null"></div>
         </div>
-        <form className="chat-input" onSubmit={handleSubmit}>
+        <form className="counsel-input" onSubmit={handleSubmit}>
           <div className="box-center expand">
             <div className="attachment">
               <i className="fas fa-paperclip"></i>
             </div>
           </div>
           <input name="message" placeholder="대화를 입력하세요." />
-          <button className="chat-send">
+          <button className="counsel-send">
             <i className="fas fa-paper-plane"></i>
           </button>
         </form>
@@ -190,27 +190,27 @@ export function CurrentChatRoom() {
   )
 }
 
-type ChatRoomListProps = {
-  chatRooms: chatRoom[]
+type CounselRoomListProps = {
+  counselRooms: counselRoom[]
 }
 
-export function ChatRoomList({ chatRooms }: ChatRoomListProps) {
+export function CounselRoomList({ counselRooms }: CounselRoomListProps) {
   //현재 사용자가 열람할 수 있는 모든 채팅방을 가져올 수 있는 API가 필요합니다.
 
   return (
-    <div className="chatroom-list">
-      {chatRooms.map((chatRoom, index) => {
+    <div className="counselroom-list">
+      {counselRooms.map((counselRoom, index) => {
         return (
-          <NavLink key={index} to={`/chat/chatrooms/${chatRoom.id}`} className="chatroom" activeClassName="selected">
+          <NavLink key={index} to={`/counsel/counselrooms/${counselRoom.id}`} className="counselroom" activeClassName="selected">
             <div className="profile-image">
               <i className="fas fa-user"></i>
             </div>
             <div className="wrapper">
               <div className="name">
-                {chatRoom.friend.name} {chatRoom.friend.authority == 4 ? '상담관' : '알수없음'}
+                {counselRoom.friend.name} {counselRoom.friend.authority == 4 ? '상담관' : '알수없음'}
               </div>
-              <span className="last-message">{chatRoom.last_message.text}</span>
-              <span className="last-message-time">{chatRoom.last_message.timestamp.getDate()}</span> {/** Format을 맞춰줘야 합니다 */}
+              <span className="last-message">{counselRoom.last_message.text}</span>
+              <span className="last-message-time">{counselRoom.last_message.timestamp.getDate()}</span> {/** Format을 맞춰줘야 합니다 */}
             </div>
           </NavLink>
         )
@@ -227,7 +227,7 @@ export function FriendList({ friends }: FriendListProps) {
     <div className="friend-list">
       {friends.map((friend, index) => {
         return (
-          <NavLink key={index} to={`/chat/friends/${friend.id}`} className="friend" activeClassName="selected">
+          <NavLink key={index} to={`/counsel/friends/${friend.id}`} className="friend" activeClassName="selected">
             <span className="profile-image"></span>
             <span className="friend-name">
               {friend.name} {friend.authority == 4 ? '상담관' : ''}
@@ -239,67 +239,67 @@ export function FriendList({ friends }: FriendListProps) {
   )
 }
 
-export default function Chat() {
-  type ChatData = {
-    chatRooms: chatRoom[]
+export default function Counsel() {
+  type CounselData = {
+    counselRooms: counselRoom[]
     friends: friend[]
   }
-  const [chatData, setChatData] = useState<ChatData>({ chatRooms: [], friends: [] })
+  const [counselData, setCounselData] = useState<CounselData>({ counselRooms: [], friends: [] })
 
-  function getChatData() {
+  function getCounselData() {
     //임시 데이터베이스에서 가져온 정보입니다.
-    let data = database.API_CHAT_SELF
+    let data = database.API_COUNSEL_SELF
     return data
   }
 
   useEffect(() => {
-    setChatData(getChatData())
+    setCounselData(getCounselData())
   }, [])
 
   return (
     <div className="box-left expand">
-      <div className="chat">
-        <div className="chat-navbar">
+      <div className="counsel">
+        <div className="counsel-navbar">
           <div className="profile-image-area">
             <div className="profile-image">
               <i className="fas fa-user"></i>
             </div>
           </div>
           <ul>
-            <NavLink to="/chat/chatrooms" activeClassName="selected">
+            <NavLink to="/counsel/counselrooms" activeClassName="selected">
               <li>
                 <i className="fas fa-comment-alt"></i>
               </li>
             </NavLink>
-            <NavLink to="/chat/friends" activeClassName="selected">
+            <NavLink to="/counsel/friends" activeClassName="selected">
               <li>
                 <i className="fas fa-users"></i>
               </li>
             </NavLink>
           </ul>
         </div>
-        <div className="chat-navbar-content">
-          <div className="chat-search">
-            <div className="chat-search-input">
+        <div className="counsel-navbar-content">
+          <div className="counsel-search">
+            <div className="counsel-search-input">
               <i className="fas fa-search"></i>
               <input type="text" placeholder="검색"></input>
             </div>
           </div>
           <Switch>
-            <Redirect exact path="/chat" to="/chat/chatrooms" /> {/** /chat/chatrooms 를 기본 페이지로 설정하기 위함. */}
-            <Route path="/chat/chatrooms">
-              <ChatRoomList chatRooms={chatData.chatRooms} />
+            <Redirect exact path="/counsel" to="/counsel/counselrooms" /> {/** /counsel/counselrooms 를 기본 페이지로 설정하기 위함. */}
+            <Route path="/counsel/counselrooms">
+              <CounselRoomList counselRooms={counselData.counselRooms} />
             </Route>
-            <Route path="/chat/friends">
-              <FriendList friends={chatData.friends} />
+            <Route path="/counsel/friends">
+              <FriendList friends={counselData.friends} />
             </Route>
           </Switch>
         </div>
-        <Route path={['/chat/chatrooms/:id', '/chat/friends/:id']}>
-          <div className="chat-content">
+        <Route path={['/counsel/counselrooms/:id', '/counsel/friends/:id']}>
+          <div className="counsel-content">
             <UserInfo />
-            <Route path="/chat/chatrooms/:id">
-              <CurrentChatRoom />
+            <Route path="/counsel/counselrooms/:id">
+              <CurrentCounselRoom />
             </Route>
           </div>
         </Route>

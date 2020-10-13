@@ -1,7 +1,7 @@
 const database = {
-  // URL: /api/chat/self
-  API_CHAT_SELF: {
-    chatRooms: [
+  // URL: /api/counsel/self
+  API_COUNSEL_SELF: {
+    counselRooms: [
       {
         friend: {
           id: 111111,

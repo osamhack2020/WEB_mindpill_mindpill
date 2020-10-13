@@ -24,7 +24,7 @@ function Layout({ isLoggedIn, children }: LayoutProps) {
             <NavLink to="/join" activeClassName="selected">
               <li>회원가입</li>
             </NavLink>
-            <NavLink to="/chat" activeClassName="selected">
+            <NavLink to="/counsel" activeClassName="selected">
               <li>상담하기</li>
             </NavLink>
             <NavLink to="/userInfo" activeClassName="selected">
