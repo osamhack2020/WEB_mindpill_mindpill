@@ -31,7 +31,6 @@ export class UserInfo extends React.Component<UserInfoProps & RouteComponentProp
   // 이곳에 있는 모든 정보를 Props에서 가져올 수 있도록 바꿔야 합니다.
 
   render() {
-    console.log(this.props.match.params.id)
     return (
       <div className="user-info box-top-column expand">
         <div className="profile-image">
@@ -169,7 +168,9 @@ export class CurrentChatRoom extends React.Component {
   handleSubmit = (e: React.FormEvent<HTMLFormElement> & { target: { message: HTMLInputElement } }) => {
     e.preventDefault()
     let message = e.target.message.value
-    this.addMessage(message)
+    if (message) {
+      this.addMessage(message)
+    }
     e.target.message.value = ''
   }
   render() {
