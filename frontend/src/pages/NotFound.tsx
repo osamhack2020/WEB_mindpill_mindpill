@@ -1,5 +1,10 @@
 import React from 'react'
+import { User } from '../App'
 
-export default function PageNotFound() {
+type NotFoundProps = {
+  user: User | null
+}
+
+export default function NotFound({ user }: NotFoundProps) {
   return <div>404 Not Found</div>
 }

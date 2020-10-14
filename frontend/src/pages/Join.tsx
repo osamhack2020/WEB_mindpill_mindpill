@@ -4,23 +4,27 @@ import { Link } from 'react-router-dom'
 import Input from '../components/Input'
 import SelectBox from '../components/SelectBox'
 import SelectBySearch from '../components/SelectBySearch'
+import { User } from '../App'
 
-export default function Join() {
+type JoinProps = {
+  user: User | null
+}
+
+export default function Join({ user }: JoinProps) {
   function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
     let query = {
-      name: e.target.name.value,
-      email: e.target.email.value,
-      gender: e.target.gender.value,
-      password: e.target.password.value,
-      password2: e.target.password2.value,
-      serialNo: e.target.serialNo.value,
-      rank: e.target.rank.value,
-      classification: e.target.classification.value,
-      department: e.target.department.value,
-      regiment: e.target.regiment.value
+      name: e.currentTarget.name.value,
+      email: e.currentTarget.email.value,
+      gender: e.currentTarget.gender.value,
+      password: e.currentTarget.password.value,
+      password2: e.currentTarget.password2.value,
+      serialNo: e.currentTarget.serialNo.value,
+      rank: e.currentTarget.rank.value,
+      classification: e.currentTarget.classification.value,
+      department: e.currentTarget.department.value,
+      regiment: e.currentTarget.regiment.value
     }
-    console.log(query)
   }
 
   function createUser() {
