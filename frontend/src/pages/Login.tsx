@@ -2,14 +2,19 @@ import React from 'react'
 import { Link } from 'react-router-dom'
 import Input from '../components/Input'
 import axios from 'axios'
+import { User } from '../App'
 
-export default function Login() {
+type LoginProps = {
+  user: User | null
+}
+
+export default function Login({ user }: LoginProps) {
   function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
 
     let query = {
-      email: e.target.email.value,
-      password: e.target.password.value
+      email: e.currentTarget.email.value,
+      password: e.currentTarget.password.value
     }
 
     axios

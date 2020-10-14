@@ -82,6 +82,50 @@ const database = {
         authority: 4
       }
     ]
-  }
+  },
+
+  API_AUTHENTICATE_USER: [
+    {
+      id: 123456,
+      email: 'standardUser@gmail.com',
+      name: '김서비스관리자',
+      sv_number: '12-34567890',
+      phone_number: '010-1234-5678',
+      authority: 1
+    },
+    {
+      id: 123456,
+      email: 'standardUser@gmail.com',
+      name: '김부대관리자',
+      sv_number: '12-34567890',
+      phone_number: '010-1234-5678',
+      authority: 2
+    },
+    {
+      id: 123456,
+      email: 'standardUser@gmail.com',
+      name: '김상담관',
+      sv_number: '12-34567890',
+      phone_number: '010-1234-5678',
+      authority: 3
+    },
+    {
+      id: 123456,
+      email: 'standardUser@gmail.com',
+      name: '김지휘관',
+      sv_number: '12-34567890',
+      phone_number: '010-1234-5678',
+      authority: 4
+    },
+    {
+      id: 123456,
+      email: 'standardUser@gmail.com',
+      name: '김일반',
+      sv_number: '12-34567890',
+      phone_number: '010-1234-5678',
+      authority: 5
+    },
+    null
+  ]
 }
 export default database

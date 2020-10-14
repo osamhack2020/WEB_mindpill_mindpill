@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { NavLink, Redirect, Route, Switch, withRouter } from 'react-router-dom'
 import { RouteComponentProps, useParams } from 'react-router'
 import database from '../tempDatabase'
+import { User } from '../App'
 
 type friend = {
   id: number
@@ -239,7 +240,11 @@ export function FriendList({ friends }: FriendListProps) {
   )
 }
 
-export default function Counsel() {
+type CounselProps = {
+  user: User | null
+}
+
+export default function Counsel({ user }: CounselProps) {
   type CounselData = {
     counselRooms: counselRoom[]
     friends: friend[]

@@ -35,6 +35,32 @@ html {
       font-size: 2rem;
       font-weight: 900;
       font-family: 'Raleway', sans-serif;
+      margin-right: auto;
+    }
+    // 서비스 개발 완료시 삭제해야하는 스타일 입니다.
+    .login-simulator {
+      display: flex;
+      justify-content: space-around;
+      width: 8rem;
+    }
+    .header-profile {
+      display: flex;
+      align-items: center;
+
+      .header-profile-image {
+        width: 2rem;
+        height: 2rem;
+        border-radius: 50%;
+        background-color: $black;
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 1rem;
+      }
+      .header-profile-name {
+        font-weight: 700;
+      }
     }
   }
   .content-container {

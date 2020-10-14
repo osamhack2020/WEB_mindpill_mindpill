@@ -1,7 +1,12 @@
 import React from 'react'
 import { NavLink } from 'react-router-dom'
+import { User } from '../App'
 
-export default function Manage() {
+type ManageProps = {
+  user: User | null
+}
+
+export default function Manage({ user }: ManageProps) {
   return (
     <div className="box-left expand">
       <div className="manage">
