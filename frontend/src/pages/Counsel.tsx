@@ -165,28 +165,29 @@ export function CurrentCounselRoom() {
     e.target.message.value = ''
   }
   return (
-    <div className="current-counselroom expand">
-      <div className="counsel-area expand">
-        <div className="counsel-logs" id="counsel-logs">
-          <div className="counsel-log-null"></div>
-          {counselLogs &&
-            counselLogs.map((value, key) => {
-              return <CounselLog key={key} text={value.text} timestamp={value.timestamp} myLog={value.myLog} />
-            })}
-          <div className="counsel-log-null"></div>
-        </div>
-        <form className="counsel-input" onSubmit={handleSubmit}>
-          <div className="box-center expand">
-            <div className="attachment">
-              <i className="fas fa-paperclip"></i>
-            </div>
-          </div>
-          <input name="message" placeholder="대화를 입력하세요." />
-          <button className="counsel-send">
-            <i className="fas fa-paper-plane"></i>
-          </button>
-        </form>
+    <div className="current-counselroom">
+      <div className="current-counselroom-header">
+        <button>상담 종료하기</button>
       </div>
+      <div className="counsel-logs" id="counsel-logs">
+        <div className="counsel-log-null"></div>
+        {counselLogs &&
+          counselLogs.map((value, key) => {
+            return <CounselLog key={key} text={value.text} timestamp={value.timestamp} myLog={value.myLog} />
+          })}
+        <div className="counsel-log-null"></div>
+      </div>
+      <form className="counsel-input" onSubmit={handleSubmit}>
+        <div className="box-center expand">
+          <div className="attachment">
+            <i className="fas fa-paperclip"></i>
+          </div>
+        </div>
+        <input name="message" placeholder="대화를 입력하세요." />
+        <button className="counsel-send">
+          <i className="fas fa-paper-plane"></i>
+        </button>
+      </form>
     </div>
   )
 }

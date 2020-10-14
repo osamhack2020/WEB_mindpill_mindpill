@@ -17,7 +17,7 @@ $inputHeight: 3rem;
     justify-content: center;
     align-items: center;
     text-align: center;
-    font-weight: 700;
+    font-weight: $bold;
     &::placeholder {
       font-weight: 400;
     }
@@ -85,7 +85,7 @@ $inputHeight: 3rem;
     align-items: center;
     text-align: center;
     box-shadow: none;
-    font-weight: 700;
+    font-weight: $bold;
     &:hover {
       cursor: default;
     }

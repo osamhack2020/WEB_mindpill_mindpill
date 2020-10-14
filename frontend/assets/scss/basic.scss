@@ -5,7 +5,9 @@ $gray: #dfe4ea;
 $black: #2d3436;
 $black-hover: #353b48;
 $shadow: 0px 0px 0.5rem rgba(0, 0, 0, 0.3);
-$swan-white: #fffbef;
+
+//font-weight
+$bold: 700;
 
 html {
   font-family: 'Noto Sans KR', sans-serif;
@@ -59,7 +61,7 @@ html {
         margin-right: 1rem;
       }
       .header-profile-name {
-        font-weight: 700;
+        font-weight: $bold;
       }
     }
   }
@@ -200,7 +202,7 @@ a > p {
 
 label {
   width: 100%;
-  font-weight: 700;
+  font-weight: $bold;
   margin-bottom: 0.5rem;
 }
 
