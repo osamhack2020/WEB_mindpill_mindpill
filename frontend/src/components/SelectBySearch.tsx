@@ -1,88 +1,73 @@
-import React from 'react'
+import React, { useState } from 'react'
 
-export interface OptionProps {
+type OptionProps = {
   value: string
-  onClick?: (value: string) => void
+  changeValue?: (value: string) => void
 }
 
-export class Option extends React.Component<OptionProps> {
-  handleClick = () => {
-    if (this.props.onClick != null) {
-      this.props.onClick(this.props.value)
+export function Option({ value, changeValue }: OptionProps) {
+  function handleClick() {
+    if (changeValue != null) {
+      changeValue(value)
     }
   }
 
-  render() {
-    return (
-      <div className="option" onClick={this.handleClick}>
-        {this.props.value}
-      </div>
-    )
-  }
+  return (
+    <div className="option" onClick={handleClick}>
+      {value}
+    </div>
+  )
 }
 
-export interface SelectBySearchProps {
+type SelectBySearchProps = {
   name: string
   values: Array<string>
   placeholder?: string
   required?: boolean
 }
 
-export interface SelectBySearchState {
-  chosenValue: string
-  values: Array<string>
-  focused: boolean
-}
+export default function SelectBySearch({ name, values, placeholder, required }: SelectBySearchProps) {
+  const [chosenValue, setChosenValue] = useState<string>('')
+  const [stateValues, setStateValues] = useState<string[]>(values)
+  const [focused, setFocused] = useState<boolean>(false)
 
-export default class SelectBySearch extends React.Component<SelectBySearchProps, SelectBySearchState> {
-  state = {
-    chosenValue: '',
-    values: this.props.values,
-    focused: false
+  const changeValue = (value: string) => {
+    setChosenValue(value)
+    setStateValues([])
   }
 
-  changeValue = (value: string) => {
-    this.setState({ chosenValue: value })
-    this.setState({ values: [] })
+  function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
+    setStateValues(values.filter(value => value.includes(e.target.value)))
+    setChosenValue(e.target.value)
   }
 
-  handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    this.setState({
-      values: this.props.values.filter(value => value.includes(e.target.value))
-    })
-    this.setState({ chosenValue: e.target.value })
+  function handleFocus(e: React.ChangeEvent<HTMLInputElement>) {
+    setFocused(true)
   }
-
-  handleFocus = (e: React.ChangeEvent<HTMLInputElement>) => {
-    this.setState({ focused: true })
+  function handleBlur(e: React.ChangeEvent<HTMLDivElement>) {
+    setFocused(false)
   }
-  handleBlur = (e: React.ChangeEvent<HTMLInputElement>) => {
-    this.setState({ focused: false })
-  }
-  render() {
-    return (
-      <div className="input-select search">
-        <input
-          value={this.state.chosenValue}
-          placeholder={this.props.placeholder}
-          type="text"
-          name={this.props.name}
-          onChange={this.handleChange}
-          required={this.props.required}
-          onFocus={this.handleFocus}
-          onBlur={this.handleBlur}
-          pattern={this.props.values.reduce((a, c) => {
-            return (a = a + '|' + c)
-          })}
-        />
-        {this.state.focused && (
-          <div className="options">
-            {this.state.values.map((value, key) => (
-              <Option value={value} onClick={this.changeValue} key={key} />
-            ))}
-          </div>
-        )}
-      </div>
-    )
-  }
+  return (
+    <div className="input-select search">
+      <input
+        value={chosenValue}
+        placeholder={placeholder}
+        type="text"
+        name={name}
+        onChange={handleChange}
+        required={required}
+        onFocus={handleFocus}
+        pattern={values.reduce((a, c) => {
+          return (a = a + '|' + c)
+        })}
+      />
+      {focused && (
+        <div className="options">
+          {stateValues.map((value, key) => (
+            <Option value={value} changeValue={changeValue} key={key} />
+          ))}
+        </div>
+      )}
+    </div>
+  )
 }
