@@ -25,7 +25,6 @@ export default function Join({ user }: JoinProps) {
       department: e.currentTarget.department.value,
       regiment: e.currentTarget.regiment.value
     }
-    console.log(query)
   }
 
   function createUser() {
