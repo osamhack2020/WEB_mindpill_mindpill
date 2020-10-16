@@ -32,10 +32,10 @@ function Layout({ user, children, changeUser }: LayoutProps) {
         <div className="login-simulator">
           <input onClick={handleLoginSimulator} type="radio" id="serviceManager" name="login" value="1" />
           <input onClick={handleLoginSimulator} type="radio" id="regimentManager" name="login" value="2" />
-          <input onClick={handleLoginSimulator} type="radio" id="commander" name="login" value="3" />
+          <input onClick={handleLoginSimulator} type="radio" id="commander" name="login" value="3" defaultChecked />
           <input onClick={handleLoginSimulator} type="radio" id="counselor" name="login" value="4" />
           <input onClick={handleLoginSimulator} type="radio" id="standardUser" name="login" value="5" />
-          <input onClick={handleLoginSimulator} type="radio" id="noUser" name="login" value="6" defaultChecked />
+          <input onClick={handleLoginSimulator} type="radio" id="noUser" name="login" value="6" />
         </div>
       </div>
       <div className="page-content-container">

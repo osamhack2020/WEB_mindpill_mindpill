@@ -366,6 +366,51 @@
             }
           }
         }
+        .toolbox-message {
+          width: 100%;
+          .toolbox-message-header {
+            font-size: 1.2rem;
+            box-shadow: $shadow;
+            background-color: $white;
+            width: 100%;
+            font-weight: $bold;
+            position: relative;
+            z-index: 85;
+            .header-text {
+              padding: 1rem;
+              line-height: 2rem;
+            }
+            .header-commanders {
+              padding-bottom: 1rem;
+              .header-commander {
+                display: block;
+                padding: 0.5rem 1rem;
+                input {
+                  margin-right: 0.5rem;
+                }
+              }
+            }
+          }
+          .toolbox-message-content {
+            width: 100%;
+            padding: 1rem;
+            display: flex;
+            flex-direction: column;
+            textarea {
+              border: 1px solid $gray;
+              border-radius: 1rem;
+              width: 100%;
+              padding: 1rem;
+              resize: none;
+            }
+            button {
+              margin-top: 0.5rem;
+              &:last-child {
+                margin-left: auto;
+              }
+            }
+          }
+        }
       }
     }
     .current-counselroom {

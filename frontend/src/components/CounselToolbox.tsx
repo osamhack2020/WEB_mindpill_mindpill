@@ -1,14 +1,44 @@
 import React, { useEffect, useState } from 'react'
 
 import database from '../tempDatabase'
+import SelectBox from './SelectBox'
 
 export function MessageTool() {
+  type commander = {
+    id: number
+    name: string
+  }
+
+  const [commanders, setCommanders] = useState<commander[]>([])
+
+  function getCommanders() {
+    // 지휘관 목록을 가져올 수 있는 api 가 지정되어야 합니다.
+    let data = database.API_COUNSELOR_COMMANDERS
+    setCommanders(data)
+  }
+
+  useEffect(() => {
+    getCommanders()
+  }, [])
+
   return (
     <div className="toolbox-message">
       <div className="toolbox-message-header">
-        <span>해당 상담에 대하여 메세지 보내기</span>
+        <div className="header-text">지휘관 선택</div>
+        <div className="header-commanders">
+          {commanders.map((commander, index) => (
+            <label className="header-commander" key={index}>
+              <input type="checkbox" value={commander.id} name="commander" />
+              {commander.name} 지휘관
+            </label>
+          ))}
+        </div>
       </div>
-      <div className="toolbox-message-content"></div>
+      <div className="toolbox-message-content">
+        <textarea rows={7}></textarea>
+        <button className="letter">보내기</button>
+      </div>
+      <div className="toolbox-message-helper"></div>
     </div>
   )
 }
@@ -46,7 +76,7 @@ export function MemoTool() {
 
   function getPreviousMemo() {
     //이전 메모를 불러올 수 있는 api 를 지정해야합니다.
-    const data = database.API_PREVIOUS_MEMOS
+    const data = database.API_COUNSELOR_PREVIOUS_MEMOS
     setPreviousMemos(data)
   }
 
@@ -59,7 +89,7 @@ export function MemoTool() {
     <div className="toolbox-memo">
       <div className="toolbox-memo-header">
         <div className="header-content">
-          {add ? <span>새 메모</span> : <span>홍길동과 관련된 메모 7건</span>}
+          {add ? <span>새 메모</span> : <span>홍길동과 관련된 메모 {previousMemos.length}건</span>}
 
           <span className="add" onClick={handleAddClick}>
             {add ? <i className="fas fa-times"></i> : <i className="fas fa-plus"></i>}
@@ -82,7 +112,7 @@ export function MemoTool() {
 }
 
 export default function Toolbox() {
-  const [tab, setTab] = useState<number>(0)
+  const [tab, setTab] = useState<number>(1)
   return (
     <div className="toolbox">
       <div className="toolbox-navbar">

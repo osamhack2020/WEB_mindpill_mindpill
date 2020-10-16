@@ -128,7 +128,7 @@ const database = {
     null
   ],
 
-  API_PREVIOUS_MEMOS: [
+  API_COUNSELOR_PREVIOUS_MEMOS: [
     {
       title: '첫번째 메모입니다.',
       content:
@@ -140,6 +140,21 @@ const database = {
       content:
         '대통령은 국가의 원수이며, 외국에 대하여 국가를 대표한다. 선거운동은 각급 선거관리위원회의 관리하에 법률이 정하는 범위안에서 하되, 균등한 기회가 보장되어야 한다.',
       timestamp: '2020년 10월 11일 일요일'
+    }
+  ],
+
+  API_COUNSELOR_COMMANDERS: [
+    {
+      id: 123456,
+      name: '김지휘'
+    },
+    {
+      id: 122342,
+      name: '이지휘'
+    },
+    {
+      id: 443256,
+      name: '박지휘'
     }
   ]
 }
