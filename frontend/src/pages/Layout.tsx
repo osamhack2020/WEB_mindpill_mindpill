@@ -38,7 +38,7 @@ function Layout({ user, children, changeUser }: LayoutProps) {
           <input onClick={handleLoginSimulator} type="radio" id="noUser" name="login" value="6" defaultChecked />
         </div>
       </div>
-      <div className="content-container">
+      <div className="page-content-container">
         <div className="navbar">
           <ul>
             {!user && (
@@ -81,7 +81,7 @@ function Layout({ user, children, changeUser }: LayoutProps) {
             )}
           </ul>
         </div>
-        <div className="content box-center">{children}</div>
+        <div className="page-content box-center">{children}</div>
       </div>
     </div>
   )

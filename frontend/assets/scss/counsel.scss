@@ -118,7 +118,7 @@
         &.selected {
           position: relative;
           z-index: 100;
-          width: 103%;
+          width: 101%;
           background-color: $black;
           border-bottom: none;
           border-radius: 0 0.5rem 0.5rem 0;
@@ -250,6 +250,124 @@
         }
       }
     }
+    .toolbox {
+      box-shadow: $shadow;
+      position: relative;
+      z-index: 80;
+      background-color: $white;
+      width: 100%;
+      .toolbox-navbar {
+        width: 100%;
+        box-shadow: $shadow;
+        background-color: $white;
+        position: relative;
+        z-index: 90;
+        ul {
+          width: 100%;
+          display: flex;
+
+          li {
+            flex-grow: 1;
+            padding: 1rem;
+            font-weight: $bold;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            &:hover {
+              background-color: $white-hover;
+              color: $black;
+              cursor: pointer;
+            }
+            &.selected {
+              background-color: $gray;
+              border-bottom: 4px solid $black;
+            }
+            i {
+              margin-right: 0.5rem;
+            }
+          }
+        }
+      }
+      .toolbox-content {
+        background-color: $white;
+        width: 100%;
+        height: 100%;
+        .toolbox-memo {
+          width: 100%;
+          .toolbox-memo-header {
+            box-shadow: $shadow;
+            background-color: $white;
+            width: 100%;
+            padding: 1rem;
+            font-weight: $bold;
+            position: relative;
+            z-index: 85;
+            .header-content {
+              font-size: 1.2rem;
+              display: flex;
+              align-items: center;
+              justify-content: space-between;
+              .add {
+                font-size: 1rem;
+                padding: 0.5rem;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                width: 2rem;
+                border-radius: 0.5rem;
+                &:hover {
+                  cursor: pointer;
+                  background-color: $white-hover;
+                }
+              }
+            }
+            .new-memo {
+              margin-top: 1rem;
+              display: flex;
+              flex-direction: column;
+              textarea {
+                border: 1px solid $gray;
+                border-radius: 1rem;
+                width: 100%;
+                padding: 1rem;
+                resize: none;
+              }
+              button {
+                margin-top: 0.5rem;
+                &:last-child {
+                  margin-left: auto;
+                }
+              }
+            }
+          }
+          .toolbox-memo-content {
+            width: 100%;
+            .previous-memo {
+              padding: 1.5rem 1rem 1rem 1rem;
+              border-bottom: 1px solid $gray;
+              &:hover {
+                background-color: $white-hover;
+                cursor: pointer;
+              }
+              .title {
+                font-weight: $bold;
+                margin-bottom: 0.5rem;
+                font-size: 1.2rem;
+              }
+              .content {
+                margin-bottom: 0.5rem;
+                line-height: 1.5rem;
+              }
+
+              .timestamp {
+                font-size: 0.8rem;
+                text-align: right;
+              }
+            }
+          }
+        }
+      }
+    }
     .current-counselroom {
       display: flex;
       flex-direction: column;
@@ -258,15 +376,13 @@
         position: relative;
         z-index: 60;
         display: flex;
+        justify-content: space-between;
         background: $white;
         box-shadow: $shadow;
         padding: 1rem;
         button {
-          font-weight: $bold;
-          margin-left: auto;
-          &:hover {
-            opacity: 0.8;
-            cursor: pointer;
+          &:last-child {
+            margin-left: auto;
           }
         }
       }

@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react'
 import { NavLink, Redirect, Route, Switch, withRouter } from 'react-router-dom'
-import { RouteComponentProps, useParams } from 'react-router'
+import { useParams } from 'react-router'
 import database from '../tempDatabase'
-import { User } from '../App'
+import { parseAuthority, User } from '../App'
+import Toolbox from '../components/CounselToolbox'
 
 type friend = {
   id: number
@@ -26,47 +27,47 @@ type UserInfoParams = {
   id: string
 }
 
-type UserInfoProps = {}
-
 export function UserInfo() {
   // 이곳에 있는 모든 정보를 Props에서 가져올 수 있도록 바꿔야 합니다.
   const params = useParams<UserInfoParams | null>()
   return (
-    <div className="user-info box-top-column expand">
-      <div className="profile-image">
-        <i className="fas fa-user"></i>
+    <div className="user-info-container">
+      <div className="user-info box-top-column expand">
+        <div className="profile-image">
+          <i className="fas fa-user"></i>
+        </div>
+        <div className="name">홍길동 상담관</div>
+        <div className="regiment">12사단 00연대 00중대 심리상담관</div>
+        <div className="info-category">연락처</div>
+        <div className="info-wrapper">
+          <div className="info-title">군전화</div>
+          <div className="info-content">1123-456-789</div>
+        </div>
+        <div className="info-wrapper">
+          <div className="info-title">군전화</div>
+          <div className="info-content">1123-456-789</div>
+        </div>
+        <div className="info-wrapper">
+          <div className="info-title">군전화</div>
+          <div className="info-content">1123-456-789</div>
+        </div>
+        <div className="info-wrapper">
+          <div className="info-title">군전화</div>
+          <div className="info-content">1123-456-789</div>
+        </div>
+        <button className="counsel-button">
+          <span className="counsel-button-icon">
+            <i className="fas fa-headset"></i>
+          </span>
+          <span className="counsel-button-text">상담하기</span>
+        </button>
+        <button className="counsel-button">
+          <span className="counsel-button-icon">
+            <i className="fas fa-headset"></i>
+          </span>
+          <span className="counsel-button-text">익명 상담하기</span>
+        </button>
       </div>
-      <div className="name">홍길동 상담관</div>
-      <div className="regiment">12사단 00연대 00중대 심리상담관</div>
-      <div className="info-category">연락처</div>
-      <div className="info-wrapper">
-        <div className="info-title">군전화</div>
-        <div className="info-content">1123-456-789</div>
-      </div>
-      <div className="info-wrapper">
-        <div className="info-title">군전화</div>
-        <div className="info-content">1123-456-789</div>
-      </div>
-      <div className="info-wrapper">
-        <div className="info-title">군전화</div>
-        <div className="info-content">1123-456-789</div>
-      </div>
-      <div className="info-wrapper">
-        <div className="info-title">군전화</div>
-        <div className="info-content">1123-456-789</div>
-      </div>
-      <button className="counsel-button">
-        <span className="counsel-button-icon">
-          <i className="fas fa-headset"></i>
-        </span>
-        <span className="counsel-button-text">상담하기</span>
-      </button>
-      <button className="counsel-button">
-        <span className="counsel-button-icon">
-          <i className="fas fa-headset"></i>
-        </span>
-        <span className="counsel-button-text">익명 상담하기</span>
-      </button>
     </div>
   )
 }
@@ -94,7 +95,13 @@ export function CounselLog({ text, timestamp, myLog }: CounselLogProps) {
   )
 }
 
-export function CurrentCounselRoom() {
+type CurrentCounselRoomProps = {
+  toggleToolbox: () => void
+  user: User | null
+  toolbox: boolean
+}
+
+export function CurrentCounselRoom({ toggleToolbox, user, toolbox }: CurrentCounselRoomProps) {
   const [counselLogs, setCounselLogs] = useState<CounselLogProps[]>([])
 
   useEffect(() => {
@@ -156,6 +163,10 @@ export function CurrentCounselRoom() {
     ])
   }
 
+  function handleToolboxClick() {
+    toggleToolbox()
+  }
+
   function handleSubmit(e: React.FormEvent<HTMLFormElement> & { target: { message: HTMLInputElement } }) {
     e.preventDefault()
     let message = e.target.message.value
@@ -167,7 +178,12 @@ export function CurrentCounselRoom() {
   return (
     <div className="current-counselroom">
       <div className="current-counselroom-header">
-        <button>상담 종료하기</button>
+        {user?.authority == 3 && (
+          <button className="letter" onClick={handleToolboxClick}>
+            상담도구 {toolbox ? '넣기' : '꺼내기'}
+          </button>
+        )}
+        <button className="letter">상담 종료하기</button>
       </div>
       <div className="counsel-logs" id="counsel-logs">
         <div className="counsel-log-null"></div>
@@ -209,7 +225,7 @@ export function CounselRoomList({ counselRooms }: CounselRoomListProps) {
             </div>
             <div className="wrapper">
               <div className="name">
-                {counselRoom.friend.name} {counselRoom.friend.authority == 4 ? '상담관' : '알수없음'}
+                {counselRoom.friend.name} {parseAuthority(counselRoom.friend.authority)}
               </div>
               <span className="last-message">{counselRoom.last_message.text}</span>
               <span className="last-message-time">{counselRoom.last_message.timestamp.getDate()}</span> {/** Format을 맞춰줘야 합니다 */}
@@ -232,7 +248,7 @@ export function FriendList({ friends }: FriendListProps) {
           <NavLink key={index} to={`/counsel/friends/${friend.id}`} className="friend" activeClassName="selected">
             <span className="profile-image"></span>
             <span className="friend-name">
-              {friend.name} {friend.authority == 4 ? '상담관' : ''}
+              {friend.name} {parseAuthority(friend.authority)}
             </span>
           </NavLink>
         )
@@ -251,6 +267,7 @@ export default function Counsel({ user }: CounselProps) {
     friends: friend[]
   }
   const [counselData, setCounselData] = useState<CounselData>({ counselRooms: [], friends: [] })
+  const [toolbox, setToolbox] = useState<boolean>(true)
 
   function getCounselData() {
     //임시 데이터베이스에서 가져온 정보입니다.
@@ -258,8 +275,13 @@ export default function Counsel({ user }: CounselProps) {
     return data
   }
 
+  function toggleToolbox() {
+    setToolbox(toolbox => !toolbox)
+  }
+
   useEffect(() => {
     setCounselData(getCounselData())
+    console.log(user)
   }, [])
 
   return (
@@ -303,9 +325,10 @@ export default function Counsel({ user }: CounselProps) {
         </div>
         <Route path={['/counsel/counselrooms/:id', '/counsel/friends/:id']}>
           <div className="counsel-content">
-            <UserInfo />
+            {toolbox && user?.authority == 3 ? <Toolbox /> : <UserInfo />}
+
             <Route path="/counsel/counselrooms/:id">
-              <CurrentCounselRoom />
+              <CurrentCounselRoom user={user} toolbox={toolbox} toggleToolbox={toggleToolbox} />
             </Route>
           </div>
         </Route>

@@ -9,7 +9,7 @@ const database = {
           name: '김하나',
           sv_number: '12-34567890',
           phone_number: '010-1234-5678',
-          authority: 4
+          authority: 3
         },
         id: 111111,
         last_message: {
@@ -24,7 +24,7 @@ const database = {
           name: '김두울',
           sv_number: '12-34567890',
           phone_number: '010-1234-5678',
-          authority: 4
+          authority: 3
         },
         id: 222222,
         last_message: {
@@ -39,7 +39,7 @@ const database = {
           name: '김세엣',
           sv_number: '12-34567890',
           phone_number: '010-1234-5678',
-          authority: 4
+          authority: 3
         },
         id: 333333,
         last_message: {
@@ -55,7 +55,7 @@ const database = {
         name: '김하나',
         sv_number: '12-34567890',
         phone_number: '010-1234-5678',
-        authority: 4
+        authority: 3
       },
       {
         id: 222222,
@@ -63,7 +63,7 @@ const database = {
         name: '김두울',
         sv_number: '12-34567890',
         phone_number: '010-1234-5678',
-        authority: 4
+        authority: 3
       },
       {
         id: 333333,
@@ -71,7 +71,7 @@ const database = {
         name: '김세엣',
         sv_number: '12-34567890',
         phone_number: '010-1234-5678',
-        authority: 4
+        authority: 3
       },
       {
         id: 444444,
@@ -79,7 +79,7 @@ const database = {
         name: '김네엣',
         sv_number: '12-34567890',
         phone_number: '010-1234-5678',
-        authority: 4
+        authority: 3
       }
     ]
   },
@@ -126,6 +126,21 @@ const database = {
       authority: 5
     },
     null
+  ],
+
+  API_PREVIOUS_MEMOS: [
+    {
+      title: '첫번째 메모입니다.',
+      content:
+        '민주평화통일자문회의의 조직·직무범위 기타 필요한 사항은 법률로 정한다. 국가는 건전한 소비행위를 계도하고 생산품의 품질향상을 촉구하기 위한 소비자보호운동을 법률이 정하는 바에 의하여 보장한다. 중앙선거관리위원회는 법령의 범위안에서 선거관리·국민투표관리 또는 정당사무에 관한 규칙을 제정할 수 있으며, 법률에 저촉되지 아니하는 범위안에서 내부규율에 관한 규칙을 제정할 수 있다.',
+      timestamp: '2020년 10월 10일 토요일'
+    },
+    {
+      title: '두번째 메모입니다.',
+      content:
+        '대통령은 국가의 원수이며, 외국에 대하여 국가를 대표한다. 선거운동은 각급 선거관리위원회의 관리하에 법률이 정하는 범위안에서 하되, 균등한 기회가 보장되어야 한다.',
+      timestamp: '2020년 10월 11일 일요일'
+    }
   ]
 }
 export default database
