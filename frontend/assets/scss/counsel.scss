@@ -369,26 +369,20 @@
         .toolbox-message {
           width: 100%;
           .toolbox-message-header {
-            font-size: 1.2rem;
+            font-size: 1rem;
             box-shadow: $shadow;
             background-color: $white;
             width: 100%;
             font-weight: $bold;
             position: relative;
             z-index: 85;
+            padding: 1rem;
             .header-text {
-              padding: 1rem;
+              font-size: 1.2rem;
               line-height: 2rem;
             }
             .header-commanders {
-              padding-bottom: 1rem;
-              .header-commander {
-                display: block;
-                padding: 0.5rem 1rem;
-                input {
-                  margin-right: 0.5rem;
-                }
-              }
+              margin-top: 1rem;
             }
           }
           .toolbox-message-content {

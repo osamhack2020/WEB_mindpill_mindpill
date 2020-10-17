@@ -26,12 +26,7 @@ export function MessageTool() {
       <div className="toolbox-message-header">
         <div className="header-text">지휘관 선택</div>
         <div className="header-commanders">
-          {commanders.map((commander, index) => (
-            <label className="header-commander" key={index}>
-              <input type="checkbox" value={commander.id} name="commander" />
-              {commander.name} 지휘관
-            </label>
-          ))}
+        <SelectBox name='commander' placeholder='지휘관을 선택해주세요.' values={commanders.map(commander => commander.name)} required />
         </div>
       </div>
       <div className="toolbox-message-content">
