@@ -267,7 +267,7 @@ export default function Counsel({ user }: CounselProps) {
     friends: friend[]
   }
   const [counselData, setCounselData] = useState<CounselData>({ counselRooms: [], friends: [] })
-  const [toolbox, setToolbox] = useState<boolean>(true)
+  const [toolbox, setToolbox] = useState<boolean>(false)
 
   function getCounselData() {
     //임시 데이터베이스에서 가져온 정보입니다.
@@ -325,9 +325,11 @@ export default function Counsel({ user }: CounselProps) {
         </div>
         <Route path={['/counsel/counselrooms/:id', '/counsel/friends/:id']}>
           <div className="counsel-content">
-            {toolbox && user?.authority == 3 ? <Toolbox /> : <UserInfo />}
-
+            <Route path="/counsel/friends/:id">
+              <UserInfo />
+            </Route>
             <Route path="/counsel/counselrooms/:id">
+              {toolbox && user?.authority == 3 ? <Toolbox /> : <UserInfo />}
               <CurrentCounselRoom user={user} toolbox={toolbox} toggleToolbox={toggleToolbox} />
             </Route>
           </div>

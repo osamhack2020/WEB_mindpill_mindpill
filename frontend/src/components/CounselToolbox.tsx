@@ -107,7 +107,7 @@ export function MemoTool() {
 }
 
 export default function Toolbox() {
-  const [tab, setTab] = useState<number>(1)
+  const [tab, setTab] = useState<number>(0)
   return (
     <div className="toolbox">
       <div className="toolbox-navbar">
