@@ -70,7 +70,7 @@ export default function App() {
   }
 
   useEffect(() => {
-    authenticateUser(6)
+    authenticateUser(3)
   }, [])
 
   return (

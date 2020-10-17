@@ -2,7 +2,6 @@ $inputWidth: 20rem;
 $inputHeight: 3rem;
 
 .input-custom {
-  margin-bottom: 1rem;
   position: relative;
   input[type='text'],
   input[type='email'],
@@ -17,7 +16,7 @@ $inputHeight: 3rem;
     justify-content: center;
     align-items: center;
     text-align: center;
-    font-weight: 700;
+    font-weight: $bold;
     &::placeholder {
       font-weight: 400;
     }
@@ -60,9 +59,9 @@ $inputHeight: 3rem;
 
 .input-select {
   position: relative;
-  margin-bottom: 1rem;
   box-shadow: $shadow;
   border-radius: 1rem 1rem 1rem 1rem;
+  width: 100%;
   &.search {
     & input:focus {
       border-radius: 1rem 1rem 0 0;
@@ -74,10 +73,14 @@ $inputHeight: 3rem;
       display: block;
     }
   }
+  &:not(.search):hover > input {
+    cursor: default;
+    border-radius: 1rem 1rem 0 0;
+  }
   input {
     margin: 0;
     background-color: $white;
-    width: $inputWidth;
+    width: 100%;
     height: $inputHeight;
     border-radius: 1rem 1rem 1rem 0;
     display: flex;
@@ -85,10 +88,7 @@ $inputHeight: 3rem;
     align-items: center;
     text-align: center;
     box-shadow: none;
-    font-weight: 700;
-    &:hover {
-      cursor: default;
-    }
+    font-weight: $bold;
 
     &::placeholder {
       font-weight: 400;
@@ -103,10 +103,11 @@ $inputHeight: 3rem;
     display: none;
     max-height: $inputHeight * 5;
     overflow-x: hidden;
-    overflow-y: scroll;
+    overflow-y: auto;
     position: absolute;
     z-index: 100;
     top: $inputHeight;
+    width: 100%;
 
     &.search {
       display: block;
@@ -116,7 +117,7 @@ $inputHeight: 3rem;
     }
     .option {
       background-color: $white;
-      width: $inputWidth;
+      width: 100%;
       height: $inputHeight;
       display: flex;
       justify-content: center;

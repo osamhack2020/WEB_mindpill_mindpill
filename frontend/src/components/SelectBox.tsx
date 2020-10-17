@@ -56,7 +56,7 @@ export default function SelectBox({ name, values, placeholder, required }: Selec
           '/' +
           values.reduce((a, c) => {
             return (a = a + '|' + c)
-          }) +
+          }, '') +
           '/'
         }
       />

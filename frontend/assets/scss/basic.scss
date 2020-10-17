@@ -3,9 +3,11 @@ $white: #ffffff;
 $white-hover: #f1f2f6;
 $gray: #dfe4ea;
 $black: #2d3436;
-$black-hover: #353b48;
+$black-hover: #b4b8c0;
 $shadow: 0px 0px 0.5rem rgba(0, 0, 0, 0.3);
-$swan-white: #fffbef;
+
+//font-weight
+$bold: 700;
 
 html {
   font-family: 'Noto Sans KR', sans-serif;
@@ -59,11 +61,11 @@ html {
         margin-right: 1rem;
       }
       .header-profile-name {
-        font-weight: 700;
+        font-weight: $bold;
       }
     }
   }
-  .content-container {
+  .page-content-container {
     overflow: hidden;
 
     height: 100%;
@@ -113,7 +115,7 @@ html {
         }
       }
     }
-    .content {
+    .page-content {
       background-color: $gray;
       grid-column: 2 / 3;
       padding: 2rem;
@@ -161,47 +163,13 @@ a > p {
   height: 100%;
 }
 
-//margins
-.mg-all {
-  margin: 2rem;
-}
-.mg-hr {
-  margin: 0 2rem;
-}
-.mg-vr {
-  margin: 2rem 0;
-}
-
-//margins
-.mg-big-all {
-  margin: 4rem;
-}
-.mg-big-hr {
-  margin: 0 4rem;
-}
-.mg-big-vr {
-  margin: 4rem 0;
-}
-
-//paddings
-.pd-all {
-  padding: 2rem;
-}
-.pd-hr {
-  padding: 0 2rem;
-}
-.pd-vr {
-  padding: 2rem 0;
-}
-
 .test {
   outline: 1px solid blue;
 }
 
 label {
   width: 100%;
-  font-weight: 700;
-  margin-bottom: 0.5rem;
+  font-weight: $bold;
 }
 
 html * {
@@ -220,5 +188,13 @@ html * {
   &::-webkit-scrollbar-button {
     width: 0;
     height: 0;
+  }
+}
+
+button.letter {
+  font-weight: $bold;
+  &:hover {
+    opacity: 0.8;
+    cursor: pointer;
   }
 }

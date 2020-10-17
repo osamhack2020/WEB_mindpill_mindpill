@@ -69,7 +69,7 @@
         align-items: center;
         padding: 0 1rem;
         input {
-          font-weight: 700;
+          font-weight: $bold;
           margin-left: 1rem;
           background-color: transparent;
           &::placeholder {
@@ -103,7 +103,7 @@
         }
         .wrapper {
           .name {
-            font-weight: 700;
+            font-weight: $bold;
             margin-bottom: 0.5rem;
           }
           .last-message,
@@ -118,7 +118,7 @@
         &.selected {
           position: relative;
           z-index: 100;
-          width: 103%;
+          width: 101%;
           background-color: $black;
           border-bottom: none;
           border-radius: 0 0.5rem 0.5rem 0;
@@ -155,7 +155,7 @@
           border-radius: 50%;
         }
         .friend-name {
-          font-weight: 700;
+          font-weight: $bold;
         }
         &.selected {
           position: relative;
@@ -199,7 +199,7 @@
       .name {
         font-size: 1.5rem;
         margin-bottom: 1rem;
-        font-weight: 700;
+        font-weight: $bold;
       }
       .regiment {
         color: $black;
@@ -207,7 +207,7 @@
       }
       .info-category {
         width: 100%;
-        font-weight: 700;
+        font-weight: $bold;
         margin-bottom: 1rem;
       }
       .info-wrapper {
@@ -245,123 +245,291 @@
           margin-right: 1rem;
         }
         .counsel-button-text {
-          font-weight: 700;
+          font-weight: $bold;
           font-size: 1.2rem;
         }
       }
     }
-    .current-counselroom {
+    .toolbox {
+      box-shadow: $shadow;
+      position: relative;
+      z-index: 80;
+      background-color: $white;
       width: 100%;
-      .counsel-area {
-        display: flex;
-        flex-direction: column;
-        background-color: $white-hover;
-        .counsel-input {
-          position: relative;
-          z-index: 60;
-          display: grid;
-          grid-template-columns: auto 1fr auto;
-          column-gap: 1rem;
-          background: $white;
-          box-shadow: $shadow;
+      .toolbox-navbar {
+        width: 100%;
+        box-shadow: $shadow;
+        background-color: $white;
+        position: relative;
+        z-index: 90;
+        ul {
+          width: 100%;
+          display: flex;
 
-          .attachment {
-            margin: 1rem;
-            margin-right: 0;
+          li {
+            flex-grow: 1;
+            padding: 1rem;
+            font-weight: $bold;
             display: flex;
             justify-content: center;
             align-items: center;
-            width: 100%;
-            color: $gray;
-            font-size: 1.5rem;
             &:hover {
+              background-color: $white-hover;
               color: $black;
               cursor: pointer;
             }
-          }
-
-          input {
-            font-weight: 700;
-            background-color: transparent;
-            &::placeholder {
-              font-weight: 400;
-            }
-          }
-          button.counsel-send {
-            width: 4rem;
-            background-color: $white-hover;
-            font-size: 1.5rem;
-            &:hover {
+            &.selected {
               background-color: $gray;
-              cursor: pointer;
+              border-bottom: 4px solid $black;
+            }
+            i {
+              margin-right: 0.5rem;
             }
           }
         }
-        .counsel-logs {
-          overflow-y: auto;
-          overflow-x: hidden;
-          height: 100px;
-          flex-grow: 1;
-          .counsel-log-null {
-            height: 2rem;
-          }
-          .counsel-log {
+      }
+      .toolbox-content {
+        background-color: $white;
+        width: 100%;
+        height: 100%;
+        .toolbox-memo {
+          width: 100%;
+          .toolbox-memo-header {
+            box-shadow: $shadow;
+            background-color: $white;
             width: 100%;
-            display: flex;
-            padding: 0 2rem;
-            &.opponentLog {
-              justify-content: flex-end;
-              align-items: flex-end;
-              .wrapper {
-                align-items: flex-end;
-                .text {
-                  background-color: #fdf6ff;
-                  border-radius: 1rem 1rem 0 1rem;
+            padding: 1rem;
+            font-weight: $bold;
+            position: relative;
+            z-index: 85;
+            .header-content {
+              font-size: 1.2rem;
+              display: flex;
+              align-items: center;
+              justify-content: space-between;
+              .add {
+                font-size: 1rem;
+                padding: 0.5rem;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                width: 2rem;
+                border-radius: 0.5rem;
+                &:hover {
+                  cursor: pointer;
+                  background-color: $white-hover;
                 }
               }
-              .profile-image {
-                margin-left: 1rem;
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                width: 3rem;
-                height: 3rem;
-                color: $white;
-                background-color: $black;
-                border-radius: 50%;
-              }
             }
-            .wrapper {
-              max-width: 70%;
+            .new-memo {
+              margin-top: 1rem;
               display: flex;
               flex-direction: column;
+              textarea {
+                border: 1px solid $gray;
+                border-radius: 1rem;
+                width: 100%;
+                padding: 1rem;
+                resize: none;
+              }
+              button {
+                margin-top: 0.5rem;
+                &:last-child {
+                  margin-left: auto;
+                }
+              }
             }
-            .text {
-              display: inline-block;
+          }
+          .toolbox-memo-content {
+            width: 100%;
+            .previous-memo {
+              padding: 1.5rem 1rem 1rem 1rem;
+              border-bottom: 1px solid $gray;
+              &:hover {
+                background-color: $white-hover;
+                cursor: pointer;
+              }
+              .title {
+                font-weight: $bold;
+                margin-bottom: 0.5rem;
+                font-size: 1.2rem;
+              }
+              .content {
+                margin-bottom: 0.5rem;
+                line-height: 1.5rem;
+              }
+
+              .timestamp {
+                font-size: 0.8rem;
+                text-align: right;
+              }
+            }
+          }
+        }
+        .toolbox-message {
+          width: 100%;
+          .toolbox-message-header {
+            font-size: 1rem;
+            box-shadow: $shadow;
+            background-color: $white;
+            width: 100%;
+            font-weight: $bold;
+            position: relative;
+            z-index: 85;
+            padding: 1rem;
+            .header-text {
+              font-size: 1.2rem;
+              line-height: 2rem;
+            }
+            .header-commanders {
+              margin-top: 1rem;
+            }
+          }
+          .toolbox-message-content {
+            width: 100%;
+            padding: 1rem;
+            display: flex;
+            flex-direction: column;
+            textarea {
+              border: 1px solid $gray;
+              border-radius: 1rem;
+              width: 100%;
               padding: 1rem;
-              line-height: 1.5rem;
-              background-color: $white;
-              border-radius: 1rem 1rem 1rem 0;
-              box-shadow: $shadow;
+              resize: none;
             }
-            .timestamp {
-              color: $black-hover;
-              margin: 0.5rem 0;
-              font-size: 0.8rem;
+            button {
+              margin-top: 0.5rem;
+              &:last-child {
+                margin-left: auto;
+              }
+            }
+          }
+        }
+      }
+    }
+    .current-counselroom {
+      display: flex;
+      flex-direction: column;
+      background-color: $white-hover;
+      .current-counselroom-header {
+        position: relative;
+        z-index: 60;
+        display: flex;
+        justify-content: space-between;
+        background: $white;
+        box-shadow: $shadow;
+        padding: 1rem;
+        button {
+          &:last-child {
+            margin-left: auto;
+          }
+        }
+      }
+      .counsel-input {
+        position: relative;
+        z-index: 60;
+        display: grid;
+        grid-template-columns: auto 1fr auto;
+        column-gap: 1rem;
+        background: $white;
+        box-shadow: $shadow;
+
+        .attachment {
+          margin: 1rem;
+          margin-right: 0;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          width: 100%;
+          color: $gray;
+          font-size: 1.5rem;
+          &:hover {
+            color: $black;
+            cursor: pointer;
+          }
+        }
+
+        input {
+          font-weight: $bold;
+          background-color: transparent;
+          &::placeholder {
+            font-weight: 400;
+          }
+        }
+        button.counsel-send {
+          width: 4rem;
+          background-color: $white-hover;
+          font-size: 1.5rem;
+          &:hover {
+            background-color: $gray;
+            cursor: pointer;
+          }
+        }
+      }
+      .counsel-logs {
+        overflow-y: auto;
+        overflow-x: hidden;
+        height: 100px;
+        flex-grow: 1;
+        .counsel-log-null {
+          height: 2rem;
+        }
+        .counsel-log {
+          width: 100%;
+          display: flex;
+          padding: 0 2rem;
+          &.opponentLog {
+            justify-content: flex-end;
+            align-items: flex-end;
+            .wrapper {
+              align-items: flex-end;
+              .text {
+                background-color: #fdf6ff;
+                border-radius: 1rem 1rem 0 1rem;
+              }
             }
             .profile-image {
+              margin-left: 1rem;
+              display: flex;
+              justify-content: center;
+              align-items: center;
               width: 3rem;
               height: 3rem;
-              background: red;
-              border-radius: 3rem;
+              color: $white;
+              background-color: $black;
+              border-radius: 50%;
             }
-            &.opponentLog {
-              .text {
-                float: right;
-              }
-              .timestamp {
-                float: right;
-              }
+          }
+          .wrapper {
+            max-width: 70%;
+            display: flex;
+            flex-direction: column;
+          }
+          .text {
+            display: inline-block;
+            padding: 1rem;
+            line-height: 1.5rem;
+            background-color: $white;
+            border-radius: 1rem 1rem 1rem 0;
+            box-shadow: $shadow;
+          }
+          .timestamp {
+            color: $black-hover;
+            margin: 0.5rem 0;
+            font-size: 0.8rem;
+          }
+          .profile-image {
+            width: 3rem;
+            height: 3rem;
+            background: red;
+            border-radius: 3rem;
+          }
+          &.opponentLog {
+            .text {
+              float: right;
+            }
+            .timestamp {
+              float: right;
             }
           }
         }
