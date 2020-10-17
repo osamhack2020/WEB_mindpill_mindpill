@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react'
 import Layout from './pages/Layout'
 import axios from 'axios'
 import database from './tempDatabase'
-import { Route, Switch } from 'react-router-dom'
+import { Redirect, Route, Switch } from 'react-router-dom'
 
 import PageHome from './pages/Home'
 import PageJoin from './pages/Join'
@@ -21,7 +21,7 @@ export type User = {
   authority: number
 }
 
-export function parseAuthority(value: number) {
+export function parseAuthority(value: number | null | undefined) {
   switch (value) {
     case 1:
       return '서비스관리자'
@@ -77,10 +77,18 @@ export default function App() {
     <Layout user={user} changeUser={authenticateUser}>
       <Switch>
         <Route exact path="/" render={() => <PageHome user={user} />} />
-        <Route path="/counsel" render={() => <PageCounsel user={user} />} />
-        <Route path="/login" render={() => <PageLogin user={user} />} />
-        <Route path="/join" render={() => <PageJoin user={user} />} />
-        <Route path="/manage" render={() => <PageManage user={user} />} />
+        {user ? (
+          <>
+            <Route path="/counsel" render={() => <PageCounsel user={user} />} />
+            <Route path="/manage" render={() => <PageManage user={user} />} />
+          </>
+        ) : (
+          <>
+            <Route path="/login" render={() => <PageLogin user={user} />} />
+            <Route path="/join" render={() => <PageJoin user={user} />} />
+          </>
+        )}
+
         <Route render={() => <PageNotFound user={user} />} />
       </Switch>
     </Layout>

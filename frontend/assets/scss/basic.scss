@@ -193,6 +193,7 @@ html * {
 
 button.letter {
   font-weight: $bold;
+  line-height: inherit;
   &:hover {
     opacity: 0.8;
     cursor: pointer;

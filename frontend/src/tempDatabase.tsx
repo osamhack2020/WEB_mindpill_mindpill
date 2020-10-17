@@ -156,6 +156,111 @@ const database = {
       id: 443256,
       name: '박지휘'
     }
+  ],
+
+  API_MANAGE_USER: [
+    {
+      sv_number: '19-12345678',
+      email: 'email@email.com',
+      name: '김이름',
+      classification: '육군',
+      phone_number: '010-1234-5678',
+      authority: 3
+    },
+    {
+      sv_number: '19-12345678',
+      email: 'email@email.com',
+      name: '박이름',
+      classification: '해군',
+      phone_number: '010-1234-5678',
+      authority: 5
+    },
+    {
+      sv_number: '19-12345678',
+      email: 'email@email.com',
+      name: '신이름',
+      classification: '육군',
+      phone_number: '010-1234-5678',
+      authority: 4
+    },
+    {
+      sv_number: '19-12345678',
+      email: 'email@email.com',
+      name: '최이름',
+      classification: '공군',
+      phone_number: '010-1234-5678',
+      authority: 5
+    }
+  ],
+
+  API_MANAGE_NEW: [
+    {
+      sv_number: '19-12345678',
+      email: 'email@email.com',
+      name: '김신입',
+      classification: '육군',
+      phone_number: '010-1234-5678'
+    },
+    {
+      sv_number: '19-12345678',
+      email: 'email@email.com',
+      name: '박신입',
+      classification: '해군',
+      phone_number: '010-1234-5678'
+    },
+    {
+      sv_number: '19-12345678',
+      email: 'email@email.com',
+      name: '신신입',
+      classification: '육군',
+      phone_number: '010-1234-5678'
+    },
+    {
+      sv_number: '19-12345678',
+      email: 'email@email.com',
+      name: '최신입',
+      classification: '공군',
+      phone_number: '010-1234-5678'
+    }
+  ],
+
+  API_MANAGE_RECORD: [
+    {
+      counselor: '김상담',
+      user: '김유저',
+      date: '2020년 10월 17일',
+      message_id: null
+    },
+    {
+      counselor: '이상담',
+      user: '이유저',
+      date: '2020년 10월 17일',
+      message_id: '1234567'
+    },
+    {
+      counselor: '박상담',
+      user: '박유저',
+      date: '2020년 10월 17일',
+      message_id: '1234567'
+    },
+    {
+      counselor: '김상담',
+      user: '김유저',
+      date: '2020년 10월 17일',
+      message_id: null
+    },
+    {
+      counselor: '이상담',
+      user: '이유저',
+      date: '2020년 10월 17일',
+      message_id: '1234567'
+    },
+    {
+      counselor: '박상담',
+      user: '박유저',
+      date: '2020년 10월 17일',
+      message_id: '1234567'
+    }
   ]
 }
 export default database
