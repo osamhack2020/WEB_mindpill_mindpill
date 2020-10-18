@@ -1,9 +1,10 @@
 import React from 'react'
+import { User } from '../routes'
 
-class Home extends React.Component {
-  render() {
-    return <div>This is HomePage</div>
-  }
+type HomeProps = {
+  user: User | null
 }
 
-export default Home
+export default function Home({ user }: HomeProps) {
+  return <div>This is HomePage</div>
+}

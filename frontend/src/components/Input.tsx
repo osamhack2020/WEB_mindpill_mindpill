@@ -1,6 +1,6 @@
-import React from 'react'
+import React, { useState } from 'react'
 
-export interface InputProps {
+type InputProps = {
   name?: string
   defaultValue?: string
   placeholder?: string
@@ -14,45 +14,55 @@ export interface InputProps {
   autofocus?: boolean
 }
 
-export interface InputState {
+type InputState = {
   helperMessageOn: boolean
   focused: boolean
 }
 
-export default class Input extends React.Component<InputProps, InputState> {
-  state = {
-    helperMessageOn: false,
-    focused: false
+export default function Input({
+  name,
+  defaultValue,
+  placeholder,
+  type,
+  required,
+  value,
+  helperMessage,
+  maxLength,
+  minLength,
+  pattern,
+  autofocus
+}: InputProps) {
+  const [helperMessageOn, setHelperMessageOn] = useState<boolean>(false)
+  const [focused, setFocused] = useState<boolean>(false)
+
+  function handleChange(e: React.ChangeEvent<HTMLInputElement>) {}
+
+  function handleFocus(e: React.ChangeEvent<HTMLInputElement>) {
+    setFocused(true)
   }
 
-  handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {}
-
-  handleFocus = (e: React.ChangeEvent<HTMLInputElement>) => {
-    this.setState({ focused: true })
+  function handleBlur(e: React.ChangeEvent<HTMLInputElement>) {
+    setFocused(false)
   }
 
-  handleBlur = (e: React.ChangeEvent<HTMLInputElement>) => {
-    this.setState({ focused: false })
-  }
-
-  render() {
-    return (
-      <div className="input-custom">
-        <input
-          onChange={this.handleChange}
-          onFocus={this.handleFocus}
-          onBlur={this.handleBlur}
-          defaultValue={this.props.defaultValue}
-          placeholder={this.props.placeholder}
-          type={this.props.type}
-          name={this.props.name}
-          required={this.props.required}
-          value={this.props.value}
-          pattern={this.props.pattern}
-          autoFocus={this.props.autofocus}
-        />
-        {this.props.helperMessage && this.state.focused && <div className="helper-message">{this.props.helperMessage}</div>}
-      </div>
-    )
-  }
+  return (
+    <div className="input-custom">
+      <input
+        onChange={handleChange}
+        onFocus={handleFocus}
+        onBlur={handleBlur}
+        defaultValue={defaultValue}
+        placeholder={placeholder}
+        type={type}
+        name={name}
+        required={required}
+        value={value}
+        pattern={pattern}
+        autoFocus={autofocus}
+        minLength={minLength}
+        maxLength={maxLength}
+      />
+      {helperMessage && focused && <div className="helper-message">{helperMessage}</div>}
+    </div>
+  )
 }

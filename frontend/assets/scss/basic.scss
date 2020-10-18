@@ -3,9 +3,12 @@ $white: #ffffff;
 $white-hover: #f1f2f6;
 $gray: #dfe4ea;
 $black: #2d3436;
-$black-hover: #353b48;
+$black-hover: #101318;
 $shadow: 0px 0px 0.5rem rgba(0, 0, 0, 0.3);
-$swan-white: #fffbef;
+
+//font-weight
+$normal: 400;
+$bold: 700;
 
 html {
   font-family: 'Noto Sans KR', sans-serif;
@@ -35,9 +38,35 @@ html {
       font-size: 2rem;
       font-weight: 900;
       font-family: 'Raleway', sans-serif;
+      margin-right: auto;
+    }
+    // 서비스 개발 완료시 삭제해야하는 스타일 입니다.
+    .login-simulator {
+      display: flex;
+      justify-content: space-around;
+      width: 8rem;
+    }
+    .header-profile {
+      display: flex;
+      align-items: center;
+
+      .header-profile-image {
+        width: 2rem;
+        height: 2rem;
+        border-radius: 50%;
+        background-color: $black;
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 1rem;
+      }
+      .header-profile-name {
+        font-weight: $bold;
+      }
     }
   }
-  .content-container {
+  .page-content-container {
     overflow: hidden;
 
     height: 100%;
@@ -87,7 +116,7 @@ html {
         }
       }
     }
-    .content {
+    .page-content {
       background-color: $gray;
       grid-column: 2 / 3;
       padding: 2rem;
@@ -135,47 +164,13 @@ a > p {
   height: 100%;
 }
 
-//margins
-.mg-all {
-  margin: 2rem;
-}
-.mg-hr {
-  margin: 0 2rem;
-}
-.mg-vr {
-  margin: 2rem 0;
-}
-
-//margins
-.mg-big-all {
-  margin: 4rem;
-}
-.mg-big-hr {
-  margin: 0 4rem;
-}
-.mg-big-vr {
-  margin: 4rem 0;
-}
-
-//paddings
-.pd-all {
-  padding: 2rem;
-}
-.pd-hr {
-  padding: 0 2rem;
-}
-.pd-vr {
-  padding: 2rem 0;
-}
-
 .test {
   outline: 1px solid blue;
 }
 
 label {
   width: 100%;
-  font-weight: 700;
-  margin-bottom: 0.5rem;
+  font-weight: $bold;
 }
 
 html * {
@@ -195,4 +190,12 @@ html * {
     width: 0;
     height: 0;
   }
+}
+
+h1 {
+  font-size: 2.5rem;
+}
+h3 {
+  font-size: 1.4rem;
+  font-weight: $normal;
 }

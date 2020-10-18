@@ -1,21 +1,47 @@
-import React from 'react'
-
+import React, { useEffect, useState } from 'react'
 import Layout from './pages/Layout'
-import { makeSwitch } from './routes'
+import axios from 'axios'
+import database from './tempDatabase'
+import { Router, User } from './routes'
 
-interface AppState {
-  isLoggedIn: boolean
-}
+export default function App() {
+  const [user, setUser] = useState<User | null>(null)
 
-export default class App extends React.Component<any, AppState> {
-  constructor(props: any) {
-    super(props)
-    this.state = {
-      isLoggedIn: true
-    }
+  function handleLogin(email: string, password: string) {
+    // 초기 access token 과 refresh token 을 받는 곳입니다.
+    axios({
+      method: 'post',
+      url: '/api/create_token',
+      params: {
+        request_type: 'password'
+      },
+      data: {
+        email,
+        password
+      }
+    })
+      .then(response => {
+        const { access_token, refresh_token } = response.data
+      })
+      .catch(error => {
+        console.log(error)
+      })
   }
 
-  render() {
-    return <Layout isLoggedIn={this.state.isLoggedIn}>{makeSwitch()}</Layout>
+  function authenticateUser(value: number) {
+    //refresh token 을 다룰 곳입니다.
+    console.log('authenticate', value)
+    const user = database.API_AUTHENTICATE_USER[value - 1]
+    setUser(user)
   }
+
+  useEffect(() => {
+    authenticateUser(3)
+  }, [])
+
+  return (
+    <Layout user={user} changeUser={authenticateUser}>
+      <Router user={user} />
+    </Layout>
+  )
 }
