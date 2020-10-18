@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { NavLink, Redirect, Route, Switch, withRouter } from 'react-router-dom'
 import { useParams } from 'react-router'
 import database from '../tempDatabase'
-import { parseAuthority, User } from '../App'
+import { parseAuthority, User } from '../routes'
 import Toolbox from '../components/CounselToolbox'
 
 type friend = {

@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { NavLink, Redirect, Route } from 'react-router-dom'
-import { parseAuthority, User } from '../App'
+import { parseAuthority, User } from '../routes'
 import database from '../tempDatabase'
 
 function RecordTable() {

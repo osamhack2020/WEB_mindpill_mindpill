@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom'
 import Input from '../components/Input'
 import SelectBox from '../components/SelectBox'
 import SelectBySearch from '../components/SelectBySearch'
-import { User } from '../App'
+import { User } from '../routes'
 
 type JoinProps = {
   user: User | null

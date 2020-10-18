@@ -2,7 +2,7 @@ import React from 'react'
 import { Link } from 'react-router-dom'
 import Input from '../components/Input'
 import axios from 'axios'
-import { User } from '../App'
+import { User } from '../routes'
 
 type LoginProps = {
   user: User | null
