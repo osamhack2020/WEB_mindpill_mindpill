@@ -37,6 +37,8 @@ func ParseRequestBody(ctx *fasthttp.RequestCtx, dst interface{}) error {
 
 // Response
 
+var respOK = json.RawMessage(`{"message":"ok"}`)
+
 func SendResponse(ctx *fasthttp.RequestCtx, data interface{}) {
 	buf, err := json.Marshal(data)
 	if err != nil {
