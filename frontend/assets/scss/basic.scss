@@ -3,10 +3,11 @@ $white: #ffffff;
 $white-hover: #f1f2f6;
 $gray: #dfe4ea;
 $black: #2d3436;
-$black-hover: #b4b8c0;
+$black-hover: #101318;
 $shadow: 0px 0px 0.5rem rgba(0, 0, 0, 0.3);
 
 //font-weight
+$normal: 400;
 $bold: 700;
 
 html {
@@ -191,11 +192,10 @@ html * {
   }
 }
 
-button.letter {
-  font-weight: $bold;
-  line-height: inherit;
-  &:hover {
-    opacity: 0.8;
-    cursor: pointer;
-  }
+h1 {
+  font-size: 2.5rem;
+}
+h3 {
+  font-size: 1.4rem;
+  font-weight: $normal;
 }
