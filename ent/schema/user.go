@@ -49,15 +49,12 @@ func (User) Edges() []ent.Edge {
 		edge.From("admin", Admin.Type).
 			Ref("user").
 			Unique(),
-		edge.From("counselor", Counselor.Type).
-			Ref("user").
-			Unique(),
-		edge.From("manager", Manager.Type).
-			Ref("user").
-			Unique(),
-		edge.From("group", Group.Type).
-			Ref("users").
-			Unique(),
+		edge.From("counselors", Counselor.Type).
+			Ref("user"),
+		edge.From("managers", Manager.Type).
+			Ref("user"),
+		edge.From("groups", Group.Type).
+			Ref("users"),
 		edge.From("rooms", Room.Type).
 			Ref("users"),
 	}

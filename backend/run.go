@@ -25,6 +25,8 @@ func Run() error {
 		return err
 	}
 
+	r := CreateRouter()
+
 	server := &fasthttp.Server{
 		Handler:      r.Handler,
 		ReadTimeout:  5 * time.Second,
