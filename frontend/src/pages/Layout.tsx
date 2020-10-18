@@ -1,6 +1,6 @@
 import React, { MouseEventHandler } from 'react'
 import { Link, NavLink } from 'react-router-dom'
-import { User, parseAuthority } from '../App'
+import { User, parseAuthority } from '../routes'
 
 type LayoutProps = {
   user: User | null

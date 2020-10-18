@@ -1,6 +1,160 @@
-import React from 'react'
-import { NavLink } from 'react-router-dom'
-import { User } from '../App'
+import React, { useState } from 'react'
+import { NavLink, Redirect, Route } from 'react-router-dom'
+import { parseAuthority, User } from '../routes'
+import database from '../tempDatabase'
+
+function RecordTable() {
+  return (
+    <table className="manage-table manage-user">
+      <thead>
+        <tr>
+          {['#', '상담관', '피상담자', '시간', '메세지'].map((title, index) => (
+            <td key={index}>{title}</td>
+          ))}
+        </tr>
+      </thead>
+      <tbody>
+        {database.API_MANAGE_RECORD.map((record, index) => (
+          <tr key={index + 1}>
+            <td>{index + 1}</td>
+            <td>{record.counselor}</td>
+            <td>{record.user}</td>
+            <td>{record.date}</td>
+            <td>
+              {record.message_id && (
+                <button className="letter">
+                  <i className="fas fa-comment-dots"></i>
+                </button>
+              )}
+            </td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  )
+}
+
+function NewTable() {
+  return (
+    <table className="manage-table">
+      <thead>
+        <tr>
+          {['#', '군번', '이메일', '이름', '분류', '전화번호', ''].map((title, index) => (
+            <td key={index}>{title}</td>
+          ))}
+        </tr>
+      </thead>
+      <tbody>
+        {database.API_MANAGE_NEW.map((user, index) => (
+          <tr key={index + 1}>
+            <td>{index + 1}</td>
+            <td>{user.sv_number}</td>
+            <td>{user.email}</td>
+            <td>{user.name}</td>
+            <td>{user.classification}</td>
+            <td>{user.phone_number}</td>
+            <td>
+              <button className="letter">승인</button>
+            </td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  )
+}
+
+type SlideSelectProps = {
+  values: number[]
+  defaultValue: number
+}
+
+function SlideSelect({ values, defaultValue }: SlideSelectProps) {
+  const [chosenValue, setChosenValue] = useState<number>(values.indexOf(defaultValue))
+  // chosenValue 는 values 배열에서 위치를 나타냅니다.
+  function handleLeftClick() {
+    if (chosenValue - 1 < 0) {
+      setChosenValue(values.length - 1)
+    } else {
+      setChosenValue(chosenValue => chosenValue - 1)
+    }
+  }
+  function handleRightClick() {
+    if (chosenValue + 1 > values.length - 1) {
+      setChosenValue(0)
+    } else {
+      setChosenValue(chosenValue => chosenValue + 1)
+    }
+  }
+
+  return (
+    <div className="slide-select">
+      <button onClick={handleLeftClick}>
+        <i className="fas fa-caret-left"></i>
+      </button>
+      <div className="value">{parseAuthority(values[chosenValue])}</div>
+      <button onClick={handleRightClick}>
+        <i className="fas fa-caret-right"></i>
+      </button>
+    </div>
+  )
+}
+
+type UserTableRowProps = {
+  user: {
+    sv_number: string
+    email: string
+    name: string
+    classification: string
+    phone_number: string
+    authority: number
+  }
+  index: number
+}
+function UserTableRow({ user, index }: UserTableRowProps) {
+  const [changeAuthority, setChangeAuthority] = useState<boolean>(false)
+
+  function toggleChangeAuthority() {
+    setChangeAuthority(changeAuthority => !changeAuthority)
+  }
+
+  return (
+    <tr>
+      <td>{index}</td>
+      <td>{user.sv_number}</td>
+      <td>{user.email}</td>
+      <td>{user.name}</td>
+      <td>{user.classification}</td>
+      <td>{user.phone_number}</td>
+      <td className="authority">
+        {changeAuthority ? <SlideSelect values={[3, 4, 5]} defaultValue={user.authority} /> : parseAuthority(user.authority)}
+      </td>
+      <td className={`hover ${changeAuthority && 'changing'}`}>
+        <button className="letter" onClick={toggleChangeAuthority}>
+          {changeAuthority ? '저장' : '등급변경'}
+        </button>
+      </td>
+    </tr>
+  )
+}
+
+function UserTable() {
+  return (
+    <table className="manage-table manage-user">
+      <thead>
+        <tr>
+          {['#', '군번', '이메일', '이름', '분류', '전화번호', '등급'].map((title, index) => (
+            <td key={index}>{title}</td>
+          ))}
+        </tr>
+      </thead>
+      <tbody>
+        {database.API_MANAGE_USER.map((user, index) => (
+          <UserTableRow user={user} index={index + 1} key={index} />
+        ))}
+      </tbody>
+    </table>
+  )
+}
 
 type ManageProps = {
   user: User | null
@@ -12,66 +166,62 @@ export default function Manage({ user }: ManageProps) {
       <div className="manage">
         <div className="manage-navbar">
           <ul>
-            <NavLink to="/manage/users" activeClassName="selected">
-              <li>
-                <i className="fas fa-user-cog"></i>
-                <span>회원관리</span>
-              </li>
-            </NavLink>
-            <NavLink to="/manage/counselors" activeClassName="selected">
-              <li>
-                <i className="fas fa-cogs"></i>
-                <span>신규관리</span>
-              </li>
-            </NavLink>
+            <li className="navbar-icon">
+              <i className="fas fa-tasks"></i>
+            </li>
+            {(user?.authority == 1 || user?.authority == 2) && (
+              <>
+                <NavLink to="/manage/user" activeClassName="selected">
+                  <li>
+                    <i className="fas fa-user-cog"></i>
+                    <span>회원관리</span>
+                  </li>
+                </NavLink>
+                <NavLink to="/manage/new" activeClassName="selected">
+                  <li>
+                    <i className="fas fa-cogs"></i>
+                    <span>신규관리</span>
+                  </li>
+                </NavLink>{' '}
+              </>
+            )}
+            {(user?.authority == 3 || user?.authority == 4) && (
+              <NavLink to="/manage/record" activeClassName="selected">
+                <li>
+                  <i className="fas fa-clipboard"></i>
+                  <span>상담기록</span>
+                </li>
+              </NavLink>
+            )}
           </ul>
         </div>
         <div className="manage-content">
+          <div className="title">부대이름 표시영역</div>
           <div className="manage-content-search">
             <div className="manage-search-input">
               <i className="fas fa-search"></i>
               <input type="text" placeholder="검색어를 입력하세요" />
             </div>
           </div>
-          <div className="title">안보지원사령부 701부대</div>
-          <table className="manage-table">
-            <th>
-              <tr>
-                <td>#</td>
-                <td>군번</td>
-                <td>이메일</td>
-                <td>이름</td>
-                <td>분류</td>
-                <td>전화번호</td>
-              </tr>
-            </th>
-            <tbody>
-              <tr>
-                <td>1</td>
-                <td>19-43027982</td>
-                <td>clo3olb@gmail.com</td>
-                <td>김현우</td>
-                <td>육군</td>
-                <td>010-1234-5678</td>
-              </tr>
-              <tr>
-                <td>2</td>
-                <td>19-43027982</td>
-                <td>clo3olb@gmail.com</td>
-                <td>김현우</td>
-                <td>육군</td>
-                <td>010-1234-5678</td>
-              </tr>
-              <tr>
-                <td>3</td>
-                <td>19-43027982</td>
-                <td>clo3olb@gmail.com</td>
-                <td>김현우</td>
-                <td>육군</td>
-                <td>010-1234-5678</td>
-              </tr>
-            </tbody>
-          </table>
+          {(user?.authority == 1 || user?.authority == 2) && (
+            <>
+              <Redirect exact from="/manage" to="/manage/user" />
+              <Route path="/manage/user">
+                <UserTable />
+              </Route>
+              <Route path="/manage/new">
+                <NewTable />
+              </Route>
+            </>
+          )}
+          {(user?.authority == 3 || user?.authority == 4) && (
+            <>
+              <Redirect exact from="/manage" to="/manage/record" />
+              <Route path="/manage/record">
+                <RecordTable />
+              </Route>
+            </>
+          )}
         </div>
       </div>
     </div>
