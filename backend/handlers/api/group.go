@@ -3,6 +3,8 @@ package api
 import (
 	"mindpill/backend/internal/database"
 	"mindpill/ent/group"
+	"mindpill/ent/manager"
+	"mindpill/ent/user"
 	"strconv"
 	"time"
 
@@ -76,4 +78,82 @@ func DescribeGroup(ctx *fasthttp.RequestCtx) {
 		CreatedAt: groupRecord.CreatedAt,
 		UpdatedAt: groupRecord.UpdatedAt,
 	})
+}
+
+type CreateManagerRequest struct {
+	UserID  int `json:"user_id"`
+	GroupID int `json:"group_id"`
+}
+
+func CreateManager(ctx *fasthttp.RequestCtx) {
+	token, err := ParseAuthorization(ctx)
+	if err != nil {
+		Unauthorized(ctx, err, "unauthorized")
+		return
+	}
+
+	if !token.IsAdmin {
+		Forbidden(ctx, nil, "this action requires admin privilege")
+		return
+	}
+
+	var req CreateManagerRequest
+	if err := ParseRequestBody(ctx, &req); err != nil {
+		BadRequest(ctx, err, "failed to parse request body")
+		return
+	}
+
+	_, err = database.Ent().
+		Manager.Create().
+		SetUserID(req.UserID).
+		SetGroupID(req.GroupID).
+		Save(ctx)
+	if err != nil {
+		InternalServerError(ctx, err, "failed to create manager record")
+		return
+	}
+
+	SendResponse(ctx, respOK)
+}
+
+type DeleteManagerRequest struct {
+	UserID  int `json:"user_id"`
+	GroupID int `json:"group_id"`
+}
+
+func DeleteManager(ctx *fasthttp.RequestCtx) {
+	token, err := ParseAuthorization(ctx)
+	if err != nil {
+		Unauthorized(ctx, err, "unauthorized")
+		return
+	}
+
+	if !token.IsAdmin {
+		Forbidden(ctx, nil, "this action requires admin privilege")
+		return
+	}
+
+	var req CreateManagerRequest
+	if err := ParseRequestBody(ctx, &req); err != nil {
+		BadRequest(ctx, err, "failed to parse request body")
+		return
+	}
+
+	n, err := database.Ent().
+		Manager.Delete().
+		Where(manager.And(
+			manager.HasGroupWith(group.IDEQ(req.GroupID)),
+			manager.HasUserWith(user.IDEQ(req.UserID)),
+		)).
+		Exec(ctx)
+	if err != nil {
+		InternalServerError(ctx, err, "failed to create manager record")
+		return
+	}
+	if n == 0 {
+		BadRequest(ctx, nil, "User does not exist or not the manager of the group")
+		return
+	}
+
+	SendResponse(ctx, respOK)
 }

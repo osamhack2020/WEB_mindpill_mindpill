@@ -46,6 +46,7 @@ func SendResponse(ctx *fasthttp.RequestCtx, data interface{}) {
 		return
 	}
 	ctx.Write(buf)
+	ctx.Write([]byte{'\n'})
 }
 
 func BadRequest(ctx *fasthttp.RequestCtx, err error, msg string) {

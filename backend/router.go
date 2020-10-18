@@ -26,6 +26,9 @@ func CreateRouter() *router.Router {
 	r.POST("/api/create_group", api.CreateGroup)
 	r.GET("/api/describe_group", api.DescribeGroup)
 
+	r.POST("/api/create_manager", api.CreateManager)
+	r.POST("/api/delete_manager", api.DeleteManager)
+
 	// Frontend
 	r.NotFound = handlers.FrontendHandler()
 
