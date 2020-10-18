@@ -118,11 +118,8 @@ func DescribeUser(ctx *fasthttp.RequestCtx) {
 	}
 	groups := tokens.GroupMapFromRecords(groupRecords...)
 
-	var resp interface{}
-
-	// Check user permission
-	t, _ := ParseAuthorization(ctx)
-	if t != nil &&
+	var resp *DescribeUserResponse
+	if t, _ := ParseAuthorization(ctx); t != nil &&
 		(t.IsAdmin || t.IsManagerOf(groups) || t.IsOwner(userRecord.ID)) {
 		resp = &DescribeUserResponse{
 			SvNumber:    userRecord.SvNumber,
