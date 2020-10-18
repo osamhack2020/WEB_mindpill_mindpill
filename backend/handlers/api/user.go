@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"mindpill/backend/internal/database"
+	"mindpill/backend/internal/tokens"
 	"mindpill/ent/user"
 	"strconv"
 	"time"
@@ -78,10 +79,6 @@ func CreateUser(ctx *fasthttp.RequestCtx) {
 }
 
 type DescribeUserResponse struct {
-	Name string `json:"name"`
-}
-
-type FullDescribeUserResponse struct {
 	SvNumber    string      `json:"sv_number,omitempty"`
 	Email       string      `json:"email,omitempty"`
 	Name        string      `json:"name,omitempty"`
@@ -107,22 +104,22 @@ func DescribeUser(ctx *fasthttp.RequestCtx) {
 		NotFound(ctx, err, "user not found")
 		return
 	}
-	groupRecord, err := userRecord.QueryGroup().
-		Only(ctx)
+
+	groupRecords, err := userRecord.QueryGroup().
+		All(ctx)
 	if err != nil {
 		InternalServerError(ctx, err, "this user is not joined any group")
 		return
 	}
+	groups := tokens.GroupMapFromRecords(groupRecords...)
 
 	var resp interface{}
 
 	// Check user permission
-	token, _ := ParseAuthorization(ctx)
-	if token != nil &&
-		(token.IsAdmin ||
-			(token.IsManager && token.GroupID == groupRecord.ID) ||
-			token.UserID == userRecord.ID) {
-		resp = &FullDescribeUserResponse{
+	t, _ := ParseAuthorization(ctx)
+	if t != nil &&
+		(t.IsAdmin || t.IsManagerOf(groups) || t.IsOwner(userRecord.ID)) {
+		resp = &DescribeUserResponse{
 			SvNumber:    userRecord.SvNumber,
 			Email:       userRecord.Email,
 			Name:        userRecord.Name,

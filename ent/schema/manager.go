@@ -23,6 +23,7 @@ func (Manager) Edges() []ent.Edge {
 			Unique(),
 		edge.From("group", Group.Type).
 			Ref("managers").
+			Required().
 			Unique(),
 	}
 }
