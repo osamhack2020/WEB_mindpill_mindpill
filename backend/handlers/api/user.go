@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"mindpill/backend/internal/database"
 	"mindpill/backend/internal/tokens"
+	"mindpill/ent/group"
 	"mindpill/ent/user"
 	"strconv"
 	"time"
@@ -59,7 +60,7 @@ func CreateUser(ctx *fasthttp.RequestCtx) {
 		SetSvNumber(req.SvNumber).
 		SetGender(req.Gender).
 		SetPhoneNumber(req.PhoneNumber).
-		SetGroupID(req.GroupID).
+		AddGroupIDs(req.GroupID).
 		SetRankID(req.RankID).
 		Save(ctx)
 	if err != nil {
@@ -96,19 +97,23 @@ func DescribeUser(ctx *fasthttp.RequestCtx) {
 		return
 	}
 
+	userPred := user.IDEQ(int(userID))
+
 	userRecord, err := database.Ent().
 		User.Query().
-		Where(user.IDEQ(int(userID))).
+		Where(userPred).
 		Only(ctx)
 	if err != nil {
 		NotFound(ctx, err, "user not found")
 		return
 	}
 
-	groupRecords, err := userRecord.QueryGroup().
+	groupRecords, err := database.Ent().
+		Group.Query().
+		Where(group.HasUsersWith(userPred)).
 		All(ctx)
 	if err != nil {
-		InternalServerError(ctx, err, "this user is not joined any group")
+		InternalServerError(ctx, err, "failed to query group records")
 		return
 	}
 	groups := tokens.GroupMapFromRecords(groupRecords...)
