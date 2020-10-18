@@ -13,6 +13,10 @@
 | 405           | 잘못된 HTTP 메소드로 요청했습니다.        |
 | 500           | 서버에서 처리하던 중 오류가 발생했습니다. |
 
+> 아래 API의 예시에는 Authorization 헤더가 생략되어 있습니다.
+>
+> 실제 API 실행시에는 사용자 인증을 위하여 Access Token을 함께 전송해주시기 바랍니다.
+
 ## Authentication API
 
 ### /api/create_token
@@ -68,14 +72,14 @@ curl https://localhost:7080/api/create_token?request_type=password --data '{"ema
 | sv_number    | string     | 사용자의 군번. 군번은 중복될 수 있습니다. 이 필드는 반드시 필요합니다. |
 | gender       | `m` \| `f` | 사용자의 성별. 이 필드는 반드시 필요합니다.                            |
 | phone_number | string     | 사용자의 연락처. 전화번호 혹은 군 VoIP 번호입니다.                     |
-| rank_id      | `Rank.id`  | 사용자가 속한 계급 ID. 이 필드는 반드시 필요합니다.                    |
-| group_id     | `Group.id` | 사용자가 속한 그룹(부대)의 ID. 이 필드는 반드시 필요합니다.            |
+| rank_id      | int        | 사용자가 속한 계급 ID. 이 필드는 반드시 필요합니다.                    |
+| group_id     | int        | 사용자가 속한 그룹(부대)의 ID. 이 필드는 반드시 필요합니다.            |
 
 **Response**
 
-| Parameter | Type      | Description               |
-| --------- | --------- | ------------------------- |
-| user_id   | `User.id` | 가입된 사용자의 id입니다. |
+| Parameter | Type | Description               |
+| --------- | ---- | ------------------------- |
+| user_id   | int  | 가입된 사용자의 id입니다. |
 
 **Examples**
 
@@ -93,20 +97,20 @@ curl https://localhost:7080/api/create_user --data '{"email": "recipient@example
 
 **Request**
 
-| Parameter | Type     | Required | Description        |
-| --------- | -------- | -------- | ------------------ |
-| name      | `string` | `true`   | 그룹의 이름입니다. |
+| Parameter | Type   | Required | Description        |
+| --------- | ------ | -------- | ------------------ |
+| name      | string | true     | 그룹의 이름입니다. |
 
 **Response**
 
-| Parameter | Type       | Description               |
-| --------- | ---------- | ------------------------- |
-| user_id   | `Group.id` | 만들어진 그룹의 ID입니다. |
+| Parameter | Type | Description               |
+| --------- | ---- | ------------------------- |
+| user_id   | int  | 만들어진 그룹의 ID입니다. |
 
 **Examples**
 
 ```
-curl -X POST -H "Authorization: Bearer (token)" https://localhost:7080/api/create_group --data '{"name": "Group Name"}'
+curl -X POST https://localhost:7080/api/create_group --data '{"name": "Group Name"}'
 ```
 
 ### GET /api/describe_group
@@ -115,20 +119,58 @@ curl -X POST -H "Authorization: Bearer (token)" https://localhost:7080/api/creat
 
 **Query**
 
-| Parameter | Type       | Required | Description |
-| --------- | ---------- | -------- | ----------- |
-| group_id  | `Group.id` | `true`   | 그룹의 ID.  |
+| Parameter | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| group_id  | int  | true     | 그룹의 ID.  |
 
 **Response**
 
-| Parameter  | Type     | Description                                                  |
-| ---------- | -------- | ------------------------------------------------------------ |
-| name       | `string` | 그룹의 이름입니다.                                           |
-| created_at | `time`   | 그룹이 만들어진 시각입니다.                                  |
-| updated_at | `time`   | 그룹의 데이터가 변경된 시각입니다. (관리자 추가 등은 미포함) |
+| Parameter  | Type   | Description                                                  |
+| ---------- | ------ | ------------------------------------------------------------ |
+| name       | string | 그룹의 이름입니다.                                           |
+| created_at | time   | 그룹이 만들어진 시각입니다.                                  |
+| updated_at | time   | 그룹의 데이터가 변경된 시각입니다. (관리자 추가 등은 미포함) |
 
 **Examples**
 
 ```
 curl -X GET https://localhost:7080/api/describe_group?group_id=1
+```
+
+### POST /api/create_manager
+
+그룹에 매니저를 추가합니다.
+
+이 API를 실행하기 위해서는 관리자 권한이 필요합니다.
+
+**Request**
+
+| Parameter | Type | Required | Description                  |
+| --------- | ---- | -------- | ---------------------------- |
+| group_id  | int  | true     | 그룹의 ID.                   |
+| user_id   | int  | true     | 매니저로 추가할 사용자의 ID. |
+
+**Examples**
+
+```
+curl -X GET https://localhost:7080/api/create_manager --data '{"group_id":1,"user_id":1}'
+```
+
+### POST /api/delete_manager
+
+그룹의 매니저를 삭제합니다.
+
+이 API를 실행하기 위해서는 관리자 권한이 필요합니다.
+
+**Request**
+
+| Parameter | Type | Required | Description         |
+| --------- | ---- | -------- | ------------------- |
+| group_id  | int  | true     | 그룹의 ID.          |
+| user_id   | int  | true     | 매니저의 사용자 ID. |
+
+**Examples**
+
+```
+curl -X GET https://localhost:7080/api/delete_manager --data '{"group_id":1,"user_id":1}'
 ```
