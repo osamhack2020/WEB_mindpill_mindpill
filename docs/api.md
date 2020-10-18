@@ -174,3 +174,41 @@ curl -X GET https://localhost:7080/api/create_manager --data '{"group_id":1,"use
 ```
 curl -X GET https://localhost:7080/api/delete_manager --data '{"group_id":1,"user_id":1}'
 ```
+
+### POST /api/create_counselor
+
+그룹에 상담관을 추가합니다.
+
+이 API를 실행하기 위해서는 관리자 권한이 필요합니다.
+
+**Request**
+
+| Parameter | Type | Required | Description                    |
+| --------- | ---- | -------- | ------------------------------ |
+| group_id  | int  | true     | 그룹의 ID.                     |
+| user_id   | int  | true     | 상담관으로 추가할 사용자의 ID. |
+
+**Examples**
+
+```
+curl -X GET https://localhost:7080/api/create_counselor --data '{"group_id":1,"user_id":1}'
+```
+
+### POST /api/delete_counselor
+
+그룹의 상담관을 삭제합니다.
+
+이 API를 실행하기 위해서는 관리자 권한이 필요합니다.
+
+**Request**
+
+| Parameter | Type | Required | Description           |
+| --------- | ---- | -------- | --------------------- |
+| group_id  | int  | true     | 그룹의 ID.            |
+| user_id   | int  | true     | 상담관으로 사용자 ID. |
+
+**Examples**
+
+```
+curl -X GET https://localhost:7080/api/delete_counselor --data '{"group_id":1,"user_id":1}'
+```

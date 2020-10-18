@@ -2,6 +2,7 @@ package api
 
 import (
 	"mindpill/backend/internal/database"
+	"mindpill/ent/counselor"
 	"mindpill/ent/group"
 	"mindpill/ent/manager"
 	"mindpill/ent/user"
@@ -133,7 +134,7 @@ func DeleteManager(ctx *fasthttp.RequestCtx) {
 		return
 	}
 
-	var req CreateManagerRequest
+	var req DeleteManagerRequest
 	if err := ParseRequestBody(ctx, &req); err != nil {
 		BadRequest(ctx, err, "failed to parse request body")
 		return
@@ -152,6 +153,84 @@ func DeleteManager(ctx *fasthttp.RequestCtx) {
 	}
 	if n == 0 {
 		BadRequest(ctx, nil, "User does not exist or not the manager of the group")
+		return
+	}
+
+	SendResponse(ctx, respOK)
+}
+
+type CreateCounselorRequest struct {
+	UserID  int `json:"user_id"`
+	GroupID int `json:"group_id"`
+}
+
+func CreateCounselor(ctx *fasthttp.RequestCtx) {
+	token, err := ParseAuthorization(ctx)
+	if err != nil {
+		Unauthorized(ctx, err, "unauthorized")
+		return
+	}
+
+	if !token.IsAdmin {
+		Forbidden(ctx, nil, "this action requires admin privilege")
+		return
+	}
+
+	var req CreateCounselorRequest
+	if err := ParseRequestBody(ctx, &req); err != nil {
+		BadRequest(ctx, err, "failed to parse request body")
+		return
+	}
+
+	_, err = database.Ent().
+		Counselor.Create().
+		SetUserID(req.UserID).
+		SetGroupID(req.GroupID).
+		Save(ctx)
+	if err != nil {
+		InternalServerError(ctx, err, "failed to create counselor record")
+		return
+	}
+
+	SendResponse(ctx, respOK)
+}
+
+type DeleteCounselorRequest struct {
+	UserID  int `json:"user_id"`
+	GroupID int `json:"group_id"`
+}
+
+func DeleteCounselor(ctx *fasthttp.RequestCtx) {
+	token, err := ParseAuthorization(ctx)
+	if err != nil {
+		Unauthorized(ctx, err, "unauthorized")
+		return
+	}
+
+	if !token.IsAdmin {
+		Forbidden(ctx, nil, "this action requires admin privilege")
+		return
+	}
+
+	var req DeleteCounselorRequest
+	if err := ParseRequestBody(ctx, &req); err != nil {
+		BadRequest(ctx, err, "failed to parse request body")
+		return
+	}
+
+	n, err := database.Ent().
+		Counselor.Delete().
+		Where(counselor.And(
+			counselor.HasGroupWith(group.IDEQ(req.GroupID)),
+			counselor.HasUserWith(user.IDEQ(req.UserID)),
+		)).
+		Exec(ctx)
+	if err != nil {
+		InternalServerError(ctx, err, "failed to create counselor record")
+		return
+	}
+	if n == 0 {
+		BadRequest(ctx, nil, "User does not exist or not the counselor of the group")
 		return
 	}
 
