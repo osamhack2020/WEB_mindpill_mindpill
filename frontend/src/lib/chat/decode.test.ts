@@ -1,5 +1,5 @@
 import { Message } from './message'
-import { decode } from './chat'
+import { decode } from './decode'
 import JSBI from 'jsbi'
 
 const helloworld = [
@@ -42,9 +42,7 @@ test('Decoder#str16', () => {
 
 test('Decoder#str32', () => {
   const expected: Array<Message> = ['Hello, World!']
-  const result = decode(
-    Uint8Array.from([0x82, 0x00, 0x00, 0x00, ...helloworld])
-  )
+  const result = decode(Uint8Array.from([0x82, 0x00, 0x00, 0x00, ...helloworld]))
   expect(result).toEqual(expected)
 })
 
