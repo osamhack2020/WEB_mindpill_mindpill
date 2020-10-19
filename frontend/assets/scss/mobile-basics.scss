@@ -1,0 +1,18 @@
+$defaultShadow: 0 0 5px rgba(0, 0, 0, 0.3);
+
+//colors
+$primary: #d63031;
+
+html {
+  font-family: 'Noto Sans KR', sans-serif;
+  font-size: 15px;
+}
+.test {
+  background-color: red;
+  outline: 1px solid black;
+}
+
+.test2 {
+  background-color: blue;
+  outline: 1px solid black;
+}
