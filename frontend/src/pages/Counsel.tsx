@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
-import { NavLink, Redirect, Route, Switch, withRouter } from 'react-router-dom'
-import { useParams } from 'react-router'
+import { NavLink, Redirect, Route, Switch } from 'react-router-dom'
+import { useHistory, useParams } from 'react-router'
 import database from '../tempDatabase'
 import { parseAuthority, User } from '../routes'
 import Toolbox from '../components/CounselToolbox'
@@ -23,37 +23,33 @@ type counselRoom = {
   }
 }
 
+type UserInfoProps = {
+  userInfos: friend[] | undefined
+}
+
 type UserInfoParams = {
   id: string
 }
 
-export function UserInfo() {
-  // 이곳에 있는 모든 정보를 Props에서 가져올 수 있도록 바꿔야 합니다.
-  const params = useParams<UserInfoParams | null>()
+export function UserInfo({ userInfos }: UserInfoProps) {
+  const [info, setInfo] = useState<friend | undefined>(undefined)
+  const params = useParams<UserInfoParams>()
+  useEffect(() => {
+    setInfo(userInfos?.find(userInfo => userInfo.id == parseInt(params.id)))
+  }, [params])
+
   return (
     <div className="user-info-container">
       <div className="user-info box-top-column expand">
         <div className="profile-image">
           <i className="fas fa-user"></i>
         </div>
-        <div className="name">홍길동 상담관</div>
-        <div className="regiment">12사단 00연대 00중대 심리상담관</div>
+        <div className="name">{info?.name}</div>
+        <div className="regiment">Type에 소속이 없습니다.</div>
         <div className="info-category">연락처</div>
         <div className="info-wrapper">
-          <div className="info-title">군전화</div>
-          <div className="info-content">1123-456-789</div>
-        </div>
-        <div className="info-wrapper">
-          <div className="info-title">군전화</div>
-          <div className="info-content">1123-456-789</div>
-        </div>
-        <div className="info-wrapper">
-          <div className="info-title">군전화</div>
-          <div className="info-content">1123-456-789</div>
-        </div>
-        <div className="info-wrapper">
-          <div className="info-title">군전화</div>
-          <div className="info-content">1123-456-789</div>
+          <div className="info-title">휴대폰</div>
+          <div className="info-content">{info?.phone_number}</div>
         </div>
         <button className="counsel-button">
           <span className="counsel-button-icon">
@@ -167,7 +163,9 @@ export function CurrentCounselRoom({ toggleToolbox, user, toolbox }: CurrentCoun
     toggleToolbox()
   }
 
-  function handleSubmit(e: React.FormEvent<HTMLFormElement> & { target: { message: HTMLInputElement } }) {
+  function handleSubmit(
+    e: React.FormEvent<HTMLFormElement> & { target: { message: HTMLInputElement } }
+  ) {
     e.preventDefault()
     let message = e.target.message.value
     if (message) {
@@ -189,7 +187,14 @@ export function CurrentCounselRoom({ toggleToolbox, user, toolbox }: CurrentCoun
         <div className="counsel-log-null"></div>
         {counselLogs &&
           counselLogs.map((value, key) => {
-            return <CounselLog key={key} text={value.text} timestamp={value.timestamp} myLog={value.myLog} />
+            return (
+              <CounselLog
+                key={key}
+                text={value.text}
+                timestamp={value.timestamp}
+                myLog={value.myLog}
+              />
+            )
           })}
         <div className="counsel-log-null"></div>
       </div>
@@ -209,26 +214,33 @@ export function CurrentCounselRoom({ toggleToolbox, user, toolbox }: CurrentCoun
 }
 
 type CounselRoomListProps = {
-  counselRooms: counselRoom[]
+  rooms: counselRoom[]
 }
 
-export function CounselRoomList({ counselRooms }: CounselRoomListProps) {
+export function CounselRoomList({ rooms }: CounselRoomListProps) {
   //현재 사용자가 열람할 수 있는 모든 채팅방을 가져올 수 있는 API가 필요합니다.
 
   return (
     <div className="counselroom-list">
-      {counselRooms.map((counselRoom, index) => {
+      {rooms.map((room, index) => {
         return (
-          <NavLink key={index} to={`/counsel/counselrooms/${counselRoom.id}`} className="counselroom" activeClassName="selected">
+          <NavLink
+            key={index}
+            to={`/counsel/counselrooms/${room.id}`}
+            className="counselroom"
+            activeClassName="selected">
             <div className="profile-image">
               <i className="fas fa-user"></i>
             </div>
             <div className="wrapper">
               <div className="name">
-                {counselRoom.friend.name} {parseAuthority(counselRoom.friend.authority)}
+                {room.friend.name} {parseAuthority(room.friend.authority)}
               </div>
-              <span className="last-message">{counselRoom.last_message.text}</span>
-              <span className="last-message-time">{counselRoom.last_message.timestamp.getDate()}</span> {/** Format을 맞춰줘야 합니다 */}
+              <span className="last-message">{room.last_message.text}</span>
+              <span className="last-message-time">
+                {room.last_message.timestamp.getDate()}
+              </span>{' '}
+              {/** Format을 맞춰줘야 합니다 */}
             </div>
           </NavLink>
         )
@@ -245,7 +257,11 @@ export function FriendList({ friends }: FriendListProps) {
     <div className="friend-list">
       {friends.map((friend, index) => {
         return (
-          <NavLink key={index} to={`/counsel/friends/${friend.id}`} className="friend" activeClassName="selected">
+          <NavLink
+            key={index}
+            to={`/counsel/friends/${friend.id}`}
+            className="friend"
+            activeClassName="selected">
             <span className="profile-image"></span>
             <span className="friend-name">
               {friend.name} {parseAuthority(friend.authority)}
@@ -261,27 +277,34 @@ type CounselProps = {
   user: User | null
 }
 
+type CounselParams = {
+  id: string
+}
+
 export default function Counsel({ user }: CounselProps) {
   type CounselData = {
-    counselRooms: counselRoom[]
+    rooms: counselRoom[]
     friends: friend[]
   }
-  const [counselData, setCounselData] = useState<CounselData>({ counselRooms: [], friends: [] })
+  const [rooms, setRooms] = useState<counselRoom[]>([])
+  const [friends, setFriends] = useState<friend[]>([])
   const [toolbox, setToolbox] = useState<boolean>(false)
 
-  function getCounselData() {
-    //임시 데이터베이스에서 가져온 정보입니다.
-    let data = database.API_COUNSEL_SELF
-    return data
+  function getFriends() {
+    let friendsData = database.API_COUNSEL_FRIENDS
+    return friendsData
   }
-
+  function getRooms() {
+    let roomsData = database.API_COUNSEL_ROOMS
+    return roomsData
+  }
   function toggleToolbox() {
     setToolbox(toolbox => !toolbox)
   }
 
   useEffect(() => {
-    setCounselData(getCounselData())
-    console.log(user)
+    setFriends(getFriends())
+    setRooms(getRooms())
   }, [])
 
   return (
@@ -314,22 +337,23 @@ export default function Counsel({ user }: CounselProps) {
             </div>
           </div>
           <Switch>
-            <Redirect exact path="/counsel" to="/counsel/counselrooms" /> {/** /counsel/counselrooms 를 기본 페이지로 설정하기 위함. */}
+            <Redirect exact path="/counsel" to="/counsel/counselrooms" />{' '}
+            {/** /counsel/counselrooms 를 기본 페이지로 설정하기 위함. */}
             <Route path="/counsel/counselrooms">
-              <CounselRoomList counselRooms={counselData.counselRooms} />
+              <CounselRoomList rooms={rooms} />
             </Route>
             <Route path="/counsel/friends">
-              <FriendList friends={counselData.friends} />
+              <FriendList friends={friends} />
             </Route>
           </Switch>
         </div>
         <Route path={['/counsel/counselrooms/:id', '/counsel/friends/:id']}>
           <div className="counsel-content">
             <Route path="/counsel/friends/:id">
-              <UserInfo />
+              <UserInfo userInfos={friends} />
             </Route>
             <Route path="/counsel/counselrooms/:id">
-              {toolbox && user?.authority == 3 ? <Toolbox /> : <UserInfo />}
+              {toolbox && user?.authority == 3 ? <Toolbox /> : <UserInfo userInfos={friends} />}
               <CurrentCounselRoom user={user} toolbox={toolbox} toggleToolbox={toggleToolbox} />
             </Route>
           </div>
