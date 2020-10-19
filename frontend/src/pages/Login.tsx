@@ -28,13 +28,13 @@ export default function Login({ user }: LoginProps) {
   }
 
   return (
-    <div className="box-center-column">
-      <form id="form-login" onSubmit={handleSubmit}>
-        <Input name="email" type="text" placeholder="이메일" autofocus required />
-        <Input name="password" type="password" placeholder="비밀번호" required />
-        <Input type="submit" value="로그인" />
+    <div id="page_login">
+      <form id="form_login" onSubmit={handleSubmit}>
+        <input className="styled sized" type="email" placeholder="이메일" autoFocus required />
+        <input className="styled sized" type="password" placeholder="비밀번호" required />
+        <input className="styled sized black" type="submit" value="로그인" />
       </form>
-      <Link to="/join">
+      <Link to="/join" className="link">
         <p>아직 회원이 아니신가요?</p>
       </Link>
     </div>

@@ -13,6 +13,7 @@
     box-shadow: $defaultShadow;
     .logo {
       font-weight: 900;
+      margin-right: auto;
     }
   }
   #app_main {
@@ -22,6 +23,7 @@
     align-items: center;
     overflow-x: hidden;
     overflow-y: scroll;
+    padding: 1rem;
   }
 
   #app_navbar {

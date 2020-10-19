@@ -1,0 +1,22 @@
+input.styled {
+  border-radius: 0.2rem;
+  text-align: center;
+  font-weight: $weightBold;
+  background-color: $white;
+  box-shadow: $defaultShadow;
+
+  &.sized {
+    width: 100%;
+    max-width: 20rem;
+    height: 3rem;
+  }
+  &.black {
+    background-color: $black;
+    color: white;
+  }
+
+  &::placeholder {
+    opacity: 0.8;
+    font-weight: $weightNormal;
+  }
+}

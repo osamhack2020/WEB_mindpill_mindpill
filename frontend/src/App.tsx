@@ -35,9 +35,7 @@ export default function App() {
     setUser(user)
   }
 
-  useEffect(() => {
-    authenticateUser(3)
-  }, [])
+  useEffect(() => {}, [])
 
   return (
     <Layout user={user} changeUser={authenticateUser}>

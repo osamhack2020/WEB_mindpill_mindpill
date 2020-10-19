@@ -15,25 +15,28 @@ function Layout({ user, children, changeUser }: LayoutProps) {
         <Link to="/" className="logo">
           마인드필
         </Link>
+        {!user && <Link to="/login">로그인</Link>}
       </div>
       <div id="app_main">{children}</div>
-      <div id="app_navbar">
-        <NavLink to="couselrooms" className="nav" activeClassName="selected">
-          <i className="fas fa-comment"></i>
-        </NavLink>
-        <NavLink to="friends" className="nav" activeClassName="selected">
-          <i className="fas fa-user-friends"></i>
-        </NavLink>
-        <NavLink to="settings" className="nav" activeClassName="selected">
-          <i className="fas fa-cog"></i>
-        </NavLink>
-        <NavLink to="counsel_rooms" className="nav" activeClassName="selected">
-          <i className="fas fa-comment"></i>
-        </NavLink>
-        <div className="nav menu">
-          <i className="fas fa-bars"></i>
+      {user && (
+        <div id="app_navbar">
+          <NavLink to="couselrooms" className="nav" activeClassName="selected">
+            <i className="fas fa-comment"></i>
+          </NavLink>
+          <NavLink to="friends" className="nav" activeClassName="selected">
+            <i className="fas fa-user-friends"></i>
+          </NavLink>
+          <NavLink to="settings" className="nav" activeClassName="selected">
+            <i className="fas fa-cog"></i>
+          </NavLink>
+          <NavLink to="counsel_rooms" className="nav" activeClassName="selected">
+            <i className="fas fa-comment"></i>
+          </NavLink>
+          <div className="nav menu">
+            <i className="fas fa-bars"></i>
+          </div>
         </div>
-      </div>
+      )}
     </div>
   )
 }

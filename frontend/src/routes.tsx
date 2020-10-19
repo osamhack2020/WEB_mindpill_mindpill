@@ -71,8 +71,8 @@ export function Router({ user }: RouterProps) {
 
       {checkAuthority(user?.authority, [3, 5]) && <Route path="/counsel" render={() => <PageCounsel user={user} />} />}
       {checkAuthority(user?.authority, [1, 2, 3, 4]) && <Route path="/manage" render={() => <PageManage user={user} />} />}
-      {user && <Route path="/login" render={() => <PageLogin user={user} />} />}
-      {user && <Route path="/join" render={() => <PageJoin user={user} />} />}
+      {!user && <Route path="/login" render={() => <PageLogin user={user} />} />}
+      {!user && <Route path="/join" render={() => <PageJoin user={user} />} />}
 
       <Route component={PageNotFound} />
     </Switch>
