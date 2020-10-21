@@ -1,9 +1,6 @@
 import React from 'react'
 import axios from 'axios'
 import { Link } from 'react-router-dom'
-import Input from '../components/Input'
-import SelectBox from '../components/SelectBox'
-import SelectBySearch from '../components/SelectBySearch'
 import { User } from '../routes'
 
 type JoinProps = {
@@ -21,10 +18,11 @@ export default function Join({ user }: JoinProps) {
       password2: e.currentTarget.password2.value,
       serialNo: e.currentTarget.serialNo.value,
       rank: e.currentTarget.rank.value,
-      classification: e.currentTarget.classification.value,
+      //classification: e.currentTarget.classification.value,
       department: e.currentTarget.department.value,
       regiment: e.currentTarget.regiment.value
     }
+    console.log(query)
   }
 
   function createUser() {
@@ -62,22 +60,20 @@ export default function Join({ user }: JoinProps) {
       <form id="form_join" onSubmit={handleSubmit}>
         <input className="styled sized" name="name" type="text" placeholder="이름" autoFocus required />
         <input className="styled sized" name="email" type="email" placeholder="이메일" required />
-        <div className="radio_wrapper">
-          <span>성별</span>
-          <label>
-            <input name="gender" type="radio" value="male" required />
-            남자
-          </label>
-          <label>
-            <input name="gender" type="radio" value="male" required />
-            여자
-          </label>
-        </div>
+
+        <select name="gender" className="styled sized">
+          <option value="" disabled selected>
+            성별을 선택해주세요.
+          </option>
+          <option value="male">남성</option>
+          <option value="female">여성</option>
+        </select>
+
         <input className="styled sized" name="password" type="password" placeholder="비밀번호" required />
         <input className="styled sized" name="password2" type="password" placeholder="비밀번호 확인" required />
 
         <select name="department" className="styled sized">
-          <option value="" disabled>
+          <option value="" disabled selected>
             군 구분을 선택해주세요.
           </option>
           <option value="국방부">국방부</option>
@@ -91,7 +87,7 @@ export default function Join({ user }: JoinProps) {
           <option value="군무원">군무원</option>
         </select>
         <select name="rank" className="styled sized">
-          <option value="" disabled>
+          <option value="" disabled selected>
             계급/등급을 선택해주세요.
           </option>
           <option value="이등병">이등병</option>
@@ -101,7 +97,7 @@ export default function Join({ user }: JoinProps) {
         </select>
 
         <input className="styled sized" name="serialNo" type="text" placeholder="군번" required />
-        {/**소속 검색해서 팝업 띄워야함*/}
+        {/**소속 검색해서 팝업 띄워야함 */}
         <input className="styled sized" name="regiment" type="text" placeholder="소속을 검색하세요" required />
 
         <input className="styled sized black" type="submit" value="회원가입" />
