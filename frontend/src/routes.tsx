@@ -4,7 +4,8 @@ import { Redirect, Route, Switch } from 'react-router-dom'
 import PageHome from './pages/Home'
 import PageJoin from './pages/Join'
 import PageLogin from './pages/Login'
-import PageCounsel from './pages/Counsel'
+import PageCounselrooms from './pages/Counselrooms'
+import PageFriends from './pages/Friends'
 import PageManage from './pages/Manage'
 import PageNotFound from './pages/NotFound'
 
@@ -69,10 +70,19 @@ export function Router({ user }: RouterProps) {
     <Switch>
       <Route exact path="/" render={() => <PageHome user={user} />} />
 
+      {/**
       {checkAuthority(user?.authority, [3, 5]) && <Route path="/counsel" render={() => <PageCounsel user={user} />} />}
       {checkAuthority(user?.authority, [1, 2, 3, 4]) && <Route path="/manage" render={() => <PageManage user={user} />} />}
       {!user && <Route path="/login" render={() => <PageLogin user={user} />} />}
       {!user && <Route path="/join" render={() => <PageJoin user={user} />} />}
+      */}
+
+      <Route path="/login" render={() => <PageLogin user={user} />} />
+      <Route path="/join" render={() => <PageJoin user={user} />} />
+      <Route path="/counselrooms" render={() => <PageCounselrooms user={user} />} />
+      <Route path="/friends" render={() => <PageFriends user={user} />} />
+
+      <Route path="/manage" render={() => <PageManage user={user} />} />
 
       <Route component={PageNotFound} />
     </Switch>
