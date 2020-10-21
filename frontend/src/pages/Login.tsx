@@ -34,8 +34,8 @@ export default function Login({ user }: LoginProps) {
         <input className="styled sized" type="password" placeholder="비밀번호" required />
         <input className="styled sized black" type="submit" value="로그인" />
       </form>
-      <Link to="/join" className="link">
-        <p>아직 회원이 아니신가요?</p>
+      <Link to="/join">
+        <p className="link">아직 회원이 아니신가요?</p>
       </Link>
     </div>
   )

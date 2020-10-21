@@ -54,53 +54,59 @@ export default function Join({ user }: JoinProps) {
 
   createUser()
   return (
-    <div className="box-center-column">
-      <form className="box-center-column" id="form-join" onSubmit={handleSubmit}>
-        <div className="box-center">
-          <div className="box-top-column mg-hr">
-            <label>이름</label>
-            <Input name="name" type="text" placeholder="이름" required autofocus />
-            <label>이메일</label>
-            <Input name="email" type="email" placeholder="이메일" required />
-            <label>성별</label>
-            <SelectBox name="gender" placeholder="성별" values={['남자', '여자']} required />
-            <label>비밀번호</label>
-            <Input
-              name="password"
-              type="password"
-              placeholder="비밀번호"
-              helperMessage="영문, 숫자, 특수기호를 반드시 포함해야 하며, 8글자 이상이여야 합니다."
-              required
-            />
-            <label>비밀번호 확인</label>
-            <Input name="password2" type="password" placeholder="비밀번호 확인" required />
-          </div>
-          <div className="box-top-column">
-            <label>소속</label>
-            <SelectBySearch
-              name="regiment"
-              placeholder="소속을 검색하세요"
-              values={['1사단', '2사단', '지상작전사령부', '안보지원사령부']}
-              required
-            />
-            <label>군 구분</label>
-            <SelectBox
-              name="department"
-              placeholder="군 구분"
-              values={['국방부', '국방부 직할부대', '육군', '해군', '해병대', '공군', '생도', '후보생', '군무원']}
-              required
-            />
-            <label>계급/등급</label>
-            <SelectBox name="rank" placeholder="계급/등급" values={['이등병', '일병', '상병', '병장', '하사', '중사']} required />
-            <label>군번</label>
-            <Input name="serialNo" type="text" placeholder="군번" required />
-            <label>회원분류</label>
-            <SelectBox name="classification" placeholder="회원분류" values={['부대 관리자', '지휘관', '상담관', '일반']} required />
-          </div>
+    <div id="page_join">
+      <div className="greetings">
+        마인드필에 오신 것을 <br />
+        환영합니다!
+      </div>
+      <form id="form_join" onSubmit={handleSubmit}>
+        <input className="styled sized" name="name" type="text" placeholder="이름" autoFocus required />
+        <input className="styled sized" name="email" type="email" placeholder="이메일" required />
+        <div className="radio_wrapper">
+          <span>성별</span>
+          <label>
+            <input name="gender" type="radio" value="male" required />
+            남자
+          </label>
+          <label>
+            <input name="gender" type="radio" value="male" required />
+            여자
+          </label>
         </div>
-        <Input type="submit" value="회원가입" />
+        <input className="styled sized" name="password" type="password" placeholder="비밀번호" required />
+        <input className="styled sized" name="password2" type="password" placeholder="비밀번호 확인" required />
+
+        <select name="department" className="styled sized">
+          <option value="" disabled>
+            군 구분을 선택해주세요.
+          </option>
+          <option value="국방부">국방부</option>
+          <option value="국방부 직할부대">직할부대</option>
+          <option value="육군">육군</option>
+          <option value="해군">해군</option>
+          <option value="해병대">해병대</option>
+          <option value="공군">공군</option>
+          <option value="생도">생도</option>
+          <option value="후보생">후보생</option>
+          <option value="군무원">군무원</option>
+        </select>
+        <select name="rank" className="styled sized">
+          <option value="" disabled>
+            계급/등급을 선택해주세요.
+          </option>
+          <option value="이등병">이등병</option>
+          <option value="일병">일병</option>
+          <option value="상병">상병</option>
+          <option value="병장">병장</option>
+        </select>
+
+        <input className="styled sized" name="serialNo" type="text" placeholder="군번" required />
+        {/**소속 검색해서 팝업 띄워야함*/}
+        <input className="styled sized" name="regiment" type="text" placeholder="소속을 검색하세요" required />
+
+        <input className="styled sized black" type="submit" value="회원가입" />
       </form>
-      <Link to="/login">
+      <Link to="/login" className="login">
         <p>이미 회원이신가요?</p>
       </Link>
     </div>

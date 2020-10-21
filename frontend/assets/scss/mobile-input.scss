@@ -1,13 +1,15 @@
-input.styled {
+input.styled,
+select.styled {
   border-radius: 0.2rem;
   text-align: center;
   font-weight: $weightBold;
   background-color: $white;
   box-shadow: $defaultShadow;
+  padding: 1rem;
 
   &.sized {
     width: 100%;
-    max-width: 20rem;
+    max-width: 25rem;
     height: 3rem;
   }
   &.black {
@@ -18,5 +20,32 @@ input.styled {
   &::placeholder {
     opacity: 0.8;
     font-weight: $weightNormal;
+  }
+}
+select.styled {
+  padding: 0 1rem;
+}
+
+.input_component {
+  position: relative;
+  .helper_message {
+    position: absolute;
+    line-height: 1.5rem;
+    bottom: 4rem;
+    right: 0rem;
+    background-color: $black;
+    color: $white;
+    padding: 1rem;
+    border-radius: 0.5rem;
+    &::after {
+      position: absolute;
+      bottom: -0.5rem;
+      right: 2rem;
+      content: ' ';
+      width: 1rem;
+      height: 1rem;
+      background-color: $black;
+      transform: rotateZ(45deg);
+    }
   }
 }
