@@ -6,6 +6,11 @@ import { Router, User } from './routes'
 
 export default function App() {
   const [user, setUser] = useState<User | null>(null)
+  const [showSub, setShowSub] = useState<number>(0)
+
+  function changeSub(id: number) {
+    setShowSub(id)
+  }
 
   function handleLogin(email: string, password: string) {
     // 초기 access token 과 refresh token 을 받는 곳입니다.
@@ -38,8 +43,8 @@ export default function App() {
   useEffect(() => {}, [])
 
   return (
-    <Layout user={user} changeUser={authenticateUser}>
-      <Router user={user} />
+    <Layout user={user} changeUser={authenticateUser} showSub={showSub} changeSub={changeSub}>
+      <Router user={user} changeSub={changeSub} />
     </Layout>
   )
 }

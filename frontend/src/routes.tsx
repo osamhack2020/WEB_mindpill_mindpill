@@ -63,9 +63,10 @@ const routes: RouteProps[] = [
 
 type RouterProps = {
   user: User | null
+  changeSub: (id: number) => void
 }
 
-export function Router({ user }: RouterProps) {
+export function Router({ user, changeSub }: RouterProps) {
   return (
     <Switch>
       <Route exact path="/" render={() => <PageHome user={user} />} />
@@ -79,8 +80,8 @@ export function Router({ user }: RouterProps) {
 
       <Route path="/login" render={() => <PageLogin user={user} />} />
       <Route path="/join" render={() => <PageJoin user={user} />} />
-      <Route path="/counselrooms" render={() => <PageCounselrooms user={user} />} />
-      <Route path="/friends" render={() => <PageFriends user={user} />} />
+      <Route path="/counselrooms" render={() => <PageCounselrooms user={user} changeSub={changeSub} />} />
+      <Route path="/friends" render={() => <PageFriends user={user} changeSub={changeSub} />} />
 
       <Route path="/manage" render={() => <PageManage user={user} />} />
 

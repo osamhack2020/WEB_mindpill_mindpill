@@ -55,6 +55,15 @@
     overflow-x: hidden;
     overflow-y: auto;
   }
+  #app_sub {
+    position: fixed;
+    z-index: 200;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: blue;
+  }
 }
 /* 모바일에 적용될 스타일을 먼저 작성합니다. */
 
@@ -64,7 +73,7 @@
   grid-area: 'navbar' 'main';
 }
 
-@media screen and (min-width: 426px) {
+@media screen and (min-width: 769px) {
   /* 태블릿에서 사용될 스타일을 여기에 작성합니다. */
   #app_container {
     display: grid;
@@ -89,6 +98,17 @@
   }
 }
 
-@media screen and (min-width: 769px) {
+@media screen and (min-width: 1025px) {
   /* 데스크탑에서 사용될 스타일을 여기에 작성합니다. */
+  #app_container {
+    display: grid;
+    grid-template-columns: auto 30rem 1fr;
+    grid-template-rows: 1fr;
+    #app_sub {
+      position: relative;
+      width: 50vw;
+      height: 50vh;
+      background-color: blue;
+    }
+  }
 }

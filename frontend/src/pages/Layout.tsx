@@ -1,14 +1,20 @@
-import React, { MouseEventHandler } from 'react'
+import React, { useState } from 'react'
 import { Link, NavLink } from 'react-router-dom'
-import { User, parseAuthority } from '../routes'
+import { User } from '../routes'
 
 type LayoutProps = {
   user: User | null
   children: React.ReactNode
+  showSub: number
   changeUser: (value: number) => void
+  changeSub: (id: number) => void
 }
 
-function Layout({ user, children, changeUser }: LayoutProps) {
+function Layout({ user, children, showSub, changeUser, changeSub }: LayoutProps) {
+  function handleOffSub() {
+    changeSub(0)
+  }
+
   return (
     <div id="app_container">
       <div id="app_navbar">
@@ -45,6 +51,12 @@ function Layout({ user, children, changeUser }: LayoutProps) {
         )}
       </div>
       <div id="app_main">{children}</div>
+      {showSub != 0 && (
+        <div id="app_sub">
+          상담방 정보는 {showSub} 입니다.
+          <button onClick={handleOffSub}>끄기</button>
+        </div>
+      )}
     </div>
   )
 }
