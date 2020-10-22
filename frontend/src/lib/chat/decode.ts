@@ -1,10 +1,19 @@
-import { Message } from './message'
+import JSBI from 'jsbi'
 import { CursorView } from './cursorview'
+
+export type MessageToken =
+  | string
+  | { type: 'image'; id: Uint8Array }
+  | { type: 'audio'; id: Uint8Array }
+  | { type: 'video'; id: Uint8Array }
+  | { type: 'uid'; id: Uint8Array }
+  | { type: 'timestamp'; timestamp: JSBI }
+  | { type: 'error'; code: number }
 
 export function decode(arr: Uint8Array) {
   const view = new CursorView(arr)
 
-  const result: Array<Message> = []
+  const result: Array<MessageToken> = []
 
   let header: number, len: number
   while (view.length > view.cursor) {
