@@ -62,7 +62,6 @@
     left: 0;
     width: 100vw;
     height: 100vh;
-    background-color: blue;
   }
 }
 /* 모바일에 적용될 스타일을 먼저 작성합니다. */
@@ -106,9 +105,27 @@
     grid-template-rows: 1fr;
     #app_sub {
       position: relative;
-      width: 50vw;
-      height: 50vh;
-      background-color: blue;
+      padding: 0 2rem;
+      width: 100%;
+      #page_current_room {
+        .header,
+        .chat_inputs {
+          background-color: transparent;
+          box-shadow: none;
+          padding: 2rem 0;
+        }
+        .header {
+          display: flex;
+          align-items: center;
+          .user_info {
+            padding-bottom: 0;
+            margin-right: auto;
+          }
+        }
+        .chat_logs {
+          border-radius: 1rem;
+        }
+      }
     }
   }
 }

@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { Link, NavLink } from 'react-router-dom'
 import { User } from '../routes'
+import CurrentRoom from './CurrentRoom'
 
 type LayoutProps = {
   user: User | null
@@ -11,10 +12,6 @@ type LayoutProps = {
 }
 
 function Layout({ user, children, showSub, changeUser, changeSub }: LayoutProps) {
-  function handleOffSub() {
-    changeSub(0)
-  }
-
   return (
     <div id="app_container">
       <div id="app_navbar">
@@ -51,10 +48,9 @@ function Layout({ user, children, showSub, changeUser, changeSub }: LayoutProps)
         )}
       </div>
       <div id="app_main">{children}</div>
-      {showSub != 0 && (
+      {showSub == 0 && (
         <div id="app_sub">
-          상담방 정보는 {showSub} 입니다.
-          <button onClick={handleOffSub}>끄기</button>
+          <CurrentRoom showSub={showSub} changeSub={changeSub} />
         </div>
       )}
     </div>

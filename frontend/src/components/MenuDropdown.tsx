@@ -16,8 +16,12 @@ type MenuDropdownProps = {
 
 export function MenuDropdown({ children }: MenuDropdownProps) {
   const [showOptions, setShowOptions] = useState<boolean>(false)
-  function handleClick() {
+  function handleClick(e: React.MouseEvent<HTMLDivElement>) {
+    e.stopPropagation()
     setShowOptions(showOptions => !showOptions)
+  }
+  function handleOptionsClick(e: React.MouseEvent<HTMLDivElement>) {
+    e.stopPropagation()
   }
   function handleBlur() {
     setShowOptions(false)
@@ -27,7 +31,11 @@ export function MenuDropdown({ children }: MenuDropdownProps) {
       <div className="icon" onClick={handleClick}>
         <i className="fas fa-ellipsis-h"></i>
       </div>
-      {showOptions && <div className="menu_dropdown_options">{children}</div>}
+      {showOptions && (
+        <div className="menu_dropdown_options" onClick={handleOptionsClick}>
+          {children}
+        </div>
+      )}
     </button>
   )
 }
