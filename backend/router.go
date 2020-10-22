@@ -32,6 +32,9 @@ func CreateRouter() *router.Router {
 	r.POST("/api/create_counselor", api.CreateCounselor)
 	r.POST("/api/delete_counselor", api.DeleteCounselor)
 
+	// Chat APIs
+	r.POST("/api/create_room", api.CreateRoom)
+
 	// Frontend
 	r.NotFound = handlers.FrontendHandler()
 
