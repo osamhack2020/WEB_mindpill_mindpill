@@ -1,37 +1,26 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
-import Input from '../components/Input'
 import axios from 'axios'
-import { User } from '../routes'
+import { GlobalData } from '../App'
 
 type LoginProps = {
-  user: User | null
+  globalData: GlobalData
 }
 
-export default function Login({ user }: LoginProps) {
+export default function Login({ globalData }: LoginProps) {
   function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
-
-    let query = {
-      email: e.currentTarget.email.value,
-      password: e.currentTarget.password.value
-    }
-
-    axios
-      .post('/auth/code', query)
-      .then(response => {
-        console.log(response)
-      })
-      .catch(error => {
-        console.log(error)
-      })
+    const email = e.currentTarget.email.value
+    const password = e.currentTarget.password.value
+    console.log(email, password)
+    globalData.handleLogin(email, password)
   }
 
   return (
     <div id="page_login">
       <form id="form_login" onSubmit={handleSubmit}>
-        <input className="styled sized" type="email" placeholder="이메일" autoFocus required />
-        <input className="styled sized" type="password" placeholder="비밀번호" required />
+        <input className="styled sized" type="email" name="email" placeholder="이메일" autoFocus required />
+        <input className="styled sized" type="password" name="password" placeholder="비밀번호" required />
         <input className="styled sized black" type="submit" value="로그인" />
       </form>
       <Link to="/join">

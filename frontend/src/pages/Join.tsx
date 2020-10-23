@@ -1,13 +1,13 @@
 import React from 'react'
 import axios from 'axios'
 import { Link } from 'react-router-dom'
-import { User } from '../routes'
+import { GlobalData } from '../App'
 
 type JoinProps = {
-  user: User | null
+  globalData: GlobalData
 }
 
-export default function Join({ user }: JoinProps) {
+export default function Join({ globalData }: JoinProps) {
   function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
     let query = {

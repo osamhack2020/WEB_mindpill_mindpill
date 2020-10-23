@@ -36,7 +36,7 @@ run: ${SSR_OUT} ${FRONTEND_OUT} ${BACKEND_SRC}
 .PHONY := setup-database
 setup-database: ${SSR_OUT} ${FRONTEND_OUT} ${BACKEND_SRC}
 	mkdir -p ${DIST_DIR}
-	cd ${DIST_DIR} && go run ${BACKEND_PKG}/cmd/setup-database
+	cd ${DIST_DIR} && go run ${BACKEND_PKG}/cmd/mindpill setup-database
 
 .PHONY := build
 build: ${SSR_OUT} ${FRONTEND_OUT} ${BACKEND_OUT}

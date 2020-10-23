@@ -51,6 +51,9 @@ $circleSizeS: 2rem;
         &.user {
           background-color: orange;
         }
+        &:last-child {
+          margin-right: 0;
+        }
       }
     }
   }

@@ -4,6 +4,8 @@ import (
 	"bytes"
 	"encoding/json"
 	"mindpill/backend/internal/database"
+	"mindpill/backend/internal/tokens"
+	"mindpill/ent/group"
 	"mindpill/ent/user"
 	"strconv"
 	"time"
@@ -58,7 +60,7 @@ func CreateUser(ctx *fasthttp.RequestCtx) {
 		SetSvNumber(req.SvNumber).
 		SetGender(req.Gender).
 		SetPhoneNumber(req.PhoneNumber).
-		SetGroupID(req.GroupID).
+		AddGroupIDs(req.GroupID).
 		SetRankID(req.RankID).
 		Save(ctx)
 	if err != nil {
@@ -78,10 +80,6 @@ func CreateUser(ctx *fasthttp.RequestCtx) {
 }
 
 type DescribeUserResponse struct {
-	Name string `json:"name"`
-}
-
-type FullDescribeUserResponse struct {
 	SvNumber    string      `json:"sv_number,omitempty"`
 	Email       string      `json:"email,omitempty"`
 	Name        string      `json:"name,omitempty"`
@@ -99,30 +97,31 @@ func DescribeUser(ctx *fasthttp.RequestCtx) {
 		return
 	}
 
+	userPred := user.IDEQ(int(userID))
+
 	userRecord, err := database.Ent().
 		User.Query().
-		Where(user.IDEQ(int(userID))).
+		Where(userPred).
 		Only(ctx)
 	if err != nil {
 		NotFound(ctx, err, "user not found")
 		return
 	}
-	groupRecord, err := userRecord.QueryGroup().
-		Only(ctx)
+
+	groupRecords, err := database.Ent().
+		Group.Query().
+		Where(group.HasUsersWith(userPred)).
+		All(ctx)
 	if err != nil {
-		InternalServerError(ctx, err, "this user is not joined any group")
+		InternalServerError(ctx, err, "failed to query group records")
 		return
 	}
+	groups := tokens.GroupMapFromRecords(groupRecords...)
 
-	var resp interface{}
-
-	// Check user permission
-	token, _ := ParseAuthorization(ctx)
-	if token != nil &&
-		(token.IsAdmin ||
-			(token.IsManager && token.GroupID == groupRecord.ID) ||
-			token.UserID == userRecord.ID) {
-		resp = &FullDescribeUserResponse{
+	var resp *DescribeUserResponse
+	if t, _ := ParseAuthorization(ctx); t != nil &&
+		(t.IsAdmin || t.IsManagerOf(groups) || t.IsOwner(userRecord.ID)) {
+		resp = &DescribeUserResponse{
 			SvNumber:    userRecord.SvNumber,
 			Email:       userRecord.Email,
 			Name:        userRecord.Name,

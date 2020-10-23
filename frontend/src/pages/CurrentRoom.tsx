@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react'
+import { GlobalData } from '../App'
 
 type LogProps = {
   out?: boolean
@@ -22,10 +23,9 @@ function Log({ out = false, message, timestamp }: LogProps) {
 }
 
 type CurrentRoomProps = {
-  showSub: number
-  changeSub: (id: number) => void
+  globalData: GlobalData
 }
-export default function CurrentRoom({ showSub, changeSub }: CurrentRoomProps) {
+export default function CurrentRoom({ globalData }: CurrentRoomProps) {
   const [chatLogs, setChatLogs] = useState<LogProps[]>([])
 
   useEffect(() => {
@@ -69,7 +69,7 @@ export default function CurrentRoom({ showSub, changeSub }: CurrentRoomProps) {
   }, [chatLogs])
 
   function handleOffSub() {
-    changeSub(0)
+    globalData.changeSub(0)
   }
 
   function scrollToBottom() {
@@ -114,7 +114,7 @@ export default function CurrentRoom({ showSub, changeSub }: CurrentRoomProps) {
         <div className="user_info">
           <div className="user_image"></div>
           <div className="user_detail">
-            <div className="user_name">김현우 상담관 {showSub}</div>
+            <div className="user_name">김현우 상담관 {globalData.showSub}</div>
             <div className="user_status online">
               <i className="fas fa-circle"></i>온라인
             </div>

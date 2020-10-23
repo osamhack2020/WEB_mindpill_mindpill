@@ -39,7 +39,6 @@ func (Token) Edges() []ent.Edge {
 func (Token) Indexes() []ent.Index {
 	return []ent.Index{
 		index.Fields("revoked"),
-		index.Edges("user").
-			Unique(),
+		index.Edges("user"),
 	}
 }

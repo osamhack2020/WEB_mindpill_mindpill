@@ -1,15 +1,15 @@
 import React from 'react'
+import { GlobalData } from '../App'
 import { MenuDropdown, Option } from '../components/MenuDropdown'
-import { parseAuthority, User } from '../routes'
 
 type FriendProps = {
   id: number
-  changeSub: (id: number) => void
+  globalData: GlobalData
 }
 
-function Friend({ id, changeSub }: FriendProps) {
+function Friend({ id, globalData }: FriendProps) {
   function handleClick() {
-    changeSub(id)
+    globalData.changeSub(id)
   }
   return (
     <div className="item" onClick={handleClick}>
@@ -29,11 +29,10 @@ function Friend({ id, changeSub }: FriendProps) {
 }
 
 type PageFriendsProps = {
-  user: User | null
-  changeSub: (id: number) => void
+  globalData: GlobalData
 }
 
-export default function PageFriends({ user, changeSub }: PageFriendsProps) {
+export default function PageFriends({ globalData }: PageFriendsProps) {
   return (
     <div id="page_friends" className="page_template">
       <div className="header">
@@ -44,7 +43,7 @@ export default function PageFriends({ user, changeSub }: PageFriendsProps) {
         </div>
       </div>
       <div className="item_list">
-        <Friend id={4444} changeSub={changeSub} />
+        <Friend id={4444} globalData={globalData} />
       </div>
     </div>
   )

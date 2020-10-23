@@ -2,11 +2,34 @@ import React, { useEffect, useState } from 'react'
 import Layout from './pages/Layout'
 import axios from 'axios'
 import database from './tempDatabase'
-import { Router, User } from './routes'
+import { Router } from './routes'
+
+export type GlobalData = {
+  user: User | null
+  showSub: number
+  changeSub: (id: number) => void
+  handleLogin: (email: string, password: string) => void
+}
+
+export type User = {
+  id: number
+  email: string
+  name: string
+  sv_number: string
+  phone_number: string
+  authority: number
+}
 
 export default function App() {
   const [user, setUser] = useState<User | null>(null)
   const [showSub, setShowSub] = useState<number>(0)
+
+  const globalData = {
+    user,
+    showSub,
+    changeSub,
+    handleLogin
+  }
 
   function changeSub(id: number) {
     setShowSub(id)
@@ -43,8 +66,8 @@ export default function App() {
   useEffect(() => {}, [])
 
   return (
-    <Layout user={user} changeUser={authenticateUser} showSub={showSub} changeSub={changeSub}>
-      <Router user={user} changeSub={changeSub} />
+    <Layout changeUser={authenticateUser} globalData={globalData}>
+      <Router globalData={globalData} />
     </Layout>
   )
 }

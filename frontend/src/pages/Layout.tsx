@@ -1,21 +1,19 @@
 import React, { useState } from 'react'
 import { Link, NavLink } from 'react-router-dom'
-import { User } from '../routes'
+import { GlobalData } from '../App'
 import CurrentRoom from './CurrentRoom'
 
 type LayoutProps = {
-  user: User | null
+  globalData: GlobalData
   children: React.ReactNode
-  showSub: number
   changeUser: (value: number) => void
-  changeSub: (id: number) => void
 }
 
-function Layout({ user, children, showSub, changeUser, changeSub }: LayoutProps) {
+function Layout({ children, changeUser, globalData }: LayoutProps) {
   return (
     <div id="app_container">
       <div id="app_navbar">
-        {user ? (
+        {!globalData.user ? (
           <>
             <Link to="/" className="logo">
               MindPill
@@ -48,9 +46,9 @@ function Layout({ user, children, showSub, changeUser, changeSub }: LayoutProps)
         )}
       </div>
       <div id="app_main">{children}</div>
-      {showSub == 0 && (
+      {globalData.showSub != 0 && (
         <div id="app_sub">
-          <CurrentRoom showSub={showSub} changeSub={changeSub} />
+          <CurrentRoom globalData={globalData} />
         </div>
       )}
     </div>

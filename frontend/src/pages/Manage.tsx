@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { NavLink, Redirect, Route } from 'react-router-dom'
-import { parseAuthority, User } from '../routes'
+import { GlobalData } from '../App'
+import { parseAuthority } from '../routes'
 import database from '../tempDatabase'
 
 function RecordTable() {
@@ -157,10 +158,10 @@ function UserTable() {
 }
 
 type ManageProps = {
-  user: User | null
+  globalData: GlobalData
 }
 
-export default function Manage({ user }: ManageProps) {
+export default function Manage({ globalData }: ManageProps) {
   return (
     <div className="box-left expand">
       <div className="manage">
@@ -169,7 +170,7 @@ export default function Manage({ user }: ManageProps) {
             <li className="navbar-icon">
               <i className="fas fa-tasks"></i>
             </li>
-            {(user?.authority == 1 || user?.authority == 2) && (
+            {(globalData.user?.authority == 1 || globalData.user?.authority == 2) && (
               <>
                 <NavLink to="/manage/user" activeClassName="selected">
                   <li>
@@ -185,7 +186,7 @@ export default function Manage({ user }: ManageProps) {
                 </NavLink>{' '}
               </>
             )}
-            {(user?.authority == 3 || user?.authority == 4) && (
+            {(globalData.user?.authority == 3 || globalData.user?.authority == 4) && (
               <NavLink to="/manage/record" activeClassName="selected">
                 <li>
                   <i className="fas fa-clipboard"></i>
@@ -203,7 +204,7 @@ export default function Manage({ user }: ManageProps) {
               <input type="text" placeholder="검색어를 입력하세요" />
             </div>
           </div>
-          {(user?.authority == 1 || user?.authority == 2) && (
+          {(globalData.user?.authority == 1 || globalData.user?.authority == 2) && (
             <>
               <Redirect exact from="/manage" to="/manage/user" />
               <Route path="/manage/user">
@@ -214,7 +215,7 @@ export default function Manage({ user }: ManageProps) {
               </Route>
             </>
           )}
-          {(user?.authority == 3 || user?.authority == 4) && (
+          {(globalData.user?.authority == 3 || globalData.user?.authority == 4) && (
             <>
               <Redirect exact from="/manage" to="/manage/record" />
               <Route path="/manage/record">

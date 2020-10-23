@@ -1,15 +1,16 @@
 import React, { useState } from 'react'
 import { parseAuthority, User } from '../routes'
 import { MenuDropdown, Option } from '../components/MenuDropdown'
+import { GlobalData } from '../App'
 
 type CounselroomProps = {
   id: number
-  changeSub: (id: number) => void
+  globalData: GlobalData
 }
 
-function Counselroom({ id, changeSub }: CounselroomProps) {
+function Counselroom({ id, globalData }: CounselroomProps) {
   function handleClick() {
-    changeSub(id)
+    globalData.changeSub(id)
   }
   return (
     <div className="item" onClick={handleClick}>
@@ -31,11 +32,10 @@ function Counselroom({ id, changeSub }: CounselroomProps) {
 }
 
 type PageCounselroomsProps = {
-  user: User | null
-  changeSub: (id: number) => void
+  globalData: GlobalData
 }
 
-export default function PageCounselrooms({ user, changeSub }: PageCounselroomsProps) {
+export default function PageCounselrooms({ globalData }: PageCounselroomsProps) {
   return (
     <div id="page_counselrooms" className="page_template">
       <div className="header">
@@ -46,9 +46,9 @@ export default function PageCounselrooms({ user, changeSub }: PageCounselroomsPr
         </div>
       </div>
       <div className="item_list">
-        <Counselroom id={111} changeSub={changeSub} />
-        <Counselroom id={222} changeSub={changeSub} />
-        <Counselroom id={333} changeSub={changeSub} />
+        <Counselroom id={111} globalData={globalData} />
+        <Counselroom id={222} globalData={globalData} />
+        <Counselroom id={333} globalData={globalData} />
       </div>
     </div>
   )

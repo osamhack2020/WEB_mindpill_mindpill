@@ -1,6 +1,6 @@
 import React from 'react'
 import { RouteProps } from 'react-router'
-import { Redirect, Route, Switch } from 'react-router-dom'
+import { Route, Switch } from 'react-router-dom'
 import PageHome from './pages/Home'
 import PageJoin from './pages/Join'
 import PageLogin from './pages/Login'
@@ -8,6 +8,7 @@ import PageCounselrooms from './pages/Counselrooms'
 import PageFriends from './pages/Friends'
 import PageManage from './pages/Manage'
 import PageNotFound from './pages/NotFound'
+import { GlobalData, User } from './App'
 
 export function checkAuthority(authority: number | undefined, passingAuthorities: number[]) {
   if (authority && passingAuthorities.includes(authority)) {
@@ -33,15 +34,6 @@ export function parseAuthority(value: number | null | undefined) {
   }
 }
 
-export type User = {
-  id: number
-  email: string
-  name: string
-  sv_number: string
-  phone_number: string
-  authority: number
-}
-
 const routes: RouteProps[] = [
   {
     exact: true,
@@ -62,14 +54,13 @@ const routes: RouteProps[] = [
 ]
 
 type RouterProps = {
-  user: User | null
-  changeSub: (id: number) => void
+  globalData: GlobalData
 }
 
-export function Router({ user, changeSub }: RouterProps) {
+export function Router({ globalData }: RouterProps) {
   return (
     <Switch>
-      <Route exact path="/" render={() => <PageHome user={user} />} />
+      <Route exact path="/" render={() => <PageHome globalData={globalData} />} />
 
       {/**
       {checkAuthority(user?.authority, [3, 5]) && <Route path="/counsel" render={() => <PageCounsel user={user} />} />}
@@ -78,12 +69,12 @@ export function Router({ user, changeSub }: RouterProps) {
       {!user && <Route path="/join" render={() => <PageJoin user={user} />} />}
       */}
 
-      <Route path="/login" render={() => <PageLogin user={user} />} />
-      <Route path="/join" render={() => <PageJoin user={user} />} />
-      <Route path="/counselrooms" render={() => <PageCounselrooms user={user} changeSub={changeSub} />} />
-      <Route path="/friends" render={() => <PageFriends user={user} changeSub={changeSub} />} />
+      <Route path="/login" render={() => <PageLogin globalData={globalData} />} />
+      <Route path="/join" render={() => <PageJoin globalData={globalData} />} />
+      <Route path="/counselrooms" render={() => <PageCounselrooms globalData={globalData} />} />
+      <Route path="/friends" render={() => <PageFriends globalData={globalData} />} />
 
-      <Route path="/manage" render={() => <PageManage user={user} />} />
+      <Route path="/manage" render={() => <PageManage globalData={globalData} />} />
 
       <Route component={PageNotFound} />
     </Switch>
