@@ -1,23 +1,13 @@
 package tokens
 
 import (
-	"context"
 	"crypto/hmac"
 	"crypto/sha512"
 	"encoding/base64"
 	"encoding/json"
 	"errors"
-	"mindpill/backend/internal/database"
-	"mindpill/backend/internal/ids"
 	"mindpill/ent"
-	"mindpill/ent/group"
-	"mindpill/ent/manager"
-	"mindpill/ent/user"
-	"os"
-	"strconv"
 	"time"
-
-	"go.uber.org/zap"
 )
 
 var ErrNotRefresh = errors.New("tokens: provided token is not refresh token")
@@ -27,130 +17,33 @@ var (
 	hashAlgorithm = sha512.New512_256
 )
 
-type TokenGenerator struct {
-	idgen *ids.Node
+type TokenGroup struct {
+	ID          int  `json:"id"`
+	IsManager   bool `json:"manager"`
+	IsCounseler bool `json:"counseler"`
 }
 
-func NewGenerator() *TokenGenerator {
-	nodeID, err := strconv.ParseUint(os.Getenv("NODE_ID"), 10, 32)
-	if err != nil {
-		nodeID = 0
-		logger.Warn("Invalid or empty node id is provided; using 0 instead")
+func GroupMapFromRecords(groupRecords ...*ent.Group) map[int]TokenGroup {
+	var result = make(map[int]TokenGroup)
+	for i, groupRecord := range groupRecords {
+		result[i] = TokenGroup{
+			ID:          groupRecord.ID,
+			IsManager:   groupRecord.Edges.Managers != nil,
+			IsCounseler: groupRecord.Edges.Counselors != nil,
+		}
 	}
-	logger.Info(
-		"Token id generater is initialized",
-		zap.Uint64("node id", nodeID),
-	)
-	return &TokenGenerator{
-		idgen: ids.NewNode(nodeID),
-	}
+	return result
 }
 
 type Token struct {
-	ID        uint64    `json:"tid"`
-	UserID    int       `json:"uid"`
-	GroupID   int       `json:"gid"`
-	IsAdmin   bool      `json:"isadm"`
-	IsManager bool      `json:"isman"`
-	IsRefresh bool      `json:"refresh"`
-	CreatedAt time.Time `json:"cat"`
+	ID        uint64             `json:"tid"`
+	UserID    int                `json:"uid"`
+	Groups    map[int]TokenGroup `json:"groups"`
+	IsAdmin   bool               `json:"admin"`
+	IsRefresh bool               `json:"refresh"`
+	CreatedAt time.Time          `json:"cat"`
 
 	signature []byte
-}
-
-func (g *TokenGenerator) Claim(ctx context.Context, userRecord *ent.User) (*Token, *Token, error) {
-	groupRecord, err := userRecord.QueryGroup().
-		Only(ctx)
-	if err != nil {
-		return nil, nil, err
-	}
-
-	isAdmin, err := userRecord.QueryAdmin().
-		Exist(ctx)
-	if err != nil {
-		return nil, nil, err
-	}
-
-	isManager, err := database.Ent().
-		Manager.Query().
-		Where(
-			manager.HasUserWith(
-				user.IDEQ(userRecord.ID),
-			),
-			manager.HasGroupWith(
-				group.IDEQ(groupRecord.ID),
-			),
-		).
-		Exist(ctx)
-	if err != nil {
-		return nil, nil, err
-	}
-
-	tokenID := g.idgen.Generate()
-	record, err := database.Ent().Token.
-		Create().
-		SetTokenID(tokenID).
-		SetUserID(userRecord.ID).
-		Save(ctx)
-	if err != nil {
-		return nil, nil, err
-	}
-
-	accessToken := &Token{
-		ID:        tokenID,
-		UserID:    userRecord.ID,
-		GroupID:   groupRecord.ID,
-		IsAdmin:   isAdmin,
-		IsManager: isManager,
-		IsRefresh: false,
-		CreatedAt: record.CreatedAt,
-	}
-	refreshToken := &Token{
-		ID:        tokenID,
-		UserID:    userRecord.ID,
-		GroupID:   groupRecord.ID,
-		IsAdmin:   isAdmin,
-		IsManager: isManager,
-		IsRefresh: true,
-		CreatedAt: record.CreatedAt,
-	}
-	return accessToken, refreshToken, nil
-}
-
-func (g *TokenGenerator) ClaimFromRefresh(ctx context.Context, t *Token) (*Token, *Token, error) {
-	if !t.IsRefresh {
-		return nil, nil, ErrNotRefresh
-	}
-
-	tokenID := g.idgen.Generate()
-	record, err := database.Ent().Token.
-		Create().
-		SetTokenID(tokenID).
-		SetUserID(t.UserID).
-		Save(ctx)
-	if err != nil {
-		return nil, nil, err
-	}
-
-	accessToken := &Token{
-		ID:        tokenID,
-		UserID:    t.UserID,
-		GroupID:   t.GroupID,
-		IsAdmin:   t.IsAdmin,
-		IsManager: t.IsManager,
-		IsRefresh: false,
-		CreatedAt: record.CreatedAt,
-	}
-	refreshToken := &Token{
-		ID:        tokenID,
-		UserID:    t.UserID,
-		GroupID:   t.GroupID,
-		IsAdmin:   t.IsAdmin,
-		IsManager: t.IsManager,
-		IsRefresh: true,
-		CreatedAt: record.CreatedAt,
-	}
-	return accessToken, refreshToken, nil
 }
 
 func Parse(src []byte) (*Token, error) {
@@ -238,4 +131,18 @@ func (t *Token) validate(payload []byte) error {
 		return errors.New("invalid token")
 	}
 	return nil
+}
+
+func (t *Token) IsManagerOf(groups map[int]TokenGroup) bool {
+	for id := range groups {
+		if !t.Groups[id].IsManager {
+			continue
+		}
+		return true
+	}
+	return false
+}
+
+func (t *Token) IsOwner(userID int) bool {
+	return t.UserID == userID
 }

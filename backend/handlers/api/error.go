@@ -4,6 +4,7 @@ import (
 	"errors"
 	"mindpill/backend/internal/debug"
 	"strconv"
+	"strings"
 
 	"github.com/valyala/fasthttp"
 )
@@ -31,16 +32,18 @@ func (e *ErrorResp) Unwrap() error {
 }
 
 func (e *ErrorResp) Write(ctx *fasthttp.RequestCtx) {
-	ctx.SetStatusCode(e.status)
+	var buf strings.Builder
 	if e.err != nil && debug.IsDebug() {
-		ctx.WriteString(`{"error":`)
-		ctx.WriteString(strconv.Quote(e.err.Error()))
-		ctx.WriteString(`,`)
+		buf.WriteString(`{"error":`)
+		buf.WriteString(strconv.Quote(e.err.Error()))
+		buf.WriteString(`,`)
 	} else {
-		ctx.WriteString(`{`)
+		buf.WriteString(`{`)
 	}
-	ctx.WriteString(`"message":`)
-	ctx.WriteString(strconv.Quote(e.msg))
-	ctx.WriteString(`}`)
-	ctx.Write([]byte{'\n'})
+	buf.WriteString(`"message":`)
+	buf.WriteString(strconv.Quote(e.msg))
+	buf.WriteString(`}`)
+
+	ctx.SetStatusCode(e.status)
+	ctx.WriteString(buf.String())
 }

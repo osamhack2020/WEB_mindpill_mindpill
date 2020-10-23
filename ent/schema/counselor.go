@@ -24,6 +24,7 @@ func (Counselor) Edges() []ent.Edge {
 		edge.To("notes", Note.Type),
 		edge.From("group", Group.Type).
 			Ref("counselors").
+			Required().
 			Unique(),
 	}
 }

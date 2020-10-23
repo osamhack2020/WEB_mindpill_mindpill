@@ -7,11 +7,11 @@ import (
 	"github.com/fasthttp/router"
 )
 
-var r = func() *router.Router {
+func CreateRouter() *router.Router {
 	r := router.New()
 
 	// General APIs
-	r.GET("/api/health", handlers.HealthHandler)
+	r.GET("/api/health", api.CheckHealth)
 
 	// Authorization APIs
 	r.POST("/api/create_token", api.CreateToken)
@@ -22,8 +22,18 @@ var r = func() *router.Router {
 	r.GET("/api/describe_user", api.DescribeUser)
 	r.GET("/api/update_user", api.UpdateUser)
 
+	// Group APIs
+	r.POST("/api/create_group", api.CreateGroup)
+	r.GET("/api/describe_group", api.DescribeGroup)
+
+	r.POST("/api/create_manager", api.CreateManager)
+	r.POST("/api/delete_manager", api.DeleteManager)
+
+	r.POST("/api/create_counselor", api.CreateCounselor)
+	r.POST("/api/delete_counselor", api.DeleteCounselor)
+
 	// Frontend
-	r.NotFound = handlers.FrontendHandler
+	r.NotFound = handlers.FrontendHandler()
 
 	return r
-}()
+}
