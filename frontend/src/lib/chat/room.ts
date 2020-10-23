@@ -24,7 +24,7 @@ export class Room {
 
   private _driver: Driver
 
-  private constructor(driver: Driver) {
+  public constructor(driver: Driver) {
     this._driver = driver
 
     this._driver.onmessage = this.onMessage.bind(this)

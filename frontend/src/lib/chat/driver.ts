@@ -33,7 +33,7 @@ export class WebSocketDriver implements Driver {
     this._errCallback = v
   }
 
-  public static async connect(url: string, cb?: OnMessageCallback): Promise<WebSocketDriver> {
+  public static async connect(url: string, token: string, cb?: OnMessageCallback): Promise<WebSocketDriver> {
     return new Promise<WebSocket>((resolve, reject) => {
       const sock = new WebSocket(url, 'mp_chat_v1')
       sock.onopen = () => {
@@ -46,13 +46,18 @@ export class WebSocketDriver implements Driver {
           reject(new Error(`${e.code} ${e.reason}`))
         }
       }
-    }).then(sock => {
-      // clear events
-      sock.onopen = null
-      sock.onclose = null
-
-      return new WebSocketDriver(sock, cb)
     })
+      .then(sock => {
+        sock.send(token)
+        return sock
+      })
+      .then(sock => {
+        // clear events
+        sock.onopen = null
+        sock.onclose = null
+
+        return new WebSocketDriver(sock, cb)
+      })
   }
 
   public constructor(sock: WebSocket, cb?: OnMessageCallback) {

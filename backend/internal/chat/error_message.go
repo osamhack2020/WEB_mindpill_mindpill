@@ -5,6 +5,10 @@ import (
 	"io"
 )
 
+var (
+	ErrMsgInvalidToken = &ErrorMessage{400}
+)
+
 type ErrorMessage struct {
 	code int32
 }
