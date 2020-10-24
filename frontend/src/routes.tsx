@@ -5,10 +5,14 @@ import PageHome from './pages/Home'
 import PageJoin from './pages/Join'
 import PageLogin from './pages/Login'
 import PageCounsel from './pages/Counsel'
+import ChatTestPage from './pages/ChatTest'
 import PageManage from './pages/Manage'
 import PageNotFound from './pages/NotFound'
 
-export function checkAuthority(authority: number | undefined, passingAuthorities: number[]) {
+export function checkAuthority(
+  authority: number | undefined,
+  passingAuthorities: number[]
+) {
   if (authority && passingAuthorities.includes(authority)) {
     return true
   }
@@ -57,6 +61,9 @@ const routes: RouteProps[] = [
   },
   {
     path: '/manage'
+  },
+  {
+    path: '/chattest'
   }
 ]
 
@@ -68,9 +75,14 @@ export function Router({ user }: RouterProps) {
   return (
     <Switch>
       <Route exact path="/" render={() => <PageHome user={user} />} />
+      <Route exact path="/chattest" render={() => <ChatTestPage />} />
 
-      {checkAuthority(user?.authority, [3, 5]) && <Route path="/counsel" render={() => <PageCounsel user={user} />} />}
-      {checkAuthority(user?.authority, [1, 2, 3, 4]) && <Route path="/manage" render={() => <PageManage user={user} />} />}
+      {checkAuthority(user?.authority, [3, 5]) && (
+        <Route path="/counsel" render={() => <PageCounsel user={user} />} />
+      )}
+      {checkAuthority(user?.authority, [1, 2, 3, 4]) && (
+        <Route path="/manage" render={() => <PageManage user={user} />} />
+      )}
       {user && <Route path="/login" render={() => <PageLogin user={user} />} />}
       {user && <Route path="/join" render={() => <PageJoin user={user} />} />}
 

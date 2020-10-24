@@ -1,7 +1,17 @@
 import JSBI from 'jsbi'
 import { decode } from './decode'
 import { Driver, OnErrorParam } from './driver'
-import { TextMessage, ImageMessage, AudioMessage, VideoMessage, UserChangedMessage, TimeChangedMessage } from './message'
+import {
+  TextMessage,
+  ImageMessage,
+  AudioMessage,
+  VideoMessage,
+  UserChangedMessage,
+  TimeChangedMessage,
+  ErrorMessage,
+  Message
+} from './message'
+import { encode } from './encode'
 
 export type TextListener = (msg: TextMessage) => void
 export type ImageListener = (msg: ImageMessage) => void
@@ -9,7 +19,7 @@ export type AudioListener = (msg: AudioMessage) => void
 export type VideoListener = (msg: VideoMessage) => void
 export type UserChangedListener = (msg: UserChangedMessage) => void
 export type TimeChangedListener = (msg: TimeChangedMessage) => void
-export type ErrorListener = (e: any) => void
+export type ErrorListener = (e: ErrorMessage) => void
 
 export class Room {
   private _textEvent?: TextListener
@@ -87,6 +97,15 @@ export class Room {
     this._errorEvent = fn
   }
 
+  public send(msg: Message) {
+    const buf = encode(msg)
+    this._driver.send(buf)
+  }
+
+  public close() {
+    this._driver.close()
+  }
+
   private onMessage(msg: ArrayBuffer) {
     const arr = new Uint8Array(msg)
     const tokens = decode(arr)
@@ -107,6 +126,10 @@ export class Room {
           timestamp: token.timestamp
         })
         this._lastUpdatedTimestamp = token.timestamp
+      } else if (token.type === 'error') {
+        this._errorEvent?.({
+          code: token.code
+        })
       }
     })
   }

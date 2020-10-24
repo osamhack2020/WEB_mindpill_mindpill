@@ -6,6 +6,8 @@ export type OnErrorCallback = (err: OnErrorParam) => any
 export interface Driver {
   onmessage: OnMessageCallback
   onerror: OnErrorCallback
+  send(buf: ArrayBuffer): void
+  close(): void
 }
 
 export class WebSocketDriver implements Driver {
@@ -33,9 +35,13 @@ export class WebSocketDriver implements Driver {
     this._errCallback = v
   }
 
-  public static async connect(url: string, token: string, cb?: OnMessageCallback): Promise<WebSocketDriver> {
+  public static async connect(
+    url: string,
+    token: string,
+    cb?: OnMessageCallback
+  ): Promise<WebSocketDriver> {
     return new Promise<WebSocket>((resolve, reject) => {
-      const sock = new WebSocket(url, 'mp_chat_v1')
+      const sock = new WebSocket(url)
       sock.onopen = () => {
         resolve(sock)
       }
@@ -72,6 +78,14 @@ export class WebSocketDriver implements Driver {
     this._sock.onclose = this._onSocketError.bind(this)
 
     this._emit = this._emit.bind(this)
+  }
+
+  public send(buf: ArrayBuffer) {
+    this._sock.send(buf)
+  }
+
+  public close() {
+    this._sock.close()
   }
 
   private _emit(msg: ArrayBuffer) {

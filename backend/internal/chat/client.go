@@ -41,6 +41,7 @@ func (c *Client) readPump() {
 			}
 			break
 		}
+		logger.Debug("websocket: message received", zap.Binary("data", msg))
 		c.sess.input <- clientMessage{
 			data:      msg,
 			userID:    c.userID,

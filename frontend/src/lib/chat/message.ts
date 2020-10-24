@@ -1,5 +1,14 @@
 import JSBI from 'jsbi'
 
+export type Message =
+  | TextMessage
+  | ImageMessage
+  | AudioMessage
+  | VideoMessage
+  | UserChangedMessage
+  | TimeChangedMessage
+  | ErrorMessage
+
 export interface TextMessage {
   text: string
 }
@@ -23,4 +32,8 @@ export interface UserChangedMessage {
 export interface TimeChangedMessage {
   lastTimestamp: JSBI
   timestamp: JSBI
+}
+
+export interface ErrorMessage {
+  code: number
 }

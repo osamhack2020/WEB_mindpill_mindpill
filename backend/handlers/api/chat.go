@@ -7,6 +7,7 @@ import (
 	"mindpill/ent/counselor"
 	"mindpill/ent/room"
 	"strconv"
+	"time"
 
 	"github.com/fasthttp/websocket"
 	"github.com/valyala/fasthttp"
@@ -16,8 +17,9 @@ import (
 var (
 	sessPool   = chat.NewPool()
 	wsUpgrader = websocket.FastHTTPUpgrader{
-		ReadBufferSize:  1024,
-		WriteBufferSize: 1024,
+		HandshakeTimeout: 10 * time.Second,
+		ReadBufferSize:   1024,
+		WriteBufferSize:  1024,
 	}
 )
 
@@ -48,19 +50,23 @@ func CreateRoom(ctx *fasthttp.RequestCtx) {
 		Where(
 			counselor.IDEQ(req.CounselorID),
 		).
+		WithUser().
 		Only(ctx)
 	if err != nil {
 		BadRequest(ctx, err, "requested counselor is not exists")
 		return
 	}
 
+	userIDs := make([]int, 1)
+	userIDs[0] = counselorRecord.Edges.User.ID
+	if token.UserID != counselorRecord.Edges.User.ID {
+		userIDs = append(userIDs, token.UserID)
+	}
+
 	roomRecord, err := database.Ent().
 		Room.Create().
 		SetGroupID(req.GroupID).
-		AddUserIDs(
-			counselorRecord.Edges.Group.ID,
-			token.UserID,
-		).
+		AddUserIDs(userIDs...).
 		Save(ctx)
 	if err != nil {
 		InternalServerError(ctx, err, "failed to create room")
@@ -95,9 +101,9 @@ func ConnectRoom(ctx *fasthttp.RequestCtx) {
 		_, msg, err := conn.ReadMessage()
 		if err != nil {
 			if websocket.IsUnexpectedCloseError(err, websocket.CloseGoingAway, websocket.CloseAbnormalClosure) {
-				logger.Warn("handshake failed: session closed", zap.Error(err))
+				logger.Warn("websocket: validation failed: session closed", zap.Error(err))
 			} else {
-				logger.Warn("handshake failed", zap.Error(err))
+				logger.Warn("websocket: validation failed", zap.Error(err))
 			}
 			return
 		}
@@ -114,12 +120,20 @@ func ConnectRoom(ctx *fasthttp.RequestCtx) {
 			return
 		}
 
+		logger.Debug("websocket: client validated", zap.Int("user_id", token.UserID))
+
 		sess := sessPool.GetSession(int(room.ID))
 		client := chat.NewClient(sess, token.UserID, conn)
 		sess.Register(client)
 	})
 	if err != nil {
-		InternalServerError(ctx, err, "ws: upgrade failed")
+		if err, ok := err.(websocket.HandshakeError); ok {
+			logger.Warn("websocket: handshake failed", zap.Error(err))
+			BadRequest(ctx, err, "websocket: handshake failed")
+		} else {
+			logger.Warn("websocket: upgrade failed", zap.Error(err))
+			InternalServerError(ctx, err, "ws: upgrade failed")
+		}
 		return
 	}
 }
