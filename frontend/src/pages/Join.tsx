@@ -1,11 +1,6 @@
 import React from 'react'
 import axios from 'axios'
 import { Link } from 'react-router-dom'
-import { GlobalData } from '../App'
-
-type JoinProps = {
-  globalData: GlobalData
-}
 
 type JoinQuery = {
   email: string
@@ -18,7 +13,7 @@ type JoinQuery = {
   group_id: number
 }
 
-export default function Join({ globalData }: JoinProps) {
+export default function Join() {
   function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
     if (e.currentTarget.password.value == e.currentTarget.password2.value) {

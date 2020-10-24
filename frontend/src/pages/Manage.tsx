@@ -1,16 +1,16 @@
 import React, { useState } from 'react'
-import { NavLink, Redirect, Route } from 'react-router-dom'
-import { GlobalData } from '../App'
 import { MenuDropdown, Option } from '../components/MenuDropdown'
+import { useTracked } from '../state'
 
 type ManageItemProps = {
   id: number
-  globalData: GlobalData
 }
 
-function ManageItem({ id, globalData }: ManageItemProps) {
+function ManageItem({ id }: ManageItemProps) {
+  const [state, dispatch] = useTracked()
+
   function handleProfileOpen() {
-    globalData.changeProfile(id)
+    dispatch({ type: 'SET_PROFILE_ID', profileId: id })
   }
   function handleClick() {}
   return (
@@ -32,11 +32,7 @@ function ManageItem({ id, globalData }: ManageItemProps) {
   )
 }
 
-type PageManageProps = {
-  globalData: GlobalData
-}
-
-export default function PageManage({ globalData }: PageManageProps) {
+export default function PageManage() {
   return (
     <div id="page_counselrooms" className="page_template">
       <div className="header">
@@ -47,9 +43,9 @@ export default function PageManage({ globalData }: PageManageProps) {
         </div>
       </div>
       <div className="item_list">
-        <ManageItem id={111} globalData={globalData} />
-        <ManageItem id={222} globalData={globalData} />
-        <ManageItem id={333} globalData={globalData} />
+        <ManageItem id={111} />
+        <ManageItem id={222} />
+        <ManageItem id={333} />
       </div>
     </div>
   )

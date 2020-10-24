@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { GlobalData } from '../App'
+import { useTracked } from '../state'
 
 type LogProps = {
   out?: boolean
@@ -22,10 +22,9 @@ function Log({ out = false, message, timestamp }: LogProps) {
   )
 }
 
-type CurrentRoomProps = {
-  globalData: GlobalData
-}
-export default function CurrentRoom({ globalData }: CurrentRoomProps) {
+export default function CurrentRoom() {
+  const [state, dispatch] = useTracked()
+
   const [chatLogs, setChatLogs] = useState<LogProps[]>([])
 
   useEffect(() => {
@@ -69,12 +68,12 @@ export default function CurrentRoom({ globalData }: CurrentRoomProps) {
   }, [chatLogs])
 
   function handleCurrentRoomOff() {
-    globalData.changeCurrentRoom(0)
+    dispatch({ type: 'SET_CURRENT_ROOM_ID', currentRoomId: 0 })
   }
 
   function handleProfileClick() {
     // 상대방의 User.id 로 변경해야 합니다.
-    globalData.changeProfile(1)
+    dispatch({ type: 'SET_PROFILE_ID', profileId: 0 })
   }
 
   function scrollToBottom() {
@@ -118,7 +117,7 @@ export default function CurrentRoom({ globalData }: CurrentRoomProps) {
         <div className="user_info">
           <div className="user_image"></div>
           <div className="user_detail">
-            <div className="user_name">김현우 상담관 {globalData.showCurrentRoom}</div>
+            <div className="user_name">김현우 상담관 {state.currentRoomId}</div>
             <div className="user_status online">
               <i className="fas fa-circle"></i>온라인
             </div>

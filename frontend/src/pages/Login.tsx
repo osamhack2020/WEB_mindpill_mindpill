@@ -1,19 +1,42 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 import axios from 'axios'
-import { GlobalData } from '../App'
+import { useTracked } from '../state'
 
-type LoginProps = {
-  globalData: GlobalData
-}
+export default function Login() {
+  function handleLogin(email: string, password: string) {
+    const [state, dispatch] = useTracked()
 
-export default function Login({ globalData }: LoginProps) {
+    // 초기 access token 과 refresh token 을 받는 곳입니다.
+    axios({
+      method: 'post',
+      url: '/api/create_token',
+      params: {
+        request_type: 'password'
+      },
+      data: {
+        email,
+        password
+      }
+    })
+      .then(response => {
+        const { access_token, refresh_token } = response.data
+        //setAccessToken(access_token)
+        dispatch({ type: 'SET_ACCESS_TOKEN', accessToken: access_token })
+
+        localStorage.setItem('refreshToken', refresh_token)
+        console.log({ access_token, refresh_token })
+      })
+      .catch(error => {
+        console.log(error)
+      })
+  }
+
   function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
     const email = e.currentTarget.email.value
     const password = e.currentTarget.password.value
-    console.log(email, password)
-    globalData.handleLogin(email, password)
+    handleLogin(email, password)
   }
 
   return (

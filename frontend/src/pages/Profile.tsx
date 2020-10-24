@@ -1,13 +1,11 @@
 import React from 'react'
-import { GlobalData } from '../App'
+import { useTracked } from '../state'
 
-type ProfileProps = {
-  globalData: GlobalData
-}
+export default function Profile() {
+  const [state, dispatch] = useTracked()
 
-export default function Profile({ globalData }: ProfileProps) {
   function handleProfileOff() {
-    globalData.changeProfile(0)
+    dispatch({ type: 'SET_PROFILE_ID', profileId: 0 })
   }
   return (
     <div id="right_sidebar_profile">

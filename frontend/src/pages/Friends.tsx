@@ -1,15 +1,16 @@
 import React from 'react'
-import { GlobalData } from '../App'
 import { MenuDropdown, Option } from '../components/MenuDropdown'
+import { useTracked } from '../state'
 
 type FriendProps = {
   id: number
-  globalData: GlobalData
 }
 
-function Friend({ id, globalData }: FriendProps) {
+function Friend({ id }: FriendProps) {
+  const [state, dispatch] = useTracked()
+
   function handleClick() {
-    globalData.changeCurrentRoom(id)
+    dispatch({ type: 'SET_CURRENT_ROOM_ID', currentRoomId: id })
   }
   return (
     <div className="item" onClick={handleClick}>
@@ -28,11 +29,7 @@ function Friend({ id, globalData }: FriendProps) {
   )
 }
 
-type PageFriendsProps = {
-  globalData: GlobalData
-}
-
-export default function PageFriends({ globalData }: PageFriendsProps) {
+export default function PageFriends() {
   return (
     <div id="page_friends" className="page_template">
       <div className="header">
@@ -43,7 +40,7 @@ export default function PageFriends({ globalData }: PageFriendsProps) {
         </div>
       </div>
       <div className="item_list">
-        <Friend id={4444} globalData={globalData} />
+        <Friend id={4444} />
       </div>
     </div>
   )

@@ -1,20 +1,19 @@
 import React, { useState } from 'react'
 import { Link, NavLink } from 'react-router-dom'
-import { GlobalData } from '../App'
+import { useTracked } from '../state'
 import CurrentRoom from './CurrentRoom'
 import Profile from './Profile'
 
 type LayoutProps = {
-  globalData: GlobalData
   children: React.ReactNode
-  changeUser: (value: number) => void
 }
 
-function Layout({ children, changeUser, globalData }: LayoutProps) {
+function Layout({ children }: LayoutProps) {
+  const [state, dispatch] = useTracked()
   return (
     <div id="app_container">
       <div id="app_navbar">
-        {globalData.user ? (
+        {state.user ? (
           <>
             <Link to="/" className="logo">
               MindPill
@@ -47,13 +46,13 @@ function Layout({ children, changeUser, globalData }: LayoutProps) {
         )}
       </div>
       <div id="app_main">{children}</div>
-      {globalData.showCurrentRoom > 0 && (
+      {state.currentRoomId > 0 && (
         <div id="app_sub">
-          <CurrentRoom globalData={globalData} />
+          <CurrentRoom />
         </div>
       )}
-      <div id="app_right_sidebar" className={globalData.showProfile > 0 ? 'in' : 'out'}>
-        <Profile globalData={globalData} />
+      <div id="app_right_sidebar" className={state.profileId > 0 ? 'in' : 'out'}>
+        <Profile />
       </div>
     </div>
   )

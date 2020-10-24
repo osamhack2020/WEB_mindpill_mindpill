@@ -1,10 +1,5 @@
 import React from 'react'
-import { GlobalData } from '../App'
 
-type HomeProps = {
-  globalData: GlobalData
-}
-
-export default function Home({ globalData }: HomeProps) {
+export default function Home() {
   return <div>This is HomePage</div>
 }

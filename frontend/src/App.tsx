@@ -3,18 +3,7 @@ import Layout from './pages/Layout'
 import axios from 'axios'
 import database from './tempDatabase'
 import { Router } from './routes'
-
-export type GlobalData = {
-  user: User | null
-  showCurrentRoom: number
-  changeCurrentRoom: (id: number) => void
-
-  showProfile: number
-  changeProfile: (id: number) => void
-
-  handleLogin: (email: string, password: string) => void
-  accessToken: string
-}
+import { useTracked } from './state'
 
 export type User = {
   id: number
@@ -26,52 +15,11 @@ export type User = {
 }
 
 export default function App() {
+  const [state, dispatch] = useTracked()
   const [user, setUser] = useState<User | null>(null)
-  const [accessToken, setAccessToken] = useState<string>('')
-  const [showCurrentRoom, setShowCurrentRoom] = useState<number>(0)
-  const [showProfile, setShowProfile] = useState<number>(0)
-
-  const globalData = {
-    user,
-    showCurrentRoom,
-    changeCurrentRoom,
-
-    showProfile,
-    changeProfile,
-
-    handleLogin,
-    accessToken
-  }
-  function changeProfile(id: number) {
-    setShowProfile(id)
-  }
-  function changeCurrentRoom(id: number) {
-    setShowCurrentRoom(id)
-  }
-
-  function handleLogin(email: string, password: string) {
-    // 초기 access token 과 refresh token 을 받는 곳입니다.
-    axios({
-      method: 'post',
-      url: '/api/create_token',
-      params: {
-        request_type: 'password'
-      },
-      data: {
-        email,
-        password
-      }
-    })
-      .then(response => {
-        const { access_token, refresh_token } = response.data
-        setAccessToken(access_token)
-        localStorage.setItem('refreshToken', refresh_token)
-        console.log({ access_token, refresh_token })
-      })
-      .catch(error => {
-        console.log(error)
-      })
-  }
+  //const [accessToken, setAccessToken] = useState<string>('')
+  //const [showCurrentRoom, setShowCurrentRoom] = useState<number>(0)
+  //const [showProfile, setShowProfile] = useState<number>(0)
 
   function handleLogout() {}
 
@@ -88,7 +36,8 @@ export default function App() {
     })
       .then(response => {
         const { access_token, refresh_token } = response.data
-        setAccessToken(access_token)
+        //setAccessToken(access_token)
+        dispatch({ type: 'SET_ACCESS_TOKEN', accessToken: access_token })
         //암호화 해야합니다.
         localStorage.setItem('refreshToken', refresh_token)
         console.log({ access_token, refresh_token })
@@ -115,8 +64,8 @@ export default function App() {
   }, [])
 
   return (
-    <Layout changeUser={authenticateUser} globalData={globalData}>
-      <Router globalData={globalData} />
+    <Layout>
+      <Router />
     </Layout>
   )
 }

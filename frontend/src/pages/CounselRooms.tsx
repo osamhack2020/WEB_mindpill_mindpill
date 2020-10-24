@@ -1,19 +1,20 @@
 import React, { useState } from 'react'
 import { MenuDropdown, Option } from '../components/MenuDropdown'
-import { GlobalData } from '../App'
+import { useTracked } from '../state'
 
 type CounselroomProps = {
   id: number
-  globalData: GlobalData
 }
 
-function Counselroom({ id, globalData }: CounselroomProps) {
+function Counselroom({ id }: CounselroomProps) {
+  const [state, dispatch] = useTracked()
+
   function handleClick() {
-    globalData.changeCurrentRoom(id)
+    dispatch({ type: 'SET_CURRENT_ROOM_ID', currentRoomId: id })
   }
 
   function handleProfileOpen() {
-    globalData.changeProfile(id)
+    dispatch({ type: 'SET_PROFILE_ID', profileId: id }) // 여기서의 id 는 currentRoomId와 같은 것을 사용하고 있습니다. 수정이 필요합니다.
   }
   return (
     <div className="item" onClick={handleClick}>
@@ -36,11 +37,8 @@ function Counselroom({ id, globalData }: CounselroomProps) {
   )
 }
 
-type PageCounselroomsProps = {
-  globalData: GlobalData
-}
-
-export default function PageCounselrooms({ globalData }: PageCounselroomsProps) {
+export default function PageCounselrooms() {
+  const [state, dispatch] = useTracked()
   return (
     <div id="page_counselrooms" className="page_template">
       <div className="header">
@@ -51,9 +49,9 @@ export default function PageCounselrooms({ globalData }: PageCounselroomsProps) 
         </div>
       </div>
       <div className="item_list">
-        <Counselroom id={111} globalData={globalData} />
-        <Counselroom id={222} globalData={globalData} />
-        <Counselroom id={333} globalData={globalData} />
+        <Counselroom id={111} />
+        <Counselroom id={222} />
+        <Counselroom id={333} />
       </div>
     </div>
   )

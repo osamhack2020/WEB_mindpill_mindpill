@@ -4,6 +4,8 @@ import { matchPath, StaticRouter } from 'react-router'
 import routes from './src/routes'
 import App from './src/App'
 
+import { Provider } from './src/state'
+
 interface SSRRootProps {
   requestPath: string
 }
@@ -11,9 +13,11 @@ interface SSRRootProps {
 class SSRRoot extends React.Component<SSRRootProps> {
   render() {
     return (
-      <StaticRouter location={this.props.requestPath}>
-        <App />
-      </StaticRouter>
+      <Provider>
+        <StaticRouter location={this.props.requestPath}>
+          <App />
+        </StaticRouter>
+      </Provider>
     )
   }
 }
