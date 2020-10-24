@@ -37,8 +37,8 @@ function Layout({ children, changeUser, globalData }: LayoutProps) {
             <NavLink to="/settings" className="nav" activeClassName="selected">
               <i className="fas fa-cog"></i>
             </NavLink>
-            <NavLink to="counsel_rooms" className="nav" activeClassName="selected">
-              <i className="fas fa-comment"></i>
+            <NavLink to="/manage" className="nav" activeClassName="selected">
+              <i className="fas fa-tasks"></i>
             </NavLink>
             <div className="nav menu">
               <i className="fas fa-bars"></i>

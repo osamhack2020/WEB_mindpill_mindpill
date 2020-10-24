@@ -5,6 +5,7 @@ $bg-white: #f5f6fa;
 $white: #ffffff;
 $white-100: #dddddd;
 $black: #2d3436;
+$navbar-bg: #dfe6e9;
 
 $primary: #e17055;
 
@@ -15,6 +16,7 @@ $weightBold: 700;
 html {
   //font-family: 'Noto Sans KR', sans-serif;
   font-family: 'Sunflower', sans-serif;
+  font-weight: 300;
   font-size: 15px;
   background-color: $bg-white;
 }

@@ -4,7 +4,7 @@ import { Route, Switch } from 'react-router-dom'
 import PageHome from './pages/Home'
 import PageJoin from './pages/Join'
 import PageLogin from './pages/Login'
-import PageCounselrooms from './pages/Counselrooms'
+import PageCounselRooms from './pages/CounselRooms'
 import PageFriends from './pages/Friends'
 import PageManage from './pages/Manage'
 import PageNotFound from './pages/NotFound'
@@ -71,7 +71,7 @@ export function Router({ globalData }: RouterProps) {
 
       <Route path="/login" render={() => <PageLogin globalData={globalData} />} />
       <Route path="/join" render={() => <PageJoin globalData={globalData} />} />
-      <Route path="/counselrooms" render={() => <PageCounselrooms globalData={globalData} />} />
+      <Route path="/counselrooms" render={() => <PageCounselRooms globalData={globalData} />} />
       <Route path="/friends" render={() => <PageFriends globalData={globalData} />} />
 
       <Route path="/manage" render={() => <PageManage globalData={globalData} />} />

@@ -11,9 +11,10 @@
     width: 100%;
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    justify-content: space-around;
     box-shadow: $defaultShadow;
-    padding: 1rem 2rem;
+    padding: 1rem 0;
+    background-color: $navbar-bg;
     .logo {
       font-size: 1.5rem;
       font-weight: 900;
@@ -41,7 +42,7 @@
         font-size: 1.5rem;
       }
       &.selected {
-        background-color: $white-100;
+        background-color: rgba(0, 0, 0, 0.1);
         color: $primary;
       }
     }
@@ -130,6 +131,9 @@
           .user_info {
             padding-bottom: 0;
             margin-right: auto;
+          }
+          .tool.off {
+            display: none;
           }
         }
         .chat_logs {

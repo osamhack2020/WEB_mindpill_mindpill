@@ -131,9 +131,9 @@ export default function CurrentRoom({ globalData }: CurrentRoomProps) {
           <button className="tool user" onClick={handleProfileClick}>
             <i className="far fa-user-circle"></i>
           </button>
-          <button className="tool off" onClick={handleCurrentRoomOff}></button>
-          <button className="tool off" onClick={handleCurrentRoomOff}></button>
-          <button className="tool off" onClick={handleCurrentRoomOff}></button>
+          <button className="tool"></button>
+          <button className="tool"></button>
+          <button className="tool"></button>
         </div>
       </div>
       <div className="chat_logs" id="chat_logs">
