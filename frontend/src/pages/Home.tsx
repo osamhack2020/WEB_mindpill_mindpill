@@ -1,10 +1,10 @@
 import React from 'react'
-import { User } from '../routes'
+import { GlobalData } from '../App'
 
 type HomeProps = {
-  user: User | null
+  globalData: GlobalData
 }
 
-export default function Home({ user }: HomeProps) {
+export default function Home({ globalData }: HomeProps) {
   return <div>This is HomePage</div>
 }
