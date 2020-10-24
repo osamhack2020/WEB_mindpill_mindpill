@@ -4,7 +4,7 @@ import { matchPath, StaticRouter } from 'react-router'
 import routes from './src/routes'
 import App from './src/App'
 
-import { Provider } from './src/state'
+import { Provider } from './src/states'
 
 interface SSRRootProps {
   requestPath: string

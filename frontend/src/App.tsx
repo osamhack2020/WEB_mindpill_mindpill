@@ -3,7 +3,7 @@ import Layout from './pages/Layout'
 import axios from 'axios'
 import database from './tempDatabase'
 import { Router } from './routes'
-import { useTracked } from './state'
+import { useTracked } from './states'
 
 export type User = {
   id: number

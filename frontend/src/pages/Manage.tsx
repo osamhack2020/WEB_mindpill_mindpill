@@ -1,24 +1,26 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { MenuDropdown, Option } from '../components/MenuDropdown'
-import { useTracked } from '../state'
+import { useTracked } from '../states'
+import { User as UserType } from '../types'
 
 type ManageItemProps = {
-  id: number
+  user: UserType
 }
 
-function ManageItem({ id }: ManageItemProps) {
+function ManageItem({ user }: ManageItemProps) {
   const [state, dispatch] = useTracked()
 
   function handleProfileOpen() {
-    dispatch({ type: 'SET_PROFILE_ID', profileId: id })
+    dispatch({ type: 'SET_PROFILE_ID', profileId: user.id })
   }
+
   function handleClick() {}
   return (
     <div className="item" onClick={handleClick}>
       <div className="profile_image"></div>
       <div className="info">
-        <div className="user_name">김현우</div>
-        <div className="user_detail">00연대 00중대 상담관</div>
+        <div className="user_name">{user.name}</div>
+        <div className="user_detail">소속의 type을 설정해야 합니다.</div>
       </div>
       <div className="more">
         <MenuDropdown>
@@ -33,6 +35,22 @@ function ManageItem({ id }: ManageItemProps) {
 }
 
 export default function PageManage() {
+  const [users, setUsers] = useState<UserType[] | undefined>([])
+
+  function getUsers() {
+    //가상 정보입니다. API와 연동해야 합니다.
+    const fakeUsers = [
+      {
+        id: 10,
+        name: '김현우'
+      }
+    ]
+    return fakeUsers
+  }
+
+  useEffect(() => {
+    setUsers(getUsers())
+  }, [])
   return (
     <div id="page_counselrooms" className="page_template">
       <div className="header">
@@ -43,9 +61,9 @@ export default function PageManage() {
         </div>
       </div>
       <div className="item_list">
-        <ManageItem id={111} />
-        <ManageItem id={222} />
-        <ManageItem id={333} />
+        {users?.map((user, index) => (
+          <ManageItem user={user} key={index} />
+        ))}
       </div>
     </div>
   )

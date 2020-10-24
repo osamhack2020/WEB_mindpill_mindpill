@@ -2,7 +2,7 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 import { BrowserRouter } from 'react-router-dom'
 import App from './src/App'
-import { Provider } from './src/state'
+import { Provider } from './src/states'
 
 class Root extends React.Component {
   render() {

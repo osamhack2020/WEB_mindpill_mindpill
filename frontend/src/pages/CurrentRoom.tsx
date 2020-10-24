@@ -1,13 +1,8 @@
 import React, { useEffect, useState } from 'react'
-import { useTracked } from '../state'
+import { useTracked } from '../states'
+import { CurrentRoom as CurrentRoomType, Message as MessageType } from '../types'
 
-type LogProps = {
-  out?: boolean
-  message: string
-  timestamp: string
-}
-
-function Log({ out = false, message, timestamp }: LogProps) {
+function Message({ out = false, message, timestamp }: MessageType) {
   return (
     <div className={`chat_log ${out && 'out'}`}>
       <div className="avatar">
@@ -24,48 +19,33 @@ function Log({ out = false, message, timestamp }: LogProps) {
 
 export default function CurrentRoom() {
   const [state, dispatch] = useTracked()
-
-  const [chatLogs, setChatLogs] = useState<LogProps[]>([])
+  const [currentRoomInfo, setCurrentRoomInfo] = useState<CurrentRoomType | undefined>(undefined)
+  const [messages, setMessages] = useState<MessageType[] | undefined>([])
 
   useEffect(() => {
     scrollToBottom()
-    setChatLogs([
-      {
-        message: '이것은 테스트 텍스트입니다세요. 이것은 테스트 텍스트입니다',
-        timestamp: '10:10 am',
-        out: true
-      },
-      {
-        message: '이것은 테스트 텍스트입니다세요. 이것은 테스트 텍스트입니다',
-        timestamp: '10:10 am',
-        out: true
-      },
-      {
-        message: '이것은 테스트 텍스트입니다세요. 이것은 테스트 텍스트입니다',
-        timestamp: '10:10 am',
-        out: true
-      },
-      {
-        message: '안녕하세요',
-        timestamp: '10:12 am',
-        out: false
-      },
-      {
-        message: '안녕하세요. 이것은 상대방 테스트 텍스트입니다. 이것은 상대방 테스트 텍스트입니다',
-        timestamp: '10:12 am',
-        out: false
-      },
-      {
-        message:
-          '안녕하세요. 이것은 상대방 테스트 텍스트입니다. 안녕하세요. 이것은 상대방 테스트 텍스트입니다안녕하세요. 이것은 상대방 테스트 텍스트입니다',
-        timestamp: '10:12 am',
-        out: false
-      }
-    ])
+    setCurrentRoomInfo(getCurrentRoomInfo())
   }, [])
+
   useEffect(() => {
     scrollToBottom()
-  }, [chatLogs])
+  }, [messages])
+
+  useEffect(() => {
+    setMessages(currentRoomInfo?.messages)
+  }, [currentRoomInfo?.messages])
+
+  function getCurrentRoomInfo() {
+    const fakeCurrentRoomInfo = {
+      id: 10,
+      messages: [{ message: '안녕하세요.', timestamp: '10:10 AM', out: true }],
+      opponent: {
+        id: 10,
+        name: '김현우 상담관'
+      }
+    }
+    return fakeCurrentRoomInfo
+  }
 
   function handleCurrentRoomOff() {
     dispatch({ type: 'SET_CURRENT_ROOM_ID', currentRoomId: 0 })
@@ -92,8 +72,8 @@ export default function CurrentRoom() {
   }
 
   function addMessage(message: string) {
-    setChatLogs([
-      ...chatLogs, //기존 채팅로그
+    setMessages(messages => [
+      ...messages, //기존 채팅로그
       {
         message: message,
         timestamp: getTimestamp(),
@@ -136,8 +116,8 @@ export default function CurrentRoom() {
         </div>
       </div>
       <div className="chat_logs" id="chat_logs">
-        {chatLogs.map((log, key) => {
-          return <Log key={key} message={log.message} timestamp={log.timestamp} out={log.out} />
+        {messages?.map((message, key) => {
+          return <Message key={key} message={message.message} timestamp={message.timestamp} out={message.out} />
         })}
       </div>
 

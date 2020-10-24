@@ -17,19 +17,8 @@ export default function Join() {
   function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
     if (e.currentTarget.password.value == e.currentTarget.password2.value) {
-      /**
-        name: 'Example',
-        email: 'recipient@example.com',
-        password: '1q2w3e4r!',
-        sv_number: '00-00000000',
-        gender: 'm',
-        phone_number: '000-0000',
-        rank_id: 1,
-        group_id: 0
-       */
-
       let query: JoinQuery = {
-        name: e.currentTarget.name.value,
+        name: e.currentTarget.userName.value,
         email: e.currentTarget.email.value,
         gender: e.currentTarget.gender.value,
         password: e.currentTarget.password.value,
@@ -69,7 +58,7 @@ export default function Join() {
         환영합니다!
       </div>
       <form id="form_join" onSubmit={handleSubmit}>
-        <input className="styled sized" name="name" type="text" placeholder="이름" autoFocus required />
+        <input className="styled sized" name="userName" type="text" placeholder="이름" autoFocus required />
         <input className="styled sized" name="email" type="email" placeholder="이메일" required />
 
         <select name="gender" className="styled sized" defaultValue="">

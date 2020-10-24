@@ -1,36 +1,35 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { MenuDropdown, Option } from '../components/MenuDropdown'
-import { useTracked } from '../state'
+import { useTracked } from '../states'
+import { Room } from '../types'
 
-type CounselroomProps = {
-  id: number
+type CounselRoomProps = {
+  roomInfo: Room
 }
 
-function Counselroom({ id }: CounselroomProps) {
+function CounselRoom({ roomInfo }: CounselRoomProps) {
   const [state, dispatch] = useTracked()
 
   function handleClick() {
-    dispatch({ type: 'SET_CURRENT_ROOM_ID', currentRoomId: id })
+    dispatch({ type: 'SET_CURRENT_ROOM_ID', currentRoomId: roomInfo.id })
   }
 
   function handleProfileOpen() {
-    dispatch({ type: 'SET_PROFILE_ID', profileId: id }) // 여기서의 id 는 currentRoomId와 같은 것을 사용하고 있습니다. 수정이 필요합니다.
+    dispatch({ type: 'SET_PROFILE_ID', profileId: roomInfo.opponent.id })
   }
+
   return (
     <div className="item" onClick={handleClick}>
       <div className="profile_image"></div>
       <div className="info">
-        <div className="user_name">김현우 상담관</div>
-        <div className="last_message">어떤 고민이 있나요??</div>
+        <div className="user_name">{roomInfo.opponent.name}</div>
+        <div className="last_message">{roomInfo.lastMessage.message}</div>
       </div>
       <div className="more">
-        <div className="timestamp">10분전</div>
+        <div className="timestamp">{roomInfo.lastMessage.timestamp}</div>
         <MenuDropdown>
-          <Option>상담방 열기</Option>
-          <Option hr onClick={handleProfileOpen}>
-            프로필 보기
-          </Option>
-          <Option colored>상담방 나가기</Option>
+          <Option onClick={handleClick}>상담방 열기</Option>
+          <Option onClick={handleProfileOpen}>프로필 보기</Option>
         </MenuDropdown>
       </div>
     </div>
@@ -38,7 +37,30 @@ function Counselroom({ id }: CounselroomProps) {
 }
 
 export default function PageCounselrooms() {
-  const [state, dispatch] = useTracked()
+  const [rooms, setRooms] = useState<Room[]>([])
+
+  function getRooms() {
+    //가상으로 만들어진 정보입니다. 후에 API를 연결해야 합니다.
+    const roomsList = [
+      {
+        id: 10,
+        lastMessage: {
+          message: '무슨일이 있나요?',
+          timestamp: '10분전' // string 이 아닌 Date 타입일 수 있습니다.
+        },
+        opponent: {
+          id: 10,
+          name: '김현우 상담관'
+        }
+      }
+    ]
+    return roomsList
+  }
+
+  useEffect(() => {
+    setRooms(getRooms())
+  }, [])
+
   return (
     <div id="page_counselrooms" className="page_template">
       <div className="header">
@@ -49,9 +71,9 @@ export default function PageCounselrooms() {
         </div>
       </div>
       <div className="item_list">
-        <Counselroom id={111} />
-        <Counselroom id={222} />
-        <Counselroom id={333} />
+        {rooms.map((room, index) => (
+          <CounselRoom roomInfo={room} key={index} />
+        ))}
       </div>
     </div>
   )
