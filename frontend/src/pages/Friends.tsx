@@ -9,7 +9,7 @@ type FriendProps = {
 
 function Friend({ id, globalData }: FriendProps) {
   function handleClick() {
-    globalData.changeSub(id)
+    globalData.changeCurrentRoom(id)
   }
   return (
     <div className="item" onClick={handleClick}>

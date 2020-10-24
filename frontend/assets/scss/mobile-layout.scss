@@ -63,6 +63,16 @@
     width: 100vw;
     height: 100vh;
   }
+  #app_right_sidebar {
+    position: fixed;
+    z-index: 250;
+    top: 0;
+    width: 90vw;
+    max-width: 20rem;
+    height: 100vh;
+    transition: 0.5s ease;
+    box-shadow: $defaultShadow;
+  }
 }
 /* 모바일에 적용될 스타일을 먼저 작성합니다. */
 

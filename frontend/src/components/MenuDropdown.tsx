@@ -4,10 +4,15 @@ type OptionProps = {
   children?: React.ReactNode
   hr?: boolean
   colored?: boolean
+  onClick?: () => void
 }
 
-export function Option({ children, hr, colored }: OptionProps) {
-  return <div className={`menu_dropdown_option ${hr && 'hr'} ${colored && 'colored'}`}>{children}</div>
+export function Option({ children, hr, colored, onClick }: OptionProps) {
+  return (
+    <div onClick={onClick} className={`menu_dropdown_option ${hr && 'hr'} ${colored && 'colored'}`}>
+      {children}
+    </div>
+  )
 }
 
 type MenuDropdownProps = {
@@ -22,6 +27,7 @@ export function MenuDropdown({ children }: MenuDropdownProps) {
   }
   function handleOptionsClick(e: React.MouseEvent<HTMLDivElement>) {
     e.stopPropagation()
+    handleBlur()
   }
   function handleBlur() {
     setShowOptions(false)

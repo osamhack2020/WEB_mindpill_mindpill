@@ -1,5 +1,4 @@
 import React, { useState } from 'react'
-import { parseAuthority, User } from '../routes'
 import { MenuDropdown, Option } from '../components/MenuDropdown'
 import { GlobalData } from '../App'
 
@@ -10,7 +9,11 @@ type CounselroomProps = {
 
 function Counselroom({ id, globalData }: CounselroomProps) {
   function handleClick() {
-    globalData.changeSub(id)
+    globalData.changeCurrentRoom(id)
+  }
+
+  function handleProfileOpen() {
+    globalData.changeProfile(id)
   }
   return (
     <div className="item" onClick={handleClick}>
@@ -23,7 +26,9 @@ function Counselroom({ id, globalData }: CounselroomProps) {
         <div className="timestamp">10분전</div>
         <MenuDropdown>
           <Option>상담방 열기</Option>
-          <Option hr>프로필 보기</Option>
+          <Option hr onClick={handleProfileOpen}>
+            프로필 보기
+          </Option>
           <Option colored>상담방 나가기</Option>
         </MenuDropdown>
       </div>

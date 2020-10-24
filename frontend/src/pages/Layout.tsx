@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { Link, NavLink } from 'react-router-dom'
 import { GlobalData } from '../App'
 import CurrentRoom from './CurrentRoom'
+import Profile from './Profile'
 
 type LayoutProps = {
   globalData: GlobalData
@@ -13,7 +14,7 @@ function Layout({ children, changeUser, globalData }: LayoutProps) {
   return (
     <div id="app_container">
       <div id="app_navbar">
-        {!globalData.user ? (
+        {globalData.user ? (
           <>
             <Link to="/" className="logo">
               MindPill
@@ -46,11 +47,14 @@ function Layout({ children, changeUser, globalData }: LayoutProps) {
         )}
       </div>
       <div id="app_main">{children}</div>
-      {globalData.showSub != 0 && (
+      {globalData.showCurrentRoom > 0 && (
         <div id="app_sub">
           <CurrentRoom globalData={globalData} />
         </div>
       )}
+      <div id="app_right_sidebar" className={globalData.showProfile > 0 ? 'in' : 'out'}>
+        <Profile globalData={globalData} />
+      </div>
     </div>
   )
 }

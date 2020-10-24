@@ -13,9 +13,14 @@ $weightNormal: 400;
 $weightBold: 700;
 
 html {
-  font-family: 'Noto Sans KR', sans-serif;
+  //font-family: 'Noto Sans KR', sans-serif;
+  font-family: 'Sunflower', sans-serif;
   font-size: 15px;
   background-color: $bg-white;
+}
+
+html * {
+  transition: 0.2s ease;
 }
 .test {
   background-color: red;

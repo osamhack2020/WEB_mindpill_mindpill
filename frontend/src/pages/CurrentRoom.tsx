@@ -68,12 +68,16 @@ export default function CurrentRoom({ globalData }: CurrentRoomProps) {
     scrollToBottom()
   }, [chatLogs])
 
-  function handleOffSub() {
-    globalData.changeSub(0)
+  function handleCurrentRoomOff() {
+    globalData.changeCurrentRoom(0)
+  }
+
+  function handleProfileClick() {
+    // 상대방의 User.id 로 변경해야 합니다.
+    globalData.changeProfile(1)
   }
 
   function scrollToBottom() {
-    console.log('bottom')
     let chatLogs = document.getElementById('chat_logs')
     if (chatLogs) {
       chatLogs.scrollTop = chatLogs.scrollHeight
@@ -114,22 +118,22 @@ export default function CurrentRoom({ globalData }: CurrentRoomProps) {
         <div className="user_info">
           <div className="user_image"></div>
           <div className="user_detail">
-            <div className="user_name">김현우 상담관 {globalData.showSub}</div>
+            <div className="user_name">김현우 상담관 {globalData.showCurrentRoom}</div>
             <div className="user_status online">
               <i className="fas fa-circle"></i>온라인
             </div>
           </div>
         </div>
         <div className="tools">
-          <button className="tool off" onClick={handleOffSub}>
+          <button className="tool off" onClick={handleCurrentRoomOff}>
             <i className="fas fa-arrow-left"></i>
           </button>
-          <button className="tool user" onClick={handleOffSub}>
+          <button className="tool user" onClick={handleProfileClick}>
             <i className="far fa-user-circle"></i>
           </button>
-          <button className="tool off" onClick={handleOffSub}></button>
-          <button className="tool off" onClick={handleOffSub}></button>
-          <button className="tool off" onClick={handleOffSub}></button>
+          <button className="tool off" onClick={handleCurrentRoomOff}></button>
+          <button className="tool off" onClick={handleCurrentRoomOff}></button>
+          <button className="tool off" onClick={handleCurrentRoomOff}></button>
         </div>
       </div>
       <div className="chat_logs" id="chat_logs">

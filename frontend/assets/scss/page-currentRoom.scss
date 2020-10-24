@@ -9,6 +9,8 @@ $circleSizeS: 2rem;
     background-color: $white;
     padding: 2rem;
     box-shadow: $defaultShadow;
+    position: relative;
+    z-index: 110;
     .user_info {
       display: flex;
       align-items: center;
@@ -103,6 +105,8 @@ $circleSizeS: 2rem;
     padding: 2rem;
     display: grid;
     grid-template-columns: auto 1fr auto;
+    position: relative;
+    z-index: 110;
     input {
       margin: 0 1rem;
       background-color: transparent;

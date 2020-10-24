@@ -64,7 +64,7 @@ function NewTable() {
   )
 }
 
-type SlideSelectProps = {
+type right_sidebarSelectProps = {
   values: number[]
   defaultValue: number
 }

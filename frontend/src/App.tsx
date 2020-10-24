@@ -6,10 +6,14 @@ import { Router } from './routes'
 
 export type GlobalData = {
   user: User | null
-  showSub: number
-  accessToken: string
-  changeSub: (id: number) => void
+  showCurrentRoom: number
+  changeCurrentRoom: (id: number) => void
+
+  showProfile: number
+  changeProfile: (id: number) => void
+
   handleLogin: (email: string, password: string) => void
+  accessToken: string
 }
 
 export type User = {
@@ -23,19 +27,26 @@ export type User = {
 
 export default function App() {
   const [user, setUser] = useState<User | null>(null)
-  const [showSub, setShowSub] = useState<number>(0)
   const [accessToken, setAccessToken] = useState<string>('')
+  const [showCurrentRoom, setShowCurrentRoom] = useState<number>(0)
+  const [showProfile, setShowProfile] = useState<number>(0)
 
   const globalData = {
     user,
-    showSub,
-    changeSub,
+    showCurrentRoom,
+    changeCurrentRoom,
+
+    showProfile,
+    changeProfile,
+
     handleLogin,
     accessToken
   }
-
-  function changeSub(id: number) {
-    setShowSub(id)
+  function changeProfile(id: number) {
+    setShowProfile(id)
+  }
+  function changeCurrentRoom(id: number) {
+    setShowCurrentRoom(id)
   }
 
   function handleLogin(email: string, password: string) {
