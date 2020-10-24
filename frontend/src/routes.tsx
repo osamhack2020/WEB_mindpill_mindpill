@@ -16,61 +16,40 @@ export function checkAuthority(authority: number | undefined, passingAuthorities
   return false
 }
 
-export function parseAuthority(value: number | null | undefined) {
-  switch (value) {
-    case 1:
-      return '서비스관리자'
-    case 2:
-      return '부대관리자'
-    case 3:
-      return '상담관'
-    case 4:
-      return '지휘관'
-    case 5:
-      return '일반사용자'
-    default:
-      return '로그인 정보 없음'
-  }
-}
-
 const routes: RouteProps[] = [
   {
     exact: true,
-    path: '/'
+    path: '/',
+    component: PageHome
   },
   {
-    path: '/join'
+    path: '/join',
+    component: PageJoin
   },
   {
-    path: '/login'
+    path: '/login',
+    component: PageLogin
   },
   {
-    path: '/counsel'
+    path: '/counselrooms',
+    component: PageCounselRooms
   },
   {
-    path: '/manage'
+    path: '/friends',
+    component: PageFriends
+  },
+  {
+    path: '/manage',
+    component: PageManage
   }
 ]
 
 export function Router() {
   return (
     <Switch>
-      <Route exact path="/" render={() => <PageHome />} />
-
-      {/**
-      {checkAuthority(user?.authority, [3, 5]) && <Route path="/counsel" render={() => <PageCounsel user={user} />} />}
-      {checkAuthority(user?.authority, [1, 2, 3, 4]) && <Route path="/manage" render={() => <PageManage user={user} />} />}
-      {!user && <Route path="/login" render={() => <PageLogin user={user} />} />}
-      {!user && <Route path="/join" render={() => <PageJoin user={user} />} />}
-      */}
-
-      <Route path="/login" render={() => <PageLogin />} />
-      <Route path="/join" render={() => <PageJoin />} />
-      <Route path="/counselrooms" render={() => <PageCounselRooms />} />
-      <Route path="/friends" render={() => <PageFriends />} />
-
-      <Route path="/manage" render={() => <PageManage />} />
-
+      {routes.map(props => (
+        <Route key={props.location ? props.location.pathname : '__notfound__'} {...props} />
+      ))}
       <Route component={PageNotFound} />
     </Switch>
   )
