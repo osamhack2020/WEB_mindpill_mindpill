@@ -36,6 +36,9 @@ func CreateRouter() *router.Router {
 	r.POST("/api/create_room", api.CreateRoom)
 	r.GET("/api/connect_room", api.ConnectRoom)
 
+	// Note APIs
+	r.POST("/api/create_note", api.CreateNote)
+
 	// Frontend
 	r.NotFound = handlers.FrontendHandler()
 
