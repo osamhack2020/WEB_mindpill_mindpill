@@ -72,8 +72,6 @@ func CreateRoom(ctx *fasthttp.RequestCtx) {
 	})
 }
 
-// /api/connect_room?room_id=1
-
 func ConnectRoom(ctx *fasthttp.RequestCtx) {
 	var queries = ctx.QueryArgs()
 	roomID, err := strconv.ParseInt(string(queries.Peek("room_id")), 10, 64)
