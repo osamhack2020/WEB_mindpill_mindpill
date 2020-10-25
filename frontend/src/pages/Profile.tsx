@@ -1,5 +1,5 @@
 import React from 'react'
-import { useTracked } from '../states'
+import { useTracked } from '../state'
 
 export default function Profile() {
   const [state, dispatch] = useTracked()

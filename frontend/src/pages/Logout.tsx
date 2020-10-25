@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react'
-import { useTracked } from '../states'
+import { useTracked } from '../state'
 import axios from 'axios'
-import { initialState } from '../states'
+import { initialState } from '../state'
 
 export default function Logout() {
   const [state, dispatch] = useTracked()

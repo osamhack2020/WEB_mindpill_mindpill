@@ -1,7 +1,7 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 import axios from 'axios'
-import { useTracked } from '../states'
+import { useTracked } from '../state'
 
 export default function Login() {
   const [state, dispatch] = useTracked()

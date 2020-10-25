@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { MenuDropdown, Option } from '../components/MenuDropdown'
-import { useTracked } from '../states'
+import { useTracked } from '../state'
 import { Room } from '../types'
 
 type CounselRoomProps = {

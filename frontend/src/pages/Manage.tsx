@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { MenuDropdown, Option } from '../components/MenuDropdown'
-import { useTracked } from '../states'
+import { useTracked } from '../state'
 import { User as UserType } from '../types'
 
 type UserProps = {

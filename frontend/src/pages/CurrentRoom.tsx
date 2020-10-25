@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { useTracked } from '../states'
+import { useTracked } from '../state'
 import { CurrentRoom as CurrentRoomType, Message as MessageType, User as UserType } from '../types'
 
 type MessageProps = {

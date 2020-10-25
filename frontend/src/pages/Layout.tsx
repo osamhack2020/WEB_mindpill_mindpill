@@ -1,15 +1,16 @@
-import React, { useState } from 'react'
+import React, { ReactNode } from 'react'
 import { Link, NavLink } from 'react-router-dom'
-import { useTracked } from '../states'
+import { useTracked } from '../state'
 import CurrentRoom from './CurrentRoom'
 import Profile from './Profile'
 
-type LayoutProps = {
-  children: React.ReactNode
+interface LayoutProps {
+  children: ReactNode
 }
 
-function Layout({ children }: LayoutProps) {
+export default function Layout({ children }: LayoutProps) {
   const [state, dispatch] = useTracked()
+
   return (
     <div id="app_container">
       <div id="app_navbar">
@@ -27,7 +28,10 @@ function Layout({ children }: LayoutProps) {
           </>
         ) : (
           <>
-            <NavLink to="/counselrooms" className="nav" activeClassName="selected">
+            <NavLink
+              to="/counselrooms"
+              className="nav"
+              activeClassName="selected">
               <i className="fas fa-comment"></i>
             </NavLink>
             <NavLink to="/friends" className="nav" activeClassName="selected">
@@ -53,11 +57,11 @@ function Layout({ children }: LayoutProps) {
         </div>
       )}
 
-      <div id="app_right_sidebar" className={state.profileId > 0 ? 'in' : 'out'}>
+      <div
+        id="app_right_sidebar"
+        className={state.profileId > 0 ? 'in' : 'out'}>
         <Profile />
       </div>
     </div>
   )
 }
-
-export default Layout
