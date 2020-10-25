@@ -1,31 +1,87 @@
 #page_join {
   flex: 1;
   display: flex;
-  align-items: center;
-  flex-direction: column;
-  padding: 1rem;
-
-  .greetings {
-    margin: 4rem 0;
-    font-size: 2rem;
-    width: 100%;
-    text-align: center;
-    line-height: 3rem;
-    font-weight: $weightBold;
-    word-break: normal;
-  }
-  #form_join {
-    width: 100%;
+  #page_join_content {
+    height: 100%;
+    flex: 1;
     display: flex;
-    flex-direction: column;
     align-items: center;
-    input,
-    select {
-      margin-bottom: 1rem;
+    flex-direction: column;
+    padding: 1rem;
+    overflow: scroll;
+    .greetings {
+      margin: 4rem 0;
+      font-size: 2rem;
+      width: 100%;
+      text-align: center;
+      line-height: 3rem;
+      font-weight: $weightBold;
+      word-break: normal;
+    }
+    #form_join {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      input,
+      select {
+        margin-bottom: 1rem;
+      }
+    }
+    .login {
+      text-decoration: underline;
+      margin-bottom: 5rem;
     }
   }
-  .login {
-    text-decoration: underline;
-    margin-bottom: 5rem;
+
+  .popup_container {
+    display: none;
+    position: absolute;
+    z-index: 150;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(0, 0, 0, 0.3);
+    &.on {
+      display: flex;
+      animation: joinPopupFadeIn 0.5s ease forwards;
+    }
+    .popup {
+      background-color: $white;
+      border-radius: 1rem;
+      flex: 1;
+      margin: 0 2rem;
+      max-width: 30rem;
+      padding: 3rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      .icon {
+        font-size: 2rem;
+        margin-bottom: 1rem;
+        &.success {
+          color: $success;
+        }
+        &.error {
+          color: $error;
+        }
+      }
+      .message {
+        font-weight: $weightBold;
+        font-size: 1.2rem;
+        margin-bottom: 2rem;
+      }
+    }
+  }
+}
+@keyframes joinPopupFadeIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
   }
 }
