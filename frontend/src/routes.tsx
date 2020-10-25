@@ -11,10 +11,14 @@ import PageLogin from './pages/Login'
 import PageLogout from './pages/Logout'
 import PageCounselRooms from './pages/CounselRooms'
 import PageFriends from './pages/Friends'
+import ChatTestPage from './pages/ChatTest'
 import PageManage from './pages/Manage'
 import PageNotFound from './pages/NotFound'
 
-export function checkAuthority(authority: number | undefined, passingAuthorities: number[]) {
+export function checkAuthority(
+  authority: number | undefined,
+  passingAuthorities: number[]
+) {
   if (authority && passingAuthorities.includes(authority)) {
     return true
   }
@@ -61,6 +65,11 @@ const routes: Array<RouteProps & AuthRoute> = [
     path: '/manage',
     component: PageManage,
     auth: ['admin', 'manager', 'commander']
+  },
+  {
+    path: '/chattest',
+    component: ChatTestPage,
+    auth: ['admin', 'manager', 'counselor', 'commander', 'user', null]
   }
 ]
 
@@ -73,10 +82,22 @@ export function Router() {
     <Switch>
       {routes.map(props => {
         if (props.auth.includes(state.user.auth)) {
-          return <Route key={props.location ? props.location.pathname : '__notfound__'} {...props} />
+          return (
+            <Route
+              key={props.location ? props.location.pathname : '__notfound__'}
+              {...props}
+            />
+          )
         }
-        return <Redirect path={props.path} to="/" key={props.location ? props.location.pathname : '__notfound__'} />
+        return (
+          <Redirect
+            path={props.path}
+            to="/"
+            key={props.location ? props.location.pathname : '__notfound__'}
+          />
+        )
       })}
+
       <Route component={PageNotFound} />
     </Switch>
   )
