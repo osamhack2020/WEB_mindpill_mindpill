@@ -16,8 +16,12 @@ type Note struct {
 // Fields of the Note.
 func (Note) Fields() []ent.Field {
 	return []ent.Field{
+		field.String("content").
+			Default(""),
 		field.Time("created_at").
 			Immutable().
+			Default(time.Now),
+		field.Time("updated_at").
 			Default(time.Now),
 	}
 }

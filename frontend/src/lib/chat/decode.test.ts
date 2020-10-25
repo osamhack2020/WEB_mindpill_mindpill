@@ -1,5 +1,5 @@
-import { Message } from './message'
-import { decode } from './chat'
+import { MessageToken } from './message'
+import { decode } from './decode'
 import JSBI from 'jsbi'
 
 const helloworld = [
@@ -23,33 +23,31 @@ const dummytime = JSBI.BigInt('1601191007260')
 const dummytimeb = [0x00, 0x00, 0x01, 0x74, 0xce, 0x6b, 0xd4, 0x1c]
 
 test('Decoder#fixstr', () => {
-  const expected: Array<Message> = ['Hello, World!']
+  const expected: Array<MessageToken> = ['Hello, World!']
   const result = decode(Uint8Array.from(helloworld))
   expect(result).toEqual(expected)
 })
 
 test('Decoder#str8', () => {
-  const expected: Array<Message> = ['Hello, World!']
+  const expected: Array<MessageToken> = ['Hello, World!']
   const result = decode(Uint8Array.from([0x80, ...helloworld]))
   expect(result).toEqual(expected)
 })
 
 test('Decoder#str16', () => {
-  const expected: Array<Message> = ['Hello, World!']
+  const expected: Array<MessageToken> = ['Hello, World!']
   const result = decode(Uint8Array.from([0x81, 0x00, ...helloworld]))
   expect(result).toEqual(expected)
 })
 
 test('Decoder#str32', () => {
-  const expected: Array<Message> = ['Hello, World!']
-  const result = decode(
-    Uint8Array.from([0x82, 0x00, 0x00, 0x00, ...helloworld])
-  )
+  const expected: Array<MessageToken> = ['Hello, World!']
+  const result = decode(Uint8Array.from([0x82, 0x00, 0x00, 0x00, ...helloworld]))
   expect(result).toEqual(expected)
 })
 
 test('Decoder#image', () => {
-  const expected: Array<Message> = [
+  const expected: Array<MessageToken> = [
     {
       type: 'image',
       id: Uint8Array.from(dummyid)
@@ -60,7 +58,7 @@ test('Decoder#image', () => {
 })
 
 test('Decoder#audio', () => {
-  const expected: Array<Message> = [
+  const expected: Array<MessageToken> = [
     {
       type: 'audio',
       id: Uint8Array.from(dummyid)
@@ -71,7 +69,7 @@ test('Decoder#audio', () => {
 })
 
 test('Decoder#video', () => {
-  const expected: Array<Message> = [
+  const expected: Array<MessageToken> = [
     {
       type: 'video',
       id: Uint8Array.from(dummyid)
@@ -82,7 +80,7 @@ test('Decoder#video', () => {
 })
 
 test('Decoder#uid', () => {
-  const expected: Array<Message> = [
+  const expected: Array<MessageToken> = [
     {
       type: 'uid',
       id: Uint8Array.from(dummyid)
@@ -93,7 +91,7 @@ test('Decoder#uid', () => {
 })
 
 test('Decoder#timestamp', () => {
-  const expected: Array<Message> = [
+  const expected: Array<MessageToken> = [
     {
       type: 'timestamp',
       timestamp: dummytime

@@ -50,13 +50,11 @@ frontend: ${FRONTEND_OUT}
 .PHONY := ui
 ui: ${UI_OUT}
 
-${UI_OUT}: ${UI_SRC}
-	npx webpack --config webpack.client.js
-
+.PHONY := ssr
 ssr: ${SSR_OUT}
 
-${SSR_OUT}: ${SSR_SRC}
-	npx webpack --config webpack.server.js
+${UI_OUT} ${SSR_OUT}: ${UI_SRC} ${SSR_SRC}
+	npx webpack
 
 .PHONY := style
 style: ${STYLE_OUT}

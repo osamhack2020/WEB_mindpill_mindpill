@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"encoding/json"
 	"mindpill/backend/internal/database"
-	"mindpill/backend/internal/tokens"
 	"mindpill/ent/group"
 	"mindpill/ent/user"
 	"strconv"
@@ -116,11 +115,15 @@ func DescribeUser(ctx *fasthttp.RequestCtx) {
 		InternalServerError(ctx, err, "failed to query group records")
 		return
 	}
-	groups := tokens.GroupMapFromRecords(groupRecords...)
+
+	groupIDs := make([]int, len(groupRecords))
+	for i, record := range groupRecords {
+		groupIDs[i] = record.ID
+	}
 
 	var resp *DescribeUserResponse
 	if t, _ := ParseAuthorization(ctx); t != nil &&
-		(t.IsAdmin || t.IsManagerOf(groups) || t.IsOwner(userRecord.ID)) {
+		(t.IsAdmin || t.IsManagerOf(groupIDs...) || t.IsOwner(userRecord.ID)) {
 		resp = &DescribeUserResponse{
 			SvNumber:    userRecord.SvNumber,
 			Email:       userRecord.Email,
