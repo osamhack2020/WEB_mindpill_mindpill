@@ -1,103 +1,70 @@
 import React from 'react'
-import { RouteProps } from 'react-router'
-import { Route, Switch, Redirect } from 'react-router-dom'
-import { useTracked } from './states'
-import { Auth as AuthType } from './types'
+import {
+  RouteProps as ReactRouterRouteProps,
+  RouteComponentProps
+} from 'react-router'
+import { Route, Switch } from 'react-router-dom'
 
-//pages
+// Pages
 import PageHome from './pages/Home'
-import PageJoin from './pages/Join'
-import PageLogin from './pages/Login'
-import PageLogout from './pages/Logout'
-import PageCounselRooms from './pages/CounselRooms'
-import PageFriends from './pages/Friends'
-import PageManage from './pages/Manage'
+// import PageJoin from './pages/Join'
+// import PageLogin from './pages/Login'
+// import PageLogout from './pages/Logout'
+// import PageCounselRooms from './pages/CounselRooms'
+// import PageFriends from './pages/Friends'
+// import PageManage from './pages/Manage'
 import PageNotFound from './pages/NotFound'
-import PageChatTest from './pages/ChatTest'
+// import PageChatTest from './pages/ChatTest'
 
-export function checkAuthority(
-  authority: number | undefined,
-  passingAuthorities: number[]
-) {
-  if (authority && passingAuthorities.includes(authority)) {
-    return true
-  }
-  return false
+type RouteProps = ReactRouterRouteProps & {
+  path: string
+  component: React.ComponentType<RouteComponentProps<any>>
 }
 
-type AuthRoute = {
-  auth: AuthType[]
-}
-
-const routes: Array<RouteProps & AuthRoute> = [
+const routes: Array<RouteProps> = [
   {
     exact: true,
     path: '/',
-    component: PageHome,
-    auth: ['admin', 'manager', 'counselor', 'commander', 'user', null]
-  },
-  {
-    exact: true,
-    path: '/chattest',
-    component: PageChatTest,
-    auth: ['admin', 'manager', 'counselor', 'commander', 'user', null]
-  },
-  {
-    path: '/join',
-    component: PageJoin,
-    auth: [null]
-  },
-  {
-    path: '/login',
-    component: PageLogin,
-    auth: [null]
-  },
-  {
-    path: '/logout',
-    component: PageLogout,
-    auth: ['admin', 'manager', 'counselor', 'commander', 'user']
-  },
-  {
-    path: '/counselrooms',
-    component: PageCounselRooms,
-    auth: ['counselor', 'user']
-  },
-  {
-    path: '/friends',
-    component: PageFriends,
-    auth: ['counselor', 'user']
-  },
-  {
-    path: '/manage',
-    component: PageManage,
-    auth: ['admin', 'manager', 'commander']
+    component: PageHome
   }
+  // {
+  //   // DEBUG ONLY
+  //   exact: true,
+  //   path: '/chattest',
+  //   component: PageChatTest
+  // },
+  // {
+  //   path: '/join',
+  //   component: PageJoin
+  // },
+  // {
+  //   path: '/login',
+  //   component: PageLogin
+  // },
+  // {
+  //   path: '/logout',
+  //   component: PageLogout
+  // },
+  // {
+  //   path: '/counselrooms',
+  //   component: PageCounselRooms
+  // },
+  // {
+  //   path: '/friends',
+  //   component: PageFriends
+  // },
+  // {
+  //   path: '/manage',
+  //   component: PageManage
+  // }
 ]
 
-function AuthRoute() {}
-
 export function Router() {
-  const [state, dispatch] = useTracked()
-
   return (
     <Switch>
-      {routes.map(props => {
-        if (props.auth.includes(state.user.auth)) {
-          return (
-            <Route
-              key={props.location ? props.location.pathname : '__notfound__'}
-              {...props}
-            />
-          )
-        }
-        return (
-          <Redirect
-            path={props.path}
-            to="/"
-            key={props.location ? props.location.pathname : '__notfound__'}
-          />
-        )
-      })}
+      {routes.map(route => (
+        <Route key={route.path} {...route} />
+      ))}
       <Route component={PageNotFound} />
     </Switch>
   )
