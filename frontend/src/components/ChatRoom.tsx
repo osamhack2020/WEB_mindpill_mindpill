@@ -1,3 +1,4 @@
+import JSBI from 'jsbi'
 import React, {
   useEffect,
   useState,
@@ -8,13 +9,12 @@ import React, {
 import {
   joinRoom,
   Room,
-  Message,
   TextMessage,
   ImageMessage,
+  AudioMessage,
   VideoMessage,
   UserChangedMessage,
-  TimeChangedMessage,
-  ErrorMessage
+  TimeChangedMessage
 } from '../lib/chat'
 
 interface ChatRoomProps {
@@ -22,10 +22,17 @@ interface ChatRoomProps {
   token: string
 }
 
+interface MessageWrapper {
+  msg: TextMessage | ImageMessage | AudioMessage | VideoMessage
+  userID?: Uint8Array
+  timestamp?: JSBI
+}
+
 export default function ChatRoom({ roomID, token }: ChatRoomProps) {
   const roomRef = useRef<Room | null>(null)
-
-  const [messages, setMessages] = useState<Message[]>([])
+  const userRef = useRef<UserChangedMessage | null>(null)
+  const timestampRef = useRef<TimeChangedMessage | null>(null)
+  const [messages, setMessages] = useState<MessageWrapper[]>([])
 
   // Callbacks
   const inputSubmitHandler = useCallback(
@@ -42,34 +49,37 @@ export default function ChatRoom({ roomID, token }: ChatRoomProps) {
     []
   )
 
-  const textHandler = useCallback((msg: TextMessage) => {
-    setMessages([...messages, msg])
+  const messageHandler = useCallback(
+    (msg: TextMessage | ImageMessage | AudioMessage | VideoMessage) => {
+      setMessages(prevMessages => [
+        ...prevMessages,
+        {
+          msg: msg,
+          userID: userRef.current?.userID,
+          timestamp: timestampRef.current?.timestamp
+        }
+      ])
+    },
+    []
+  )
+  const userHandler = useCallback((msg: UserChangedMessage) => {
+    userRef.current = msg
   }, [])
-  const imageHandler = useCallback((msg: ImageMessage) => {
-    setMessages([...messages, msg])
-  }, [])
-  const videoHandler = useCallback((msg: VideoMessage) => {
-    setMessages([...messages, msg])
-  }, [])
-  const userChangedHandler = useCallback((msg: UserChangedMessage) => {
-    setMessages([...messages, msg])
-  }, [])
-  const timeChangedHandler = useCallback((msg: TimeChangedMessage) => {
-    setMessages([...messages, msg])
-  }, [])
-  const errorHandler = useCallback((msg: ErrorMessage) => {
-    setMessages([...messages, msg])
+  const timestampHandler = useCallback((msg: TimeChangedMessage) => {
+    timestampRef.current = msg
   }, [])
 
+  // initialize room
   useEffect(() => {
     joinRoom(roomID, token)
       .then(room => {
-        room.ontext = textHandler
-        room.onimage = imageHandler
-        room.onvideo = videoHandler
-        room.onuserchanged = userChangedHandler
-        room.ontimechanged = timeChangedHandler
-        room.onerror = errorHandler
+        room.ontext = messageHandler
+        room.onimage = messageHandler
+        room.onaudio = messageHandler
+        room.onvideo = messageHandler
+        room.onuserchanged = userHandler
+        room.ontimechanged = timestampHandler
+        // room.onerror = errorHandler
         roomRef.current = room
       })
       .catch((err: any) => {
@@ -81,11 +91,15 @@ export default function ChatRoom({ roomID, token }: ChatRoomProps) {
   }, [])
 
   return (
-    <div>
+    <div className="room">
       <div className="messages">
-        {messages.map((msg: Message) => {
+        {messages.map(({ msg, userID, timestamp }: MessageWrapper) => {
           if ('text' in msg) {
-            return <p>{msg.text}</p>
+            return (
+              <p>
+                {userID}: {msg.text} <small>({timestamp})</small>
+              </p>
+            )
           }
         })}
       </div>
