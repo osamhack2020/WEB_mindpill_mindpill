@@ -20,16 +20,16 @@ var (
 type TokenGroup struct {
 	ID          int  `json:"id"`
 	IsManager   bool `json:"manager"`
-	IsCounseler bool `json:"counseler"`
+	IsCounselor bool `json:"counseler"`
 }
 
 func GroupMapFromRecords(groupRecords ...*ent.Group) map[int]TokenGroup {
 	var result = make(map[int]TokenGroup)
-	for i, groupRecord := range groupRecords {
-		result[i] = TokenGroup{
-			ID:          groupRecord.ID,
-			IsManager:   groupRecord.Edges.Managers != nil,
-			IsCounseler: groupRecord.Edges.Counselors != nil,
+	for _, record := range groupRecords {
+		result[record.ID] = TokenGroup{
+			ID:          record.ID,
+			IsManager:   record.Edges.Managers != nil,
+			IsCounselor: record.Edges.Counselors != nil,
 		}
 	}
 	return result
@@ -133,9 +133,19 @@ func (t *Token) validate(payload []byte) error {
 	return nil
 }
 
-func (t *Token) IsManagerOf(groups map[int]TokenGroup) bool {
-	for id := range groups {
-		if !t.Groups[id].IsManager {
+func (t *Token) IsManagerOf(groupIDs ...int) bool {
+	for _, groupID := range groupIDs {
+		if !t.Groups[groupID].IsManager {
+			continue
+		}
+		return true
+	}
+	return false
+}
+
+func (t *Token) IsCounselerOf(groupIDs ...int) bool {
+	for _, groupID := range groupIDs {
+		if !t.Groups[groupID].IsCounselor {
 			continue
 		}
 		return true
