@@ -3,6 +3,7 @@ import React, { useEffect } from 'react'
 import { useTracked } from '../states'
 
 import axios from 'axios'
+import { Auth } from '../types'
 
 export default function UserAuthentication() {
   const [state, dispatch] = useTracked()
@@ -64,6 +65,24 @@ export default function UserAuthentication() {
     return data
   }
 
+  function updateUserAuth() {
+    let userAuth: Auth = null
+    if (state.user.id > 0) {
+      userAuth = 'user'
+      if (state.user.admin) {
+        userAuth = 'admin'
+      } else if (state.user.groups[0]) {
+        if (state.user.groups[0].manager) {
+          userAuth = 'manager'
+        } else if (state.user.groups[0].counselor) {
+          userAuth = 'counselor'
+        }
+      }
+    }
+    //'commander' 에대한 정보를 확인할 수 없습니다.
+    dispatch({ type: 'SET_USER', user: { ...state.user, auth: userAuth } })
+  }
+
   useEffect(() => {
     //암호화 해야합니다.
     const refreshToken = localStorage.getItem('refreshToken')
@@ -85,5 +104,10 @@ export default function UserAuthentication() {
       updateMyUserInfo()
     }
   }, [state.user.id])
+  useEffect(() => {
+    updateUserAuth()
+    console.log(state.user.auth)
+  }, [state.user])
+
   return <></>
 }

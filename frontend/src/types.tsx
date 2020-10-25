@@ -23,3 +23,5 @@ export type CurrentRoom = {
   messages: Message[]
   opponent: User
 }
+
+export type Auth = 'admin' | 'manager' | 'counselor' | 'commander' | 'user' | null

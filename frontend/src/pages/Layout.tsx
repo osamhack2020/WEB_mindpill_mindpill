@@ -13,7 +13,7 @@ function Layout({ children }: LayoutProps) {
   return (
     <div id="app_container">
       <div id="app_navbar">
-        {!state.user ? (
+        {!state.user.auth ? (
           <>
             <Link to="/" className="logo">
               MindPill
@@ -33,11 +33,11 @@ function Layout({ children }: LayoutProps) {
             <NavLink to="/friends" className="nav" activeClassName="selected">
               <i className="fas fa-user-friends"></i>
             </NavLink>
-            <NavLink to="/settings" className="nav" activeClassName="selected">
-              <i className="fas fa-cog"></i>
-            </NavLink>
             <NavLink to="/manage" className="nav" activeClassName="selected">
               <i className="fas fa-tasks"></i>
+            </NavLink>
+            <NavLink to="/logout" className="nav" activeClassName="selected">
+              <i className="fas fa-sign-out-alt"></i>
             </NavLink>
             <div className="nav menu">
               <i className="fas fa-bars"></i>

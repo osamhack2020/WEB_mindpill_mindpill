@@ -1,30 +1,45 @@
 import { useReducer, Reducer } from 'react'
 import { createContainer } from 'react-tracked'
+import { Auth as AuthType } from './types'
 
-const initialState = {
+export const initialState = {
   accessToken: '',
-  user: {},
+  user: {
+    admin: false,
+    id: 0,
+    groups: [],
+    created_at: '',
+    email: '',
+    gender: null,
+    name: '',
+    phone_number: '',
+    updated_at: '',
+    auth: null
+  },
   currentRoomId: 0,
   profileId: 0,
   subPage: null
 }
 
+type Gender = 'm' | 'f' | null
+
+type Group = {
+  id: number
+  manager: boolean
+  counselor: boolean
+}
+
 type User = {
-  admin?: boolean
-  id?: number
-  groups?: [
-    {
-      id: number
-      manager: boolean
-      counselor: boolean
-    }
-  ]
-  created_at?: string
-  email?: string
-  gender?: 'm' | 'f'
-  name?: string
-  phone_number?: string
-  updated_at?: string
+  admin: boolean
+  id: number
+  groups: Group[]
+  created_at: string
+  email: string
+  gender: Gender
+  name: string
+  phone_number: string
+  updated_at: string
+  auth: AuthType 
 }
 
 type State = {

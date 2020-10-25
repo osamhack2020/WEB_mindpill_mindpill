@@ -15,6 +15,7 @@ export default function Login() {
     })
       .then(response => {
         const { access_token, refresh_token } = response.data
+        axios.defaults.headers.common['Authorization'] = `Bearer ${access_token}`
         localStorage.setItem('refreshToken', refresh_token)
         dispatch({ type: 'SET_ACCESS_TOKEN', accessToken: access_token })
         console.log({ access_token, refresh_token })
