@@ -12,6 +12,7 @@ function CounselRoom({ roomInfo }: CounselRoomProps) {
 
   function handleClick() {
     dispatch({ type: 'SET_CURRENT_ROOM_ID', currentRoomId: roomInfo.id })
+    dispatch({ type: 'SET_SUB_PAGE', subPage: 'COUNSEL_ROOM' })
   }
 
   function handleProfileOpen() {

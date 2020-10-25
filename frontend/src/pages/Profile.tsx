@@ -4,9 +4,17 @@ import { useTracked } from '../states'
 export default function Profile() {
   const [state, dispatch] = useTracked()
 
+  function getUser() {
+    const fakeUser = {
+      id: 10,
+      name: '김현우'
+    }
+  }
+
   function handleProfileOff() {
     dispatch({ type: 'SET_PROFILE_ID', profileId: 0 })
   }
+
   return (
     <div id="right_sidebar_profile">
       <button className="right_sidebar_off" onClick={handleProfileOff}>

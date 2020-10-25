@@ -4,27 +4,19 @@ import axios from 'axios'
 import { useTracked } from '../states'
 
 export default function Login() {
+  const [state, dispatch] = useTracked()
   function handleLogin(email: string, password: string) {
-    const [state, dispatch] = useTracked()
-
     // 초기 access token 과 refresh token 을 받는 곳입니다.
     axios({
       method: 'post',
       url: '/api/create_token',
-      params: {
-        request_type: 'password'
-      },
-      data: {
-        email,
-        password
-      }
+      params: { request_type: 'password' },
+      data: { email, password }
     })
       .then(response => {
         const { access_token, refresh_token } = response.data
-        //setAccessToken(access_token)
-        dispatch({ type: 'SET_ACCESS_TOKEN', accessToken: access_token })
-
         localStorage.setItem('refreshToken', refresh_token)
+        dispatch({ type: 'SET_ACCESS_TOKEN', accessToken: access_token })
         console.log({ access_token, refresh_token })
       })
       .catch(error => {

@@ -12,6 +12,7 @@ function Friend({ user }: FriendProps) {
 
   function handleClick() {
     dispatch({ type: 'SET_CURRENT_ROOM_ID', currentRoomId: 0 }) // user와 대응되는 CounselRoom 정보를 받아온 후에 개선해야합니다.
+    dispatch({ type: 'SET_SUB_PAGE', subPage: 'COUNSEL_ROOM' })
   }
   function handleProfileOpen() {
     dispatch({ type: 'SET_PROFILE_ID', profileId: user.id })

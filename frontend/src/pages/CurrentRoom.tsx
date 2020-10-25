@@ -1,18 +1,23 @@
 import React, { useEffect, useState } from 'react'
 import { useTracked } from '../states'
-import { CurrentRoom as CurrentRoomType, Message as MessageType } from '../types'
+import { CurrentRoom as CurrentRoomType, Message as MessageType, User as UserType } from '../types'
 
-function Message({ out = false, message, timestamp }: MessageType) {
+type MessageProps = {
+  message: MessageType
+  user: UserType | undefined
+}
+
+function Message({ message, user }: MessageProps) {
   return (
-    <div className={`chat_log ${out && 'out'}`}>
+    <div className={`chat_log ${message.out && 'out'}`}>
       <div className="avatar">
         <div className="profile_image"></div>
         <div>
-          <div className="name">김현우 상담관</div>
-          <div className="timestamp">{timestamp}</div>
+          <div className="name">{user?.name}</div>
+          <div className="timestamp">{message.timestamp}</div>
         </div>
       </div>
-      <div className="message">{message}</div>
+      <div className="message">{message.message}</div>
     </div>
   )
 }
@@ -36,19 +41,20 @@ export default function CurrentRoom() {
   }, [currentRoomInfo?.messages])
 
   function getCurrentRoomInfo() {
+    //currentRoomId에 맞는 roomInfo를 API로 받아와야 합니다.
     const fakeCurrentRoomInfo = {
-      id: 10,
+      id: state.currentRoomId,
       messages: [{ message: '안녕하세요.', timestamp: '10:10 AM', out: true }],
       opponent: {
         id: 10,
-        name: '김현우 상담관'
+        name: '김상대 상담관'
       }
     }
     return fakeCurrentRoomInfo
   }
 
   function handleCurrentRoomOff() {
-    dispatch({ type: 'SET_CURRENT_ROOM_ID', currentRoomId: 0 })
+    dispatch({ type: 'SET_SUB_PAGE', subPage: null })
   }
 
   function handleProfileClick() {
@@ -97,7 +103,9 @@ export default function CurrentRoom() {
         <div className="user_info">
           <div className="user_image"></div>
           <div className="user_detail">
-            <div className="user_name">김현우 상담관 {state.currentRoomId}</div>
+            <div className="user_name">
+              {currentRoomInfo?.opponent.name} {state.currentRoomId}
+            </div>
             <div className="user_status online">
               <i className="fas fa-circle"></i>온라인
             </div>
@@ -117,7 +125,7 @@ export default function CurrentRoom() {
       </div>
       <div className="chat_logs" id="chat_logs">
         {messages?.map((message, key) => {
-          return <Message key={key} message={message.message} timestamp={message.timestamp} out={message.out} />
+          return <Message key={key} message={message} user={currentRoomInfo?.opponent} />
         })}
       </div>
 

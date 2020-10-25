@@ -3,11 +3,11 @@ import { MenuDropdown, Option } from '../components/MenuDropdown'
 import { useTracked } from '../states'
 import { User as UserType } from '../types'
 
-type ManageItemProps = {
+type UserProps = {
   user: UserType
 }
 
-function ManageItem({ user }: ManageItemProps) {
+function User({ user }: UserProps) {
   const [state, dispatch] = useTracked()
 
   function handleProfileOpen() {
@@ -62,7 +62,7 @@ export default function PageManage() {
       </div>
       <div className="item_list">
         {users?.map((user, index) => (
-          <ManageItem user={user} key={index} />
+          <User user={user} key={index} />
         ))}
       </div>
     </div>

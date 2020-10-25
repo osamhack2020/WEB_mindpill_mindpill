@@ -13,7 +13,7 @@ function Layout({ children }: LayoutProps) {
   return (
     <div id="app_container">
       <div id="app_navbar">
-        {state.user ? (
+        {!state.user ? (
           <>
             <Link to="/" className="logo">
               MindPill
@@ -46,11 +46,13 @@ function Layout({ children }: LayoutProps) {
         )}
       </div>
       <div id="app_main">{children}</div>
-      {state.currentRoomId > 0 && (
+      {state.subPage != null && (
         <div id="app_sub">
-          <CurrentRoom />
+          {state.subPage == 'COUNSEL_ROOM' && <CurrentRoom />}
+          {state.subPage == 'MANAGE' && ''}
         </div>
       )}
+
       <div id="app_right_sidebar" className={state.profileId > 0 ? 'in' : 'out'}>
         <Profile />
       </div>
