@@ -6,7 +6,7 @@ FRONTEND_COMMON_SRC := $(shell find ./frontend/src -name '*.tsx' -o -name '*.ts'
 UI_SRC := frontend/browser.tsx ${FRONTEND_COMMON_SRC}
 UI_OUT := ${FRONTEND_DIR}/bundle.js
 
-STYLE_ENTRY := frontend/assets/scss/styles.scss
+STYLE_ENTRY := frontend/scss/styles.scss
 STYLE_SRC := $(shell find ./frontend -name '*.scss')
 STYLE_OUT := ${FRONTEND_DIR}/style.css
 
@@ -61,7 +61,10 @@ style: ${STYLE_OUT}
 
 ${STYLE_OUT}: ${STYLE_SRC}
 	mkdir -p $(dir $@)
-	npx node-sass --output-style compressed ${STYLE_ENTRY} > $@
+	npx node-sass \
+	--importer node_modules/node-sass-magic-importer/dist/cli.js \
+	--output-style compressed \
+	${STYLE_ENTRY} > $@
 
 .PHONY := public
 public: ${PUBLIC_OUT}
