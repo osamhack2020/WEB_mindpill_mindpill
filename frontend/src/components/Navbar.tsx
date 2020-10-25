@@ -1,29 +1,37 @@
-import React, { useCallback, MouseEvent } from 'react'
+import React, { useCallback, MouseEvent, useState } from 'react'
 import { Link, NavLink } from 'react-router-dom'
 import { useTracked } from '../state'
 
 export default function Navbar() {
   const [state, dispatch] = useTracked()
+  const [activated, setActive] = useState(false)
+
+  const toggleMenuHandler = useCallback(() => {
+    setActive(activated => !activated)
+  }, [])
 
   const logoutHandler = useCallback((e: MouseEvent<HTMLAnchorElement>) => {
     dispatch({ type: 'LOGOUT' })
   }, [])
 
   return (
-    <div className="navbar">
+    <div className="navbar is-primary">
       <div className="navbar-brand">
         <Link to="/" className="navbar-item">
           Mindpill
         </Link>
 
-        <a role="button" className="navbar-burger burger">
+        <a
+          role="button"
+          className="navbar-burger burger"
+          onClick={toggleMenuHandler}>
           <span aria-hidden="true"></span>
           <span aria-hidden="true"></span>
           <span aria-hidden="true"></span>
         </a>
       </div>
 
-      <div className="navbar-menu">
+      <div className={`navbar-menu${activated ? ' is-active' : ''}`}>
         <div className="navbar-end">
           {state.user == null ? (
             <>

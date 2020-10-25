@@ -6,7 +6,8 @@ import {
 import { Route, Switch } from 'react-router-dom'
 
 // Pages
-import PageHome from './pages/Home'
+import PageHome from './pages/HomePage'
+import LoginPage from './pages/auth/LoginPage'
 // import PageJoin from './pages/Join'
 // import PageLogin from './pages/Login'
 // import PageLogout from './pages/Logout'
@@ -26,6 +27,11 @@ const routes: Array<RouteProps> = [
     exact: true,
     path: '/',
     component: PageHome
+  },
+  {
+    exact: true,
+    path: '/user/login',
+    component: LoginPage
   }
   // {
   //   // DEBUG ONLY
