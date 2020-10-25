@@ -61,7 +61,6 @@ export default function UserAuthentication() {
       .catch(error => {
         console.log(error)
       })
-    console.log('getUser() : ', data)
     return data
   }
 
@@ -70,14 +69,12 @@ export default function UserAuthentication() {
     const refreshToken = localStorage.getItem('refreshToken')
 
     if (refreshToken) {
-      console.log('Refresh Token 이 있습니다. Access Token을 발급받습니다.')
       refreshAccessToken(refreshToken)
     }
   }, [])
 
   useEffect(() => {
     //access_token 이 변경되면 토큰의 정보(id, groups, admin) 을 받아옵니다.
-    console.log(state.accessToken)
     if (state.accessToken) {
       updateMyTokenInfo()
     }
@@ -88,9 +85,5 @@ export default function UserAuthentication() {
       updateMyUserInfo()
     }
   }, [state.user.id])
-
-  useEffect(() => {
-    console.log(state.user)
-  }, [state.user])
   return <></>
 }
