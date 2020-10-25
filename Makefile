@@ -6,7 +6,7 @@ FRONTEND_COMMON_SRC := $(shell find ./frontend/src -name '*.tsx' -o -name '*.ts'
 UI_SRC := frontend/browser.tsx ${FRONTEND_COMMON_SRC}
 UI_OUT := ${FRONTEND_DIR}/bundle.js
 
-STYLE_ENTRY := frontend/scss/styles.scss
+STYLE_ENTRY := frontend/scss/main.scss
 STYLE_SRC := $(shell find ./frontend -name '*.scss')
 STYLE_OUT := ${FRONTEND_DIR}/style.css
 
