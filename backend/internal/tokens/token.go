@@ -20,7 +20,7 @@ var (
 type TokenGroup struct {
 	ID          int  `json:"id"`
 	IsManager   bool `json:"manager"`
-	IsCounseler bool `json:"counseler"`
+	IsCounselor bool `json:"counseler"`
 }
 
 func GroupMapFromRecords(groupRecords ...*ent.Group) map[int]TokenGroup {
@@ -29,7 +29,7 @@ func GroupMapFromRecords(groupRecords ...*ent.Group) map[int]TokenGroup {
 		result[record.ID] = TokenGroup{
 			ID:          record.ID,
 			IsManager:   record.Edges.Managers != nil,
-			IsCounseler: record.Edges.Counselors != nil,
+			IsCounselor: record.Edges.Counselors != nil,
 		}
 	}
 	return result
@@ -145,7 +145,7 @@ func (t *Token) IsManagerOf(groupIDs ...int) bool {
 
 func (t *Token) IsCounselerOf(groupIDs ...int) bool {
 	for _, groupID := range groupIDs {
-		if !t.Groups[groupID].IsCounseler {
+		if !t.Groups[groupID].IsCounselor {
 			continue
 		}
 		return true
