@@ -4,8 +4,11 @@ import (
 	"mindpill/backend/internal/chat"
 	"mindpill/backend/internal/database"
 	"mindpill/backend/internal/tokens"
+	"mindpill/ent"
 	"mindpill/ent/counselor"
+	"mindpill/ent/message"
 	"mindpill/ent/room"
+	"mindpill/ent/user"
 	"strconv"
 	"time"
 
@@ -136,4 +139,64 @@ func ConnectRoom(ctx *fasthttp.RequestCtx) {
 		}
 		return
 	}
+}
+
+type LoadMessageRequest struct {
+	RoomID    int   `json:"room_id"`
+	Timestamp int64 `json:"timestamp"`
+}
+
+type LoadMessageResponse struct {
+	Message   []byte    `json:"message"`
+	CreatedAt time.Time `json:"created_at"`
+}
+
+func LoadMessage(ctx *fasthttp.RequestCtx) {
+	token, err := ParseAuthorization(ctx)
+	if err != nil {
+		Unauthorized(ctx, err, "unauthorized")
+		return
+	}
+
+	var req LoadMessageRequest
+	if err := ParseRequestBody(ctx, &req); err != nil {
+		BadRequest(ctx, err, "failed to parse request body")
+		return
+	}
+
+	isRoomUser, err := database.Ent().
+		Room.Query().
+		Where(
+			room.IDEQ(req.RoomID),
+			room.HasUsersWith(user.IDEQ(token.UserID)),
+		).
+		Exist(ctx)
+	if err != nil {
+		InternalServerError(ctx, err, "database error")
+		return
+	}
+	if !isRoomUser {
+		Forbidden(ctx, nil, "permission denied")
+		return
+	}
+
+	timestamp := time.Unix(req.Timestamp, 0)
+
+	messageRecord, err := database.Ent().
+		Message.Query().
+		Where(
+			message.HasRoomWith(room.IDEQ(req.RoomID)),
+			message.CreatedAtLTE(timestamp),
+		).
+		Order(ent.Desc(message.FieldCreatedAt)).
+		First(ctx)
+	if err != nil {
+		InternalServerError(ctx, err, "database error")
+		return
+	}
+
+	SendResponse(ctx, &LoadMessageResponse{
+		Message:   messageRecord.Content,
+		CreatedAt: messageRecord.CreatedAt,
+	})
 }
