@@ -1,0 +1,124 @@
+$circleSize: 2.5rem;
+$circleSizeS: 2rem;
+
+#page_current_room {
+  height: 100%;
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  .header {
+    background-color: $white;
+    padding: 2rem;
+    box-shadow: $defaultShadow;
+    position: relative;
+    z-index: 110;
+    .user_info {
+      display: flex;
+      align-items: center;
+      padding-bottom: 2rem;
+      .user_image {
+        width: $circleSize;
+        height: $circleSize;
+        border-radius: 50%;
+        background-color: gray;
+        margin-right: 1rem;
+      }
+      .user_detail {
+        .user_name {
+          font-weight: $weightBold;
+          margin-bottom: 0.5rem;
+        }
+        .user_status {
+          color: $primary;
+          font-size: 0.8rem;
+          i {
+            margin-right: 0.2rem;
+          }
+        }
+      }
+    }
+    .tools {
+      display: flex;
+      align-items: center;
+      button.tool {
+        width: $circleSize;
+        height: $circleSize;
+        border-radius: 50%;
+        background-color: gray;
+        margin-right: 1rem;
+        color: $white;
+        font-size: 1.2rem;
+        &.off {
+          background-color: black;
+        }
+        &.user {
+          background-color: orange;
+        }
+        &:last-child {
+          margin-right: 0;
+        }
+      }
+    }
+  }
+  .chat_logs {
+    overflow-y: scroll;
+    background-color: $white;
+    padding: 2rem;
+    .chat_log {
+      display: flex;
+      flex-direction: column;
+      margin-bottom: 1rem;
+      &.out {
+        align-items: flex-end;
+      }
+      .avatar {
+        display: flex;
+        align-items: center;
+        margin-bottom: 1rem;
+        .profile_image {
+          width: $circleSizeS;
+          height: $circleSizeS;
+          border-radius: 50%;
+          background-color: gray;
+          margin-right: 0.5rem;
+        }
+        .name {
+          font-weight: $weightBold;
+          margin-bottom: 0.2rem;
+        }
+        .timestamp {
+          font-size: 0.8rem;
+        }
+      }
+      .message {
+        padding: 1rem;
+        background-color: $white-100;
+        border-radius: 1rem;
+        width: fit-content;
+        max-width: 80%;
+        line-height: 1.5rem;
+      }
+    }
+  }
+  .chat_inputs {
+    background-color: $white;
+    box-shadow: $defaultShadow;
+    padding: 2rem;
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    position: relative;
+    z-index: 110;
+    input {
+      margin: 0 1rem;
+      background-color: transparent;
+    }
+
+    button.add,
+    button.send {
+      width: $circleSize;
+      height: $circleSize;
+      border-radius: 50%;
+      background-color: gray;
+      color: $white;
+    }
+  }
+}

@@ -1,0 +1,15 @@
+@import './reset.scss';
+@import './mobile-basics.scss';
+@import './mobile-input.scss';
+@import './mobile-layout.scss';
+
+//pages
+@import './page-404.scss';
+@import './page-template.scss';
+@import './page-login.scss';
+@import './page-join.scss';
+@import './page-currentRoom.scss';
+@import './page-rightSideBarProfile.scss';
+
+//components
+@import './comp-menuDropdown.scss';

@@ -1,0 +1,35 @@
+$defaultShadow: 0 0 5px rgba(0, 0, 0, 0.3);
+
+//colors
+$bg-white: #f5f6fa;
+$white: #ffffff;
+$white-100: #dddddd;
+$black: #2d3436;
+$navbar-bg: #dfe6e9;
+
+$primary: #e17055;
+
+//font-weight:
+$weightNormal: 400;
+$weightBold: 700;
+
+html {
+  //font-family: 'Noto Sans KR', sans-serif;
+  font-family: 'Sunflower', sans-serif;
+  font-weight: 300;
+  font-size: 15px;
+  background-color: $bg-white;
+}
+
+html * {
+  transition: 0.2s ease;
+}
+.test {
+  background-color: red;
+  outline: 1px solid black;
+}
+
+.test2 {
+  background-color: blue;
+  outline: 1px solid black;
+}
