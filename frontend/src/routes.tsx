@@ -13,17 +13,7 @@ import PageCounselRooms from './pages/CounselRooms'
 import PageFriends from './pages/Friends'
 import ChatTestPage from './pages/ChatTest'
 import PageManage from './pages/Manage'
-import PageNotFound from './pages/NotFound'
-
-export function checkAuthority(
-  authority: number | undefined,
-  passingAuthorities: number[]
-) {
-  if (authority && passingAuthorities.includes(authority)) {
-    return true
-  }
-  return false
-}
+import PageNotFound from './pages/NotFound'git 
 
 type AuthRoute = {
   auth: AuthType[]
