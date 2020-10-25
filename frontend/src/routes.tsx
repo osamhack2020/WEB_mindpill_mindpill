@@ -11,9 +11,9 @@ import PageLogin from './pages/Login'
 import PageLogout from './pages/Logout'
 import PageCounselRooms from './pages/CounselRooms'
 import PageFriends from './pages/Friends'
-import ChatTestPage from './pages/ChatTest'
+import PageChatTest from './pages/ChatTest'
 import PageManage from './pages/Manage'
-import PageNotFound from './pages/NotFound'git 
+import PageNotFound from './pages/NotFound'
 
 type AuthRoute = {
   auth: AuthType[]
@@ -24,6 +24,12 @@ const routes: Array<RouteProps & AuthRoute> = [
     exact: true,
     path: '/',
     component: PageHome,
+    auth: ['admin', 'manager', 'counselor', 'commander', 'user', null]
+  },
+  {
+    exact: true,
+    path: '/chattest',
+    component: PageChatTest,
     auth: ['admin', 'manager', 'counselor', 'commander', 'user', null]
   },
   {
@@ -58,7 +64,7 @@ const routes: Array<RouteProps & AuthRoute> = [
   },
   {
     path: '/chattest',
-    component: ChatTestPage,
+    component: PageChatTest,
     auth: ['admin', 'manager', 'counselor', 'commander', 'user', null]
   }
 ]
@@ -87,7 +93,6 @@ export function Router() {
           />
         )
       })}
-
       <Route component={PageNotFound} />
     </Switch>
   )
