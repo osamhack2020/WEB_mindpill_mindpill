@@ -2,6 +2,7 @@ package api
 
 import (
 	"mindpill/backend/internal/database"
+	"mindpill/ent"
 	"mindpill/ent/counselor"
 	"mindpill/ent/group"
 	"mindpill/ent/manager"
@@ -48,6 +49,82 @@ func CreateGroup(ctx *fasthttp.RequestCtx) {
 
 	SendResponse(ctx, &CreateGroupResponse{
 		GroupID: group.ID,
+	})
+}
+
+type ListMyGroupResponseGroup struct {
+	ID   int    `json:"id"`
+	Name string `json:"name"`
+}
+
+func listMyGroupResponseGroupsFromRecords(records []*ent.Group) []ListMyGroupResponseGroup {
+	groups := make([]ListMyGroupResponseGroup, len(records))
+	for i, record := range records {
+		groups[i] = ListMyGroupResponseGroup{
+			ID:   record.ID,
+			Name: record.Name,
+		}
+	}
+	return groups
+}
+
+type ListMyGroupResponse struct {
+	Groups          []ListMyGroupResponseGroup `json:"groups"`
+	CounselorGroups []ListMyGroupResponseGroup `json:"counselor_groups"`
+	ManagerGroups   []ListMyGroupResponseGroup `json:"manager_groups"`
+}
+
+func ListMyGroup(ctx *fasthttp.RequestCtx) {
+	token, err := ParseAuthorization(ctx)
+	if err != nil {
+		Unauthorized(ctx, err, "unauthorized")
+		return
+	}
+
+	userGroupRecords, err := database.Ent().
+		Group.Query().
+		Where(
+			group.HasUsersWith(user.IDEQ(token.UserID)),
+		).
+		All(ctx)
+	if err != nil {
+		InternalServerError(ctx, err, "database error")
+		return
+	}
+	userGroups := listMyGroupResponseGroupsFromRecords(userGroupRecords)
+
+	counselorGroupRecords, err := database.Ent().
+		Group.Query().
+		Where(
+			group.HasCounselorsWith(
+				counselor.HasUserWith(user.IDEQ(token.UserID)),
+			),
+		).
+		All(ctx)
+	if err != nil {
+		InternalServerError(ctx, err, "database error")
+		return
+	}
+	counselorGroups := listMyGroupResponseGroupsFromRecords(counselorGroupRecords)
+
+	managerGroupRecords, err := database.Ent().
+		Group.Query().
+		Where(
+			group.HasManagersWith(
+				manager.HasUserWith(user.IDEQ(token.UserID)),
+			),
+		).
+		All(ctx)
+	if err != nil {
+		InternalServerError(ctx, err, "database error")
+		return
+	}
+	managerGroups := listMyGroupResponseGroupsFromRecords(managerGroupRecords)
+
+	SendResponse(ctx, &ListMyGroupResponse{
+		Groups:          userGroups,
+		CounselorGroups: counselorGroups,
+		ManagerGroups:   managerGroups,
 	})
 }
 

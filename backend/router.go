@@ -24,6 +24,7 @@ func CreateRouter() *router.Router {
 
 	// Group APIs
 	r.POST("/api/create_group", api.CreateGroup)
+	r.GET("/api/list_my_group", api.ListMyGroup)
 	r.GET("/api/describe_group", api.DescribeGroup)
 
 	r.POST("/api/create_manager", api.CreateManager)
