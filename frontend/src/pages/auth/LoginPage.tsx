@@ -131,7 +131,7 @@ export default function LoginPage() {
 
   return (
     <Layout>
-      <div className="section login-page">
+      <div className="section is-loginpage">
         <div className="container">
           <div>
             <p>
