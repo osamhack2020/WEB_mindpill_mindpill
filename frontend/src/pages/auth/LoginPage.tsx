@@ -181,7 +181,9 @@ export default function LoginPage() {
               </div>
             </div>
           </form>
-          <Link to="/user/register">아직 회원이 아니신가요?</Link>
+          <p>
+            <Link to="/user/register">아직 회원이 아니신가요?</Link>
+          </p>
         </div>
       </div>
     </Layout>
