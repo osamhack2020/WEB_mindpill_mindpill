@@ -3,7 +3,7 @@ import TokenGroup from '../group'
 
 export interface DescribeTokenResponse {
   tid: number
-  userID: number
+  uid: number
   groups: Array<{
     id: number
     manager: boolean
