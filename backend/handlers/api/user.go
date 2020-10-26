@@ -121,26 +121,15 @@ func DescribeUser(ctx *fasthttp.RequestCtx) {
 		groupIDs[i] = record.ID
 	}
 
-	var resp *DescribeUserResponse
-	if t, _ := ParseAuthorization(ctx); t != nil &&
-		(t.IsAdmin || t.IsManagerOf(groupIDs...) || t.IsOwner(userRecord.ID)) {
-		resp = &DescribeUserResponse{
-			SvNumber:    userRecord.SvNumber,
-			Email:       userRecord.Email,
-			Name:        userRecord.Name,
-			Gender:      userRecord.Gender,
-			PhoneNumber: userRecord.PhoneNumber,
-			CreatedAt:   userRecord.CreatedAt,
-			UpdatedAt:   userRecord.UpdatedAt,
-		}
-	} else {
-		resp = &DescribeUserResponse{
-			Name: userRecord.Name,
-		}
-	}
-
-	// Remove the hashed password for security reason.
-	SendResponse(ctx, resp)
+	SendResponse(ctx, &DescribeUserResponse{
+		SvNumber:    userRecord.SvNumber,
+		Email:       userRecord.Email,
+		Name:        userRecord.Name,
+		Gender:      userRecord.Gender,
+		PhoneNumber: userRecord.PhoneNumber,
+		CreatedAt:   userRecord.CreatedAt,
+		UpdatedAt:   userRecord.UpdatedAt,
+	})
 }
 
 type UpdateUserRequest struct {
