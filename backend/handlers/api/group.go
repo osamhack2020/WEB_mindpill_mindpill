@@ -129,9 +129,10 @@ func ListMyGroup(ctx *fasthttp.RequestCtx) {
 }
 
 type DescribeGroupResponse struct {
-	Name      string    `json:"name"`
-	CreatedAt time.Time `json:"created_at"`
-	UpdatedAt time.Time `json:"updated_at"`
+	Name       string    `json:"name"`
+	Counselors []int     `json:"counselors"`
+	CreatedAt  time.Time `json:"created_at"`
+	UpdatedAt  time.Time `json:"updated_at"`
 }
 
 func DescribeGroup(ctx *fasthttp.RequestCtx) {
@@ -145,16 +146,23 @@ func DescribeGroup(ctx *fasthttp.RequestCtx) {
 	groupRecord, err := database.Ent().
 		Group.Query().
 		Where(group.IDEQ(int(groupID))).
+		WithCounselors().
 		Only(ctx)
 	if err != nil {
 		NotFound(ctx, err, "group not found")
 		return
 	}
 
+	counselors := make([]int, len(groupRecord.Edges.Counselors))
+	for i, counselor := range groupRecord.Edges.Counselors {
+		counselors[i] = counselor.ID
+	}
+
 	SendResponse(ctx, &DescribeGroupResponse{
-		Name:      groupRecord.Name,
-		CreatedAt: groupRecord.CreatedAt,
-		UpdatedAt: groupRecord.UpdatedAt,
+		Name:       groupRecord.Name,
+		Counselors: counselors,
+		CreatedAt:  groupRecord.CreatedAt,
+		UpdatedAt:  groupRecord.UpdatedAt,
 	})
 }
 
