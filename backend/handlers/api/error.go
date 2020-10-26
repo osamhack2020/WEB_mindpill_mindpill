@@ -7,6 +7,7 @@ import (
 	"strings"
 
 	"github.com/valyala/fasthttp"
+	"go.uber.org/zap"
 )
 
 type ErrorResp struct {
@@ -33,6 +34,14 @@ func (e *ErrorResp) Unwrap() error {
 
 func (e *ErrorResp) Write(ctx *fasthttp.RequestCtx) {
 	var buf strings.Builder
+	if debug.IsDebug() {
+		logger.Debug(
+			"response",
+			zap.Int("status", e.status),
+			zap.Error(e.err),
+			zap.String("message", e.msg),
+		)
+	}
 	if e.err != nil && debug.IsDebug() {
 		buf.WriteString(`{"error":`)
 		buf.WriteString(strconv.Quote(e.err.Error()))
