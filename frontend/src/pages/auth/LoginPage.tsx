@@ -1,22 +1,19 @@
 import React, {
   ChangeEvent,
   FormEvent,
-  Dispatch,
   useCallback,
   useState,
   useRef,
   useEffect
 } from 'react'
 import { Link, useHistory } from 'react-router-dom'
+import Cookies from 'js-cookie'
 import Layout from '../../components/Layout'
 import { useTracked } from '../../state'
 import { AsyncDispatch, useAsyncReducer } from '../../hooks/async'
 import { CreateTokenResponse } from '../../types/api/create_token'
-import { DescribeTokenResponse } from '../../types/api/describe_token'
 import Token from '../../types/token'
-import User from '../../types/user'
-import TokenGroup from '../../types/group'
-import { get, post } from '../../utils/http'
+import { post } from '../../utils/http'
 
 async function createToken(
   email: string,
@@ -48,37 +45,6 @@ async function createToken(
   })
 }
 
-async function describeToken(token: string, dispatch: AsyncDispatch<User>) {
-  const response = await get<DescribeTokenResponse>('/api/describe_token', {
-    headers: {
-      Authorization: `Bearer ${token}`
-    }
-  })
-
-  if (response.status !== 200) {
-    dispatch({ type: 'ERROR', error: response.data })
-    return
-  }
-
-  const { data } = response
-  const groups = data.groups.map<TokenGroup>(group => ({
-    id: group.id,
-    isManager: group.manager,
-    isCounselor: group.counselor
-  }))
-  const user: User = {
-    id: data.uid,
-    isAdmin: data.admin,
-    groups: groups,
-    email: data.email,
-    name: data.name
-  }
-
-  dispatch({ type: 'SUCCESS', data: user })
-}
-
-// TODO: Get user profile and describe token
-
 export default function LoginPage() {
   const history = useHistory()
   const [state, dispatch] = useTracked()
@@ -87,7 +53,6 @@ export default function LoginPage() {
   const credRef = useRef({ email: '', password: '' })
 
   const [tokenState, tokenDispatch] = useAsyncReducer<Token>()
-  const [userState, userDispatch] = useAsyncReducer<User>()
 
   useEffect(() => {
     credRef.current = { email, password }
@@ -99,20 +64,11 @@ export default function LoginPage() {
         type: 'SET_TOKEN',
         token: tokenState.data
       })
-      describeToken(tokenState.data.access, userDispatch)
-    }
-  }, [tokenState])
-
-  useEffect(() => {
-    if (userState.data != null) {
-      alert(JSON.stringify(userState.data))
-      dispatch({
-        type: 'SET_USER',
-        user: userState.data
-      })
+      Cookies.set('MINDPILL_TOKEN', tokenState.data.access)
+      Cookies.set('MINDPILL_REFRESH_TOKEN', tokenState.data.refresh)
       history.push('/')
     }
-  }, [userState])
+  }, [tokenState])
 
   const emailHandler = useCallback((e: ChangeEvent<HTMLInputElement>) => {
     setEmail(e.currentTarget.value)
@@ -136,9 +92,6 @@ export default function LoginPage() {
           <div>
             <p>
               {tokenState.error != null ? JSON.stringify(tokenState.error) : ''}
-            </p>
-            <p>
-              {userState.error != null ? JSON.stringify(userState.error) : ''}
             </p>
           </div>
           <form onSubmit={tokenState.loading ? undefined : formHandler}>
