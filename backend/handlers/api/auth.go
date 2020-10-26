@@ -1,12 +1,11 @@
 package api
 
 import (
-	"bytes"
-	"encoding/json"
 	"mindpill/backend/internal/database"
 	"mindpill/backend/internal/tokens"
 	"mindpill/ent"
 	"mindpill/ent/user"
+	"time"
 
 	"github.com/valyala/fasthttp"
 	"golang.org/x/crypto/bcrypt"
@@ -97,26 +96,41 @@ func CreateToken(ctx *fasthttp.RequestCtx) {
 	})
 }
 
+type DescribeTokenResult struct {
+	ID        uint64                    `json:"tid"`
+	UserID    int                       `json:"uid"`
+	Groups    map[int]tokens.TokenGroup `json:"groups"`
+	IsAdmin   bool                      `json:"admin"`
+	CreatedAt time.Time                 `json:"cat"`
+
+	Email string `json:"email"`
+	Name  string `json:"name"`
+}
+
 func DescribeToken(ctx *fasthttp.RequestCtx) {
-	tokenParts := bytes.SplitN(
-		ctx.Request.Header.Peek("Authorization"),
-		[]byte{' '},
-		2,
-	)
-	if len(tokenParts) != 2 || !bytes.Equal(tokenParts[0], []byte("Bearer")) {
-		ErrorString(400, "invalid authorization header format").Write(ctx)
-		return
-	}
-	token, err := tokens.Validate(tokenParts[1])
+	token, err := ParseAuthorization(ctx)
 	if err != nil {
-		Error(400, err).Write(ctx)
+		Unauthorized(ctx, err, "unauthorized")
 		return
 	}
-	var buf = bytes.NewBuffer(make([]byte, 0))
-	err = json.NewEncoder(buf).Encode(token)
+
+	user, err := database.Ent().
+		User.Query().
+		Where(user.IDEQ(token.UserID)).
+		Only(ctx)
 	if err != nil {
-		Error(500, err).Write(ctx)
+		InternalServerError(ctx, err, "user not found")
 		return
 	}
-	ctx.Write(buf.Bytes())
+
+	SendResponse(ctx, &DescribeTokenResult{
+		ID:        token.ID,
+		UserID:    token.UserID,
+		Groups:    token.Groups,
+		IsAdmin:   token.IsAdmin,
+		CreatedAt: token.CreatedAt,
+
+		Email: user.Email,
+		Name:  user.Name,
+	})
 }
