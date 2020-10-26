@@ -10,7 +10,7 @@ import React, {
 import { Link, useHistory } from 'react-router-dom'
 import Layout from '../../components/Layout'
 import { useTracked } from '../../state'
-import { AsyncAction, useAsyncReducer } from '../../hooks/async'
+import { AsyncDispatch, useAsyncReducer } from '../../hooks/async'
 import { CreateTokenResponse } from '../../types/api/create_token'
 import { DescribeTokenResponse } from '../../types/api/describe_token'
 import Token from '../../types/token'
@@ -21,7 +21,7 @@ import { get, post } from '../../utils/http'
 async function createToken(
   email: string,
   password: string,
-  dispatch: Dispatch<AsyncAction<Token>>
+  dispatch: AsyncDispatch<Token>
 ) {
   dispatch({ type: 'LOADING' })
 
@@ -48,10 +48,7 @@ async function createToken(
   })
 }
 
-async function describeToken(
-  token: string,
-  dispatch: Dispatch<AsyncAction<User>>
-) {
+async function describeToken(token: string, dispatch: AsyncDispatch<User>) {
   const response = await get<DescribeTokenResponse>('/api/describe_token', {
     headers: {
       Authorization: `Bearer ${token}`

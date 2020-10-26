@@ -1,10 +1,12 @@
-import { DependencyList, Reducer, useReducer, useEffect } from 'react'
+import { DependencyList, Reducer, Dispatch, useReducer, useEffect } from 'react'
 
 export interface AsyncAction<T> {
   type: 'LOADING' | 'SUCCESS' | 'ERROR'
   data?: T
   error?: any
 }
+
+export type AsyncDispatch<T> = Dispatch<AsyncAction<T>>
 
 export interface AsyncState<T> {
   executed: boolean
