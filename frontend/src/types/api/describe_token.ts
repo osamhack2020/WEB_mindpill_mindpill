@@ -1,16 +1,14 @@
 import JSBI from 'jsbi'
 import TokenGroup from '../group'
 
-export interface DescribeUserResponse {
+export interface DescribeTokenResponse {
   tid: number
   userID: number
-  Groups: {
-    [k: number]: {
-      id: number
-      manager: boolean
-      counselor: boolean
-    }
-  }
+  groups: Array<{
+    id: number
+    manager: boolean
+    counselor: boolean
+  }>
   admin: boolean
   cat: string
 

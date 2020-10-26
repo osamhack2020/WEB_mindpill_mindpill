@@ -97,11 +97,11 @@ func CreateToken(ctx *fasthttp.RequestCtx) {
 }
 
 type DescribeTokenResult struct {
-	ID        uint64                    `json:"tid"`
-	UserID    int                       `json:"uid"`
-	Groups    map[int]tokens.TokenGroup `json:"groups"`
-	IsAdmin   bool                      `json:"admin"`
-	CreatedAt time.Time                 `json:"cat"`
+	ID        uint64              `json:"tid"`
+	UserID    int                 `json:"uid"`
+	Groups    []tokens.TokenGroup `json:"groups"`
+	IsAdmin   bool                `json:"admin"`
+	CreatedAt time.Time           `json:"cat"`
 
 	Email string `json:"email"`
 	Name  string `json:"name"`
@@ -123,10 +123,15 @@ func DescribeToken(ctx *fasthttp.RequestCtx) {
 		return
 	}
 
+	groups := make([]tokens.TokenGroup, 0, len(token.Groups))
+	for _, group := range token.Groups {
+		groups = append(groups, group)
+	}
+
 	SendResponse(ctx, &DescribeTokenResult{
 		ID:        token.ID,
 		UserID:    token.UserID,
-		Groups:    token.Groups,
+		Groups:    groups,
 		IsAdmin:   token.IsAdmin,
 		CreatedAt: token.CreatedAt,
 
