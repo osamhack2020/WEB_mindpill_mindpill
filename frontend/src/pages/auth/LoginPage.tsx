@@ -17,6 +17,7 @@ import { DescribeTokenResponse } from '../../types/api/describe_token'
 import Token from '../../types/token'
 import User from '../../types/user'
 import TokenGroup from '../../types/group'
+import { get, post } from '../../utils/http'
 
 async function createToken(
   email: string,
@@ -25,14 +26,11 @@ async function createToken(
 ) {
   dispatch({ type: 'LOADING' })
 
-  const response = await Axios.post<CreateTokenResponse>(
+  const response = await post<CreateTokenResponse>(
     '/api/create_token?request_type=password',
     {
       email,
       password
-    },
-    {
-      validateStatus: () => true
     }
   )
 
@@ -55,14 +53,11 @@ async function describeToken(
   token: string,
   dispatch: Dispatch<AsyncAction<User>>
 ) {
-  const response = await Axios.get<DescribeTokenResponse>(
-    '/api/describe_token',
-    {
-      headers: {
-        Authorization: `Bearer ${token}`
-      }
+  const response = await get<DescribeTokenResponse>('/api/describe_token', {
+    headers: {
+      Authorization: `Bearer ${token}`
     }
-  )
+  })
 
   if (response.status !== 200) {
     dispatch({ type: 'ERROR', error: response.data })
