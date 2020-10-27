@@ -13,7 +13,7 @@ export interface DescribeUserResponse {
   updated_at: string
 }
 
-export async function describeUser(
+export function describeUser(
   userID: number,
   dispatch: AsyncDispatch<DescribeUserResponse>
 ) {

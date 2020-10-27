@@ -11,7 +11,7 @@ export interface ListNotesFromCounselorResponse {
   notes: Array<{ content: string }>
 }
 
-export async function listNotesFromCounselor(
+export function listNotesFromCounselor(
   req: ListNotesFromCounselorRequest,
   token: string,
   dispatch: AsyncDispatch<ListNotesFromCounselorResponse>

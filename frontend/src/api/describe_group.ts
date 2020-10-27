@@ -12,7 +12,7 @@ export interface DescribeGroupResponse {
   is_manager: boolean
 }
 
-export async function describeGroup(
+export function describeGroup(
   groupID: number,
   token: string | null,
   dispatch: AsyncDispatch<DescribeGroupResponse>
