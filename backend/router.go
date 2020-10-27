@@ -39,6 +39,7 @@ func CreateRouter() *router.Router {
 
 	// Note APIs
 	r.POST("/api/create_note", api.CreateNote)
+	r.POST("/api/list_notes_from_counselor", api.ListNotesFromCounselor)
 
 	// Frontend
 	r.NotFound = handlers.FrontendHandler()

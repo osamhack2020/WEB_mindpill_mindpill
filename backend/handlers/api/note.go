@@ -4,6 +4,7 @@ import (
 	"mindpill/backend/internal/database"
 	"mindpill/ent/counselor"
 	"mindpill/ent/group"
+	"mindpill/ent/manager"
 	"mindpill/ent/note"
 	"mindpill/ent/room"
 	"mindpill/ent/user"
@@ -65,69 +66,142 @@ func CreateNote(ctx *fasthttp.RequestCtx) {
 		Save(ctx)
 }
 
-type GetNotesRequest struct {
-	RoomID int `json:"room_id"`
-	LastID int `json:"last_id"`
+type ListNotesFromCounselorRequest struct {
+	GroupID     int `json:"group_id"`
+	CounselorID int `json:"counselor_id"`
 }
 
-type GetNotesResponse struct {
+type ListNotesFromCounselorResponse struct {
 	Notes []Note `json:"notes"`
 }
 
-func GetNotes(ctx *fasthttp.RequestCtx) {
+func ListNotesFromCounselor(ctx *fasthttp.RequestCtx) {
 	token, err := ParseAuthorization(ctx)
 	if err != nil {
 		Unauthorized(ctx, err, "unauthorized")
 		return
 	}
 
-	var req GetNotesRequest
+	var req ListNotesFromCounselorRequest
 	if err := ParseRequestBody(ctx, &req); err != nil {
 		BadRequest(ctx, err, "failed to parse request body")
 		return
 	}
 
-	roomRecord, err := database.Ent().
-		Room.Query().
-		Where(
-			room.IDEQ(req.RoomID),
-		).
-		WithGroup().
-		Only(ctx)
+	isCounselorOrManager, err := database.Ent().
+		Group.Query().
+		Where(group.And(
+			group.IDEQ(req.GroupID),
+			group.Or(
+				group.HasCounselorsWith(
+					counselor.HasUserWith(user.IDEQ(token.UserID)),
+				),
+				group.HasManagersWith(
+					manager.HasUserWith(user.IDEQ(token.UserID)),
+				),
+			),
+		)).
+		Exist(ctx)
 	if err != nil {
-		BadRequest(ctx, err, "requested room is not exists")
+		InternalServerError(ctx, err, "database error")
 		return
 	}
 
-	if !token.IsAdmin && !token.Groups[roomRecord.Edges.Group.ID].IsCounselor {
+	if !isCounselorOrManager {
 		Forbidden(ctx, nil, "permission denied")
 		return
 	}
 
 	noteRecords, err := database.Ent().
 		Note.Query().
-		Where(
-			note.IDGT(req.LastID),
-			note.HasRoomWith(room.IDEQ(roomRecord.ID)),
-		).
-		Limit(50).
+		Where(note.And(
+			note.HasRoomWith(
+				room.HasGroupWith(group.IDEQ(req.GroupID)),
+			),
+			note.HasCounselorWith(
+				counselor.IDEQ(req.CounselorID),
+			),
+		)).
 		All(ctx)
 	if err != nil {
-		InternalServerError(ctx, err, "Failed to fetch notes")
+		InternalServerError(ctx, err, "database error")
 		return
 	}
 
-	var notes = make([]Note, 0, len(noteRecords))
-	for _, record := range noteRecords {
-		notes = append(notes, Note{
+	notes := make([]Note, len(noteRecords))
+	for i, record := range noteRecords {
+		notes[i] = Note{
 			Content: record.Content,
-		})
+		}
 	}
 
-	SendResponse(ctx, &GetNotesResponse{
+	SendResponse(ctx, &ListNotesFromCounselorResponse{
 		Notes: notes,
 	})
 }
+
+// type GetNotesRequest struct {
+// 	RoomID int `json:"room_id"`
+// }
+
+// type GetNotesResponse struct {
+// 	Notes []Note `json:"notes"`
+// }
+
+// func GetNotes(ctx *fasthttp.RequestCtx) {
+// 	token, err := ParseAuthorization(ctx)
+// 	if err != nil {
+// 		Unauthorized(ctx, err, "unauthorized")
+// 		return
+// 	}
+
+// 	var req GetNotesRequest
+// 	if err := ParseRequestBody(ctx, &req); err != nil {
+// 		BadRequest(ctx, err, "failed to parse request body")
+// 		return
+// 	}
+
+// 	roomRecord, err := database.Ent().
+// 		Room.Query().
+// 		Where(
+// 			room.IDEQ(req.RoomID),
+// 		).
+// 		WithGroup().
+// 		Only(ctx)
+// 	if err != nil {
+// 		BadRequest(ctx, err, "requested room is not exists")
+// 		return
+// 	}
+
+// 	if !token.IsAdmin && !token.Groups[roomRecord.Edges.Group.ID].IsCounselor {
+// 		Forbidden(ctx, nil, "permission denied")
+// 		return
+// 	}
+
+// 	noteRecords, err := database.Ent().
+// 		Note.Query().
+// 		Where(
+// 			note.IDGT(req.LastID),
+// 			note.HasRoomWith(room.IDEQ(roomRecord.ID)),
+// 		).
+// 		Limit(50).
+// 		All(ctx)
+// 	if err != nil {
+// 		InternalServerError(ctx, err, "Failed to fetch notes")
+// 		return
+// 	}
+
+// 	var notes = make([]Note, 0, len(noteRecords))
+// 	for _, record := range noteRecords {
+// 		notes = append(notes, Note{
+// 			Content: record.Content,
+// 		})
+// 	}
+
+// 	SendResponse(ctx, &GetNotesResponse{
+// 		Notes: notes,
+// 	})
+// }
 
 type UpdateNoteRequest struct {
 	NoteID  int    `json:"note_id"`
