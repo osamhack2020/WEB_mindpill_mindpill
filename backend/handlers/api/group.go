@@ -133,6 +133,9 @@ type DescribeGroupResponse struct {
 	Counselors []int     `json:"counselors"`
 	CreatedAt  time.Time `json:"created_at"`
 	UpdatedAt  time.Time `json:"updated_at"`
+
+	IsCounselor bool `json:"is_counselor"`
+	IsManager   bool `json:"is_manager"`
 }
 
 func DescribeGroup(ctx *fasthttp.RequestCtx) {
@@ -158,11 +161,40 @@ func DescribeGroup(ctx *fasthttp.RequestCtx) {
 		counselors[i] = counselor.ID
 	}
 
+	var (
+		isCounselor bool
+		isManager   bool
+	)
+
+	token, err := ParseAuthorization(ctx)
+	if err != nil {
+		isCounselor = false
+		isManager = false
+	} else {
+		isCounselor, err = database.Ent().
+			Counselor.Query().
+			Where(counselor.And(
+				counselor.HasGroupWith(group.IDEQ(int(groupID))),
+				counselor.HasUserWith(user.IDEQ(token.UserID)),
+			)).
+			Exist(ctx)
+		isManager, err = database.Ent().
+			Manager.Query().
+			Where(manager.And(
+				manager.HasGroupWith(group.IDEQ(int(groupID))),
+				manager.HasUserWith(user.IDEQ(token.UserID)),
+			)).
+			Exist(ctx)
+	}
+
 	SendResponse(ctx, &DescribeGroupResponse{
 		Name:       groupRecord.Name,
 		Counselors: counselors,
 		CreatedAt:  groupRecord.CreatedAt,
 		UpdatedAt:  groupRecord.UpdatedAt,
+
+		IsCounselor: isCounselor,
+		IsManager:   isManager,
 	})
 }
 

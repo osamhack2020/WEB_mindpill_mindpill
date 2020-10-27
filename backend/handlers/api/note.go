@@ -18,8 +18,13 @@ type Note struct {
 }
 
 type CreateNoteRequest struct {
-	GroupID int `json:"group_id"`
-	RoomID  int `json:"room_id"`
+	GroupID int    `json:"group_id"`
+	RoomID  int    `json:"room_id"`
+	Content string `json:"content"`
+}
+
+type CreateNoteResponse struct {
+	NoteID int `json:"note_id"`
 }
 
 func CreateNote(ctx *fasthttp.RequestCtx) {
@@ -52,6 +57,7 @@ func CreateNote(ctx *fasthttp.RequestCtx) {
 		Where(
 			room.IDEQ(req.RoomID),
 			room.HasGroupWith(group.IDEQ(req.GroupID)),
+			room.HasUsersWith(user.IDEQ(token.UserID)),
 		).
 		Only(ctx)
 	if err != nil {
@@ -59,11 +65,19 @@ func CreateNote(ctx *fasthttp.RequestCtx) {
 		return
 	}
 
-	database.Ent().
+	noteRecord, err := database.Ent().
 		Note.Create().
 		SetRoom(roomRecord).
 		SetCounselor(counselorRecord).
+		SetContent(req.Content).
 		Save(ctx)
+	if err != nil {
+		InternalServerError(ctx, err, "database error")
+	}
+
+	SendResponse(ctx, &CreateNoteResponse{
+		NoteID: noteRecord.ID,
+	})
 }
 
 type ListNotesFromCounselorRequest struct {
