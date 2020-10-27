@@ -6,6 +6,7 @@ import (
 	"mindpill/backend/internal/tokens"
 	"mindpill/ent"
 	"mindpill/ent/counselor"
+	"mindpill/ent/group"
 	"mindpill/ent/message"
 	"mindpill/ent/room"
 	"mindpill/ent/user"
@@ -78,6 +79,73 @@ func CreateRoom(ctx *fasthttp.RequestCtx) {
 
 	SendResponse(ctx, &CreateRoomResponse{
 		RoomID: roomRecord.ID,
+	})
+}
+
+type ListMyRoomRequest struct {
+	GroupID int `json:"group_id"`
+}
+
+type ListMyRoomResponseUser struct {
+	Rank string `json:"rank"`
+	Name string `json:"name"`
+}
+
+type ListMyRoomResponseRoom struct {
+	ID    int                      `json:"id"`
+	Users []ListMyRoomResponseUser `json:"users"`
+}
+
+type ListMyRoomResponse struct {
+	Rooms []ListMyRoomResponseRoom `json:"rooms"`
+}
+
+func ListMyRoom(ctx *fasthttp.RequestCtx) {
+	token, err := ParseAuthorization(ctx)
+	if err != nil {
+		Unauthorized(ctx, err, "unauthorized")
+		return
+	}
+
+	var req ListMyRoomRequest
+	if err := ParseRequestBody(ctx, &req); err != nil {
+		BadRequest(ctx, err, "failed to parse request body")
+		return
+	}
+
+	roomRecords, err := database.Ent().
+		Room.Query().
+		Where(room.And(
+			room.HasGroupWith(group.IDEQ(req.GroupID)),
+			room.HasUsersWith(user.IDEQ(token.UserID)),
+		)).
+		WithUsers(func(uq *ent.UserQuery) {
+			uq.
+				// Where(user.IDNEQ(token.UserID)).
+				WithRank()
+		}).
+		All(ctx)
+	if err != nil {
+		InternalServerError(ctx, err, "database error")
+	}
+
+	rooms := make([]ListMyRoomResponseRoom, len(roomRecords))
+	for i, roomRecord := range roomRecords {
+		users := make([]ListMyRoomResponseUser, len(roomRecord.Edges.Users))
+		for j, userRecord := range roomRecord.Edges.Users {
+			users[j] = ListMyRoomResponseUser{
+				Name: userRecord.Name,
+				Rank: userRecord.Edges.Rank.Name,
+			}
+		}
+		rooms[i] = ListMyRoomResponseRoom{
+			ID:    roomRecord.ID,
+			Users: users,
+		}
+	}
+
+	SendResponse(ctx, &ListMyRoomResponse{
+		Rooms: rooms,
 	})
 }
 
