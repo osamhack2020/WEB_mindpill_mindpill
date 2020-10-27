@@ -3,6 +3,7 @@ package schema
 import (
 	"github.com/facebook/ent"
 	"github.com/facebook/ent/schema/edge"
+	"github.com/facebook/ent/schema/field"
 )
 
 // Room holds the schema definition for the Room entity.
@@ -12,7 +13,10 @@ type Room struct {
 
 // Fields of the Room.
 func (Room) Fields() []ent.Field {
-	return nil
+	return []ent.Field{
+		field.Bool("is_closed").
+			Default(false),
+	}
 }
 
 // Edges of the Room.
