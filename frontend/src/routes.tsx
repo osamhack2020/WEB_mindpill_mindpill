@@ -8,12 +8,7 @@ import { Route, Switch } from 'react-router-dom'
 // Pages
 import PageHome from './pages/HomePage'
 import LoginPage from './pages/auth/LoginPage'
-// import PageJoin from './pages/Join'
-// import PageLogin from './pages/Login'
-// import PageLogout from './pages/Logout'
-// import PageCounselRooms from './pages/CounselRooms'
-// import PageFriends from './pages/Friends'
-// import PageManage from './pages/Manage'
+import GroupPage from './pages/GroupPage'
 import PageNotFound from './pages/NotFound'
 // import PageChatTest from './pages/ChatTest'
 
@@ -32,36 +27,16 @@ const routes: Array<RouteProps> = [
     exact: true,
     path: '/user/login',
     component: LoginPage
+  },
+  {
+    path: '/group/:id',
+    component: GroupPage
   }
   // {
   //   // DEBUG ONLY
   //   exact: true,
   //   path: '/chattest',
   //   component: PageChatTest
-  // },
-  // {
-  //   path: '/join',
-  //   component: PageJoin
-  // },
-  // {
-  //   path: '/login',
-  //   component: PageLogin
-  // },
-  // {
-  //   path: '/logout',
-  //   component: PageLogout
-  // },
-  // {
-  //   path: '/counselrooms',
-  //   component: PageCounselRooms
-  // },
-  // {
-  //   path: '/friends',
-  //   component: PageFriends
-  // },
-  // {
-  //   path: '/manage',
-  //   component: PageManage
   // }
 ]
 
