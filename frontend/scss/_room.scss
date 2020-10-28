@@ -1,0 +1,60 @@
+$room-header-height: 4rem;
+$room-footer-height: 4rem;
+
+.room-page {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+
+  display: flex;
+  flex-direction: column;
+
+  .room-header {
+    display: flex;
+    width: 100%;
+    background: white;
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
+
+    .room-back-button,
+    .room-close-button {
+      display: block;
+      width: $room-header-height;
+      height: $room-header-height;
+      line-height: $room-header-height;
+      text-align: center;
+      text-decoration: none;
+    }
+
+    .room-title {
+      display: block;
+      flex-grow: 1;
+      line-height: $room-header-height;
+    }
+  }
+
+  .room-messages {
+    flex-grow: 1;
+  }
+
+  .room-inputs {
+    display: flex;
+    width: 100%;
+    height: $room-footer-height;
+
+    .input {
+      display: block;
+      flex-grow: 1;
+      height: $room-footer-height;
+    }
+
+    .room-send-button {
+      display: block;
+      width: $room-footer-height;
+      height: $room-footer-height;
+      line-height: $room-footer-height;
+      text-align: center;
+    }
+  }
+}
