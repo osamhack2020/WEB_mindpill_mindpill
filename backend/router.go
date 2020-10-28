@@ -36,6 +36,7 @@ func CreateRouter() *router.Router {
 	// Chat APIs
 	r.POST("/api/create_room", api.CreateRoom)
 	r.POST("/api/list_my_room", api.ListMyRoom)
+	r.POST("/api/describe_room", api.DescribeRoom)
 	r.GET("/api/connect_room", api.ConnectRoom)
 
 	// Note APIs

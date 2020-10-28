@@ -149,6 +149,75 @@ func ListMyRoom(ctx *fasthttp.RequestCtx) {
 	})
 }
 
+type DescribeRoomRequest struct {
+	RoomID int `json:"room_id"`
+}
+
+type DescribeRoomResponseUser struct {
+	ID   int    `json:"id"`
+	Rank string `json:"rank"`
+	Name string `json:"name"`
+}
+
+type DescribeRoomResponse struct {
+	GroupID     int                        `json:"group_id"`
+	IsCounselor bool                       `json:"is_counselor"`
+	Users       []DescribeRoomResponseUser `json:"users"`
+}
+
+func DescribeRoom(ctx *fasthttp.RequestCtx) {
+	token, err := ParseAuthorization(ctx)
+	if err != nil {
+		Unauthorized(ctx, err, "unauthorized")
+	}
+
+	var req DescribeRoomRequest
+	if err := ParseRequestBody(ctx, &req); err != nil {
+		BadRequest(ctx, err, "failed to parse request body")
+		return
+	}
+
+	roomRecord, err := database.Ent().
+		Room.Query().
+		Where(room.And(
+			room.IDEQ(req.RoomID),
+			room.HasUsersWith(user.IDEQ(token.UserID)),
+		)).
+		WithUsers(func(uq *ent.UserQuery) {
+			uq.WithRank()
+		}).
+		WithGroup().
+		Only(ctx)
+	if err != nil {
+		InternalServerError(ctx, err, "database error")
+	}
+
+	users := make([]DescribeRoomResponseUser, len(roomRecord.Edges.Users))
+	for i, user := range roomRecord.Edges.Users {
+		users[i] = DescribeRoomResponseUser{
+			ID:   user.ID,
+			Rank: user.Edges.Rank.Name,
+			Name: user.Name,
+		}
+	}
+
+	isCounselor, err := database.Ent().
+		Counselor.Query().
+		Where(counselor.And(
+			counselor.HasUserWith(user.IDEQ(token.UserID)),
+			counselor.HasGroupWith(group.IDEQ(roomRecord.Edges.Group.ID)),
+		)).Exist(ctx)
+	if err != nil {
+		InternalServerError(ctx, err, "database error")
+	}
+
+	SendResponse(ctx, &DescribeRoomResponse{
+		GroupID:     roomRecord.Edges.Group.ID,
+		Users:       users,
+		IsCounselor: isCounselor,
+	})
+}
+
 func ConnectRoom(ctx *fasthttp.RequestCtx) {
 	var queries = ctx.QueryArgs()
 	roomID, err := strconv.ParseInt(string(queries.Peek("room_id")), 10, 64)
