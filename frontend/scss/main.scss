@@ -1,3 +1,7 @@
 @import '~bulma/bulma.sass';
 
-@import './room';
+@import './pages/home';
+@import './pages/group';
+@import './pages/room';
+
+@import './components/note';

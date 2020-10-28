@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { describeUser, DescribeUserResponse } from '../api/describe_user'
 import { useAsyncReducer } from '../hooks/async'
+import { useAPI } from '../hooks/api'
 import { NoteList } from './NoteList'
 
 export interface CounselorProfileProps {
@@ -16,28 +17,20 @@ export function CounselorProfile({
   isCounselor,
   isManager
 }: CounselorProfileProps) {
-  const [counselorState, counselorDispatch] = useAsyncReducer<
+  const [user, counselorDispatch] = useAPI<
     DescribeUserResponse
   >()
-
-  const [user, setUser] = useState<DescribeUserResponse | null>(null)
 
   useEffect(() => {
     describeUser(counselorID, counselorDispatch)
   }, [])
-
-  useEffect(() => {
-    if (counselorState.data != null) {
-      setUser(counselorState.data)
-    }
-  }, [counselorState])
 
   return (
     <>
       {user != null && (
         <div className="counselor-profile">
           <div className="profile-header">
-            <p className="profile-name">{user.name}</p>
+            <p className="profile-name">{user.name} 상담관</p>
             <p className="profile-call">{user.phone_number}</p>
           </div>
           {isCounselor || isManager ? (

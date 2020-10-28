@@ -1,0 +1,24 @@
+$note-size: 8rem;
+
+.note-list {
+  display: block;
+  padding: 1rem;
+  overflow-x: auto;
+
+  .note-item {
+    .note-preview {
+      width: $note-size;
+      height: $note-size;
+      padding: .5rem;
+      background: #fff163;
+      word-wrap: break-word;
+      word-break: break-all;
+
+      .note-preview-inner {
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+      }
+    }
+  }
+}

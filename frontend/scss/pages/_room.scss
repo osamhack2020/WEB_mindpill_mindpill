@@ -1,0 +1,78 @@
+$room-header-height: 3.25rem;
+
+.room-page {
+  padding-top: $room-header-height;
+  padding-bottom: 2rem;
+
+  .room-header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    display: flex;
+    width: 100%;
+    background: white;
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
+
+    .room-back-button,
+    .room-close-button {
+      display: block;
+      width: $room-header-height;
+      height: $room-header-height;
+      line-height: $room-header-height;
+      text-align: center;
+      text-decoration: none;
+    }
+
+    .room-title {
+      display: block;
+      flex-grow: 1;
+      line-height: $room-header-height;
+    }
+  }
+
+  .room-messages {
+    padding: 1rem;
+
+    .message-bubble {
+      .message-content {
+        display: flex;
+      }
+
+      .message-body {
+        padding: .25rem 1rem;
+        margin: .25rem 0;
+        border: 0;
+        line-height: 1.5rem;
+        border-radius: 1rem;
+        background: rgba(0, 0, 0, .1);
+      }
+
+      .message-time {
+        font-size: .75em;
+        padding: 0 .25rem;
+        color: rgba(0, 0, 0, .3);
+        align-self: flex-end;
+      }
+
+      &.is-mine {
+        text-align: right;
+
+        .message-content {
+          flex-direction: row-reverse;
+        }
+
+        .message-body {
+          background-color: $primary;
+          color: $primary-invert;
+        }
+      }
+    }
+  }
+
+  .room-input {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+  }
+}

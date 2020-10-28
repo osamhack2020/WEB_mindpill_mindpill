@@ -25,13 +25,66 @@ export default function RoomPage() {
           </a>
         </header>
 
-        <div className="room-messages">Messages</div>
+        <div className="room-messages">
+          <div className="message-bubble">
+            <div className="message-user">상병 김용빈</div>
+            <div className="message-content">
+              <div className="message-body">Hello, World!</div>
+              <div className="message-time">16:30</div>
+            </div>
+          </div>
+          <div className="message-bubble is-mine">
+            <div className="message-user">상병 김용빈</div>
+            <div className="message-content">
+              <div className="message-body">Hello, World!</div>
+              <div className="message-time">16:30</div>
+            </div>
+          </div>
+          <div className="message-bubble">
+            <div className="message-user">상병 김용빈</div>
+            <div className="message-content">
+              <div className="message-body">Hello, World!</div>
+            </div>
+          </div>
+          <div className="message-bubble">
+            <div className="message-content">
+              <div className="message-body">Hello, World!</div>
+            </div>
+          </div>
+          <div className="message-bubble">
+            <div className="message-content">
+              <div className="message-body">Hello, World!</div>
+              <div className="message-time">16:30</div>
+            </div>
+          </div>
+          <div className="message-bubble is-mine">
+            <div className="message-user">상병 김용빈</div>
+            <div className="message-content">
+              <div className="message-body">Hello, World!</div>
+            </div>
+          </div>
+          <div className="message-bubble is-mine">
+            <div className="message-content">
+              <div className="message-body">Hello, World!</div>
+            </div>
+          </div>
+          <div className="message-bubble is-mine">
+            <div className="message-content">
+              <div className="message-body">Hello, World!</div>
+              <div className="message-time">16:30</div>
+            </div>
+          </div>
+        </div>
 
         <div className="room-notes"></div>
 
-        <div className="room-inputs">
-          <input type="text" className="input" />
-          <a className="room-send-button">보내기</a>
+        <div className="field has-addons room-input">
+          <div className="control is-expanded">
+            <input type="text" className="input is-radiusless" />
+          </div>
+          <div className="control">
+            <a className="button is-primary is-radiusless">보내기</a>
+          </div>
         </div>
       </div>
     </div>

@@ -47,7 +47,9 @@ export function NoteList({ modifiable, groupID, counselorID }: NoteListProps) {
       {noteState.data?.notes.map(note => (
         <div className="note-item">
           <div className="note-preview" onClick={showModal}>
-            {note.content}
+            <div className="note-preview-inner">
+              {note.content}
+            </div>
           </div>
           <div className={`modal${isModalActive ? ' is-active' : ''}`}>
             <div className="modal-background" onClick={hideModal}></div>

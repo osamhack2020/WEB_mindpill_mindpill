@@ -1,0 +1,41 @@
+.counselor-profile {
+  display: block;
+  margin: 0 1.5rem;
+  margin-bottom: 1rem;
+  background: white;
+  box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
+  border-radius: 4px;
+  overflow: hidden;
+
+  .profile-header {
+    padding: 1rem;
+    border-bottom: 1px solid rgba(0, 0, 0, .2);
+
+    .profile-name {
+      font-weight: bold;
+    }
+
+    .profile-call {
+      font-size: .75em;
+    }
+  }
+
+  .counselor-notes {
+    background: #eeeeee;
+  }
+}
+
+.room-list {
+  margin-bottom: 2rem;
+
+  .room-item {
+    display: block;
+    padding: .5rem 1.5rem;
+
+    &::after {
+      content: '>';
+      color: rgba(0, 0, 0, .2);
+      padding-left: .25rem;
+    }
+  }
+}

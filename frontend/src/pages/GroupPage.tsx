@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { RouteComponentProps } from 'react-router'
+import { Link } from 'react-router-dom'
 import { describeGroup, DescribeGroupResponse } from '../api/describe_group'
 import { listMyRoom, ListMyRoomResponse } from '../api/list_my_room'
 import { CounselorProfile } from '../components/CounselorProfile'
@@ -38,28 +39,46 @@ export default function GroupPage({
 
   return (
     <Layout>
-      <div className="room-list">
-        {roomResponse?.rooms.map(room => (
-          <div className="room-item">
-            {room.users.map(user => (
-              <span>
-                {user.rank} {user.name}
-              </span>
-            ))}
-          </div>
-        ))}
-      </div>
+      <div className="section">
+        <div className="container">
+          {group != null ? (
+            <div>
+              <h1 className="title">{group.name}</h1>
 
-      <div className="counselor-list">
-        {group != null &&
-          group.counselors.map(counselorID => (
-            <CounselorProfile
-              counselorID={counselorID}
-              groupID={groupID}
-              isCounselor={group.is_counselor}
-              isManager={group.is_manager}
-            />
-          ))}
+              {roomResponse != null && (
+                <>
+                  <h2 className="title is-4">진행중인 상담</h2>
+                  <div className="room-list">
+                    {roomResponse.rooms.map(room => (
+                      <Link to={`/room/${room.id}`} className="room-item">
+                        {room.users.map(user => (
+                          <span>
+                            {user.rank} {user.name}
+                          </span>
+                        ))}
+                      </Link>
+                    ))}
+                  </div>
+                </>
+              )}
+
+              <h2 className="title is-4">상담관 목록</h2>
+              <div className="counselor-list">
+                {group != null &&
+                  group.counselors.map(counselorID => (
+                    <CounselorProfile
+                      counselorID={counselorID}
+                      groupID={groupID}
+                      isCounselor={group.is_counselor}
+                      isManager={group.is_manager}
+                    />
+                  ))}
+              </div>
+            </div>
+          ) : (
+            <>Loading...</>
+          )}
+        </div>
       </div>
     </Layout>
   )
