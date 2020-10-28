@@ -8,6 +8,7 @@ import { Route, Switch } from 'react-router-dom'
 // Pages
 import PageHome from './pages/HomePage'
 import LoginPage from './pages/user/LoginPage'
+import RegisterPage from './pages/user/RegisterPage'
 import GroupPage from './pages/GroupPage'
 import PageNotFound from './pages/NotFound'
 // import PageChatTest from './pages/ChatTest'
@@ -27,6 +28,11 @@ const routes: Array<RouteProps> = [
     exact: true,
     path: '/user/login',
     component: LoginPage
+  },
+  {
+    exact: true,
+    path: '/user/register',
+    component: RegisterPage
   },
   {
     path: '/group/:id',
