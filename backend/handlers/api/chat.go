@@ -218,6 +218,37 @@ func DescribeRoom(ctx *fasthttp.RequestCtx) {
 	})
 }
 
+type CloseRoomRequest struct {
+	RoomID int `json:"room_id"`
+}
+
+func CloseRoom(ctx *fasthttp.RequestCtx) {
+	token, err := ParseAuthorization(ctx)
+	if err != nil {
+		Unauthorized(ctx, err, "unauthorized")
+	}
+
+	var req CloseRoomRequest
+	if err := ParseRequestBody(ctx, &req); err != nil {
+		BadRequest(ctx, err, "failed to parse request body")
+		return
+	}
+
+	err = database.Ent().
+		Room.Update().
+		Where(room.And(
+			room.IDEQ(req.RoomID),
+			room.HasUsersWith(user.IDEQ(token.UserID)),
+		)).
+		SetIsClosed(true).
+		Exec(ctx)
+	if err != nil {
+		InternalServerError(ctx, err, "database error")
+	}
+
+	SendResponse(ctx, respOK)
+}
+
 func ConnectRoom(ctx *fasthttp.RequestCtx) {
 	var queries = ctx.QueryArgs()
 	roomID, err := strconv.ParseInt(string(queries.Peek("room_id")), 10, 64)
