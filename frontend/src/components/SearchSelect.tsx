@@ -1,4 +1,4 @@
-import React, { FormEvent, useCallback, useEffect, useState } from 'react'
+import React, { ChangeEvent, useCallback, useEffect, useState } from 'react'
 
 export interface SearchResult {
   id: number
@@ -6,37 +6,26 @@ export interface SearchResult {
 }
 
 export interface SearchSelectProps {
-  search: (
-    keyword: string,
-    callback: (r: SearchResult[]) => any
-  ) => SearchResult[]
+  search: (keyword: string) => any
+  searchResults: SearchResult[] | null
   onSelect: (id: number) => any
 }
 
 export function SearchSelect(props: SearchSelectProps) {
   const [id, setID] = useState<number | null>(null)
   const [input, setInput] = useState('')
-  const [searchResults, setSearchResult] = useState<SearchResult[]>()
 
   const inputHandler = useCallback(
-    (e: FormEvent<HTMLInputElement>) => {
+    (e: ChangeEvent<HTMLInputElement>) => {
       e.preventDefault()
-      setInput(e.currentTarget.value)
+      const { value } = e.currentTarget
+      setInput(value)
+      if (value.length > 0) {
+        props.search(value)
+      }
     },
     [props]
   )
-
-  const searchHandler = useCallback((r: SearchResult[]) => {
-    setSearchResult(r)
-  }, [])
-
-  useEffect(() => {
-    if (input.length > 0) {
-      props.search(input, searchHandler)
-    } else {
-      setSearchResult([])
-    }
-  }, [input])
 
   const selectHandler = useCallback((id: number, name: string) => {
     setID(id)
@@ -54,12 +43,12 @@ export function SearchSelect(props: SearchSelectProps) {
       <input
         type="text"
         className="input"
-        onInput={inputHandler}
+        onChange={inputHandler}
         value={input}
       />
 
       <div className="search-results">
-        {searchResults?.map(item => (
+        {props.searchResults?.map(item => (
           <SearchItem id={item.id} name={item.name} onSelect={selectHandler} />
         ))}
       </div>
