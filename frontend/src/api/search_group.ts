@@ -13,8 +13,11 @@ export interface SearchGroupResponse {
   }>
 }
 
-export function searchGroup(dispatch: AsyncDispatch<SearchGroupResponse>) {
+export function searchGroup(
+  req: SearchGroupRequest,
+  dispatch: AsyncDispatch<SearchGroupResponse>
+) {
   handleAPI(dispatch, () => {
-    return post(`/api/search_group`)
+    return post(`/api/search_group`, req)
   })
 }
