@@ -43,17 +43,17 @@ export default function Home() {
         {groupState.data != null ? (
           <div className="groups">
             {groupState.data.groups.map(group => (
-              <Link to={`/groups/${group.id}`} className="group">
+              <Link to={`/group/${group.id}`} className="group">
                 {group.name}
               </Link>
             ))}
             {groupState.data.counselor_groups.map(group => (
-              <Link to={`/groups/${group.id}`} className="group is-counselor">
+              <Link to={`/group/${group.id}`} className="group is-counselor">
                 [상담관] {group.name}
               </Link>
             ))}
             {groupState.data.manager_groups.map(group => (
-              <Link to={`/groups/${group.id}`} className="group is-manager">
+              <Link to={`/group/${group.id}`} className="group is-manager">
                 [매니저] {group.name}
               </Link>
             ))}
