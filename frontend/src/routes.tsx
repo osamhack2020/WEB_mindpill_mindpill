@@ -7,7 +7,7 @@ import { Route, Switch } from 'react-router-dom'
 
 // Pages
 import PageHome from './pages/HomePage'
-import LoginPage from './pages/auth/LoginPage'
+import LoginPage from './pages/user/LoginPage'
 import GroupPage from './pages/GroupPage'
 import PageNotFound from './pages/NotFound'
 // import PageChatTest from './pages/ChatTest'
