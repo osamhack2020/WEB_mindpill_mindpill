@@ -53,12 +53,15 @@ export function NoteList({ modifiable, groupID, counselorID }: NoteListProps) {
             <div className="modal-background" onClick={hideModal}></div>
             <div className="modal-content">
               <div className="note-modal">
-                <pre>{note.content}</pre>
+                <article className="message is-warning">
+                  <div className="message-header">
+                    메모
+                    <button className="delete" onClick={hideModal}></button>
+                  </div>
+                  <div className="message-body">{note.content}</div>
+                </article>
               </div>
             </div>
-            <button
-              className="modal-close is-large"
-              onClick={hideModal}></button>
           </div>
         </div>
       ))}
