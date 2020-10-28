@@ -198,6 +198,48 @@ func DescribeGroup(ctx *fasthttp.RequestCtx) {
 	})
 }
 
+type SearchGroupRequest struct {
+	Keyword string `json:"keyword"`
+}
+
+type SearchGroupResponseGroup struct {
+	ID   int    `json:"id"`
+	Name string `json:"name"`
+}
+
+type SearchGroupResponse struct {
+	Groups []SearchGroupResponseGroup `json:"groups"`
+}
+
+func SearchGroup(ctx *fasthttp.RequestCtx) {
+	var req SearchGroupRequest
+	if err := ParseRequestBody(ctx, &req); err != nil {
+		BadRequest(ctx, err, "failed to parse request body")
+		return
+	}
+
+	groupRecords, err := database.Ent().
+		Group.Query().
+		Where(group.NameContains(req.Keyword)).
+		Limit(10).
+		All(ctx)
+	if err != nil {
+		InternalServerError(ctx, err, "database error")
+	}
+
+	groups := make([]SearchGroupResponseGroup, len(groupRecords))
+	for i, record := range groupRecords {
+		groups[i] = SearchGroupResponseGroup{
+			ID:   record.ID,
+			Name: record.Name,
+		}
+	}
+
+	SendResponse(ctx, &SearchGroupResponse{
+		Groups: groups,
+	})
+}
+
 type CreateManagerRequest struct {
 	UserID  int `json:"user_id"`
 	GroupID int `json:"group_id"`
