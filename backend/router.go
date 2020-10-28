@@ -22,6 +22,8 @@ func CreateRouter() *router.Router {
 	r.GET("/api/describe_user", api.DescribeUser)
 	r.GET("/api/update_user", api.UpdateUser)
 
+	r.POST("/api/list_rank", api.ListRank)
+
 	// Group APIs
 	r.POST("/api/create_group", api.CreateGroup)
 	r.GET("/api/list_my_group", api.ListMyGroup)
