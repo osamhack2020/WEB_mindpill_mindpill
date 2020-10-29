@@ -1,5 +1,8 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useCallback } from 'react'
+import { useHistory } from 'react-router-dom'
+import { useTrackedState } from '../state'
 import { describeUser, DescribeUserResponse } from '../api/describe_user'
+import { createRoom, CreateRoomResponse } from '../api/create_room'
 import { useAsyncReducer } from '../hooks/async'
 import { useAPI } from '../hooks/api'
 import { NoteList } from './NoteList'
@@ -39,11 +42,49 @@ export function CounselorProfile({
             </div>
           ) : (
             <div className="profile-footer">
-              <a className="button">상담하기</a>
+              <CreateRoomButton counselorID={counselorID} groupID={groupID} />
             </div>
           )}
         </div>
       )}
     </>
+  )
+}
+
+interface CreateRoomButtonProps {
+  groupID: number
+  counselorID: number
+}
+
+function CreateRoomButton({
+  groupID,
+  counselorID
+}: CreateRoomButtonProps) {
+  const history = useHistory()
+  const state = useTrackedState()
+  const [ roomResponse, roomDispatch ] = useAPI<CreateRoomResponse>()
+
+  const clickHandler = useCallback(() => {
+    const { token } = state
+    if (token != null) {
+      createRoom(
+        {
+          group_id: groupID,
+          counselor_id: counselorID
+        },
+        token.access,
+        roomDispatch
+      )
+    }
+  }, [state])
+
+  useEffect(() => {
+    if (roomResponse != null) {
+      history.push(`/room/${roomResponse.room_id}`)
+    }
+  }, [roomResponse])
+
+  return (
+    <a className="button" onClick={clickHandler}>상담하기</a>
   )
 }
