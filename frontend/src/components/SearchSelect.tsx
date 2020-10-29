@@ -1,4 +1,9 @@
-import React, { ChangeEvent, useCallback, useEffect, useState } from 'react'
+import React, {
+  ChangeEvent,
+  useCallback,
+  useEffect,
+  useState
+} from 'react'
 
 export interface SearchResult {
   id: number
@@ -8,34 +13,53 @@ export interface SearchResult {
 export interface SearchSelectProps {
   search: (keyword: string) => any
   searchResults: SearchResult[] | null
-  onSelect: (id: number) => any
+  onSelect: (id: number | null) => any
 }
 
-export function SearchSelect(props: SearchSelectProps) {
+export function SearchSelect({
+  search,
+  searchResults,
+  onSelect
+}: SearchSelectProps) {
   const [id, setID] = useState<number | null>(null)
   const [input, setInput] = useState('')
+  const [isActive, setActive] = useState(false)
 
   const inputHandler = useCallback(
     (e: ChangeEvent<HTMLInputElement>) => {
       e.preventDefault()
+
       const { value } = e.currentTarget
       setInput(value)
+
       if (value.length > 0) {
-        props.search(value)
+        search(value)
       }
     },
-    [props]
+    [search]
   )
 
-  const selectHandler = useCallback((id: number, name: string) => {
-    setID(id)
-    setInput(name)
+  useEffect(() => {
+    const results = searchResults || []
+    const clarified =
+      results.length > 0 && results[0].name === input
+    if (clarified) {
+      setID(results[0].id)
+    } else {
+      setID(null)
+    }
+    setActive(
+      results.length > 1 ||
+        (!clarified && results.length > 0)
+    )
+  }, [searchResults, input])
+
+  const selectHandler = useCallback((value: string) => {
+    setInput(value)
   }, [])
 
   useEffect(() => {
-    if (id != null) {
-      props.onSelect(id)
-    }
+    onSelect(id)
   }, [id])
 
   return (
@@ -47,9 +71,15 @@ export function SearchSelect(props: SearchSelectProps) {
         value={input}
       />
 
-      <div className="search-results">
-        {props.searchResults?.map(item => (
-          <SearchItem id={item.id} name={item.name} onSelect={selectHandler} />
+      <div
+        className={`search-results${
+          isActive ? ' is-active' : ''
+        }`}>
+        {searchResults?.map(item => (
+          <SearchItem
+            name={item.name}
+            onSelect={selectHandler}
+          />
         ))}
       </div>
     </div>
@@ -57,14 +87,13 @@ export function SearchSelect(props: SearchSelectProps) {
 }
 
 export interface SearchItemProps {
-  id: number
   name: string
-  onSelect: (id: number, name: string) => void
+  onSelect: (name: string) => void
 }
 
 export function SearchItem(props: SearchItemProps) {
   const selectHandler = useCallback(() => {
-    props.onSelect(props.id, props.name)
+    props.onSelect(props.name)
   }, [])
 
   return (
