@@ -49,28 +49,35 @@ func CreateRoom(ctx *fasthttp.RequestCtx) {
 		return
 	}
 
-	counselorRecord, err := database.Ent().
-		Counselor.Query().
-		Where(
-			counselor.IDEQ(req.CounselorID),
-		).
-		WithUser().
-		Only(ctx)
-	if err != nil {
-		BadRequest(ctx, err, "requested counselor is not exists")
+	if token.UserID == req.CounselorID {
+		BadRequest(ctx, nil, "you can not create room without anyone else")
 		return
 	}
 
-	userIDs := make([]int, 1)
-	userIDs[0] = counselorRecord.Edges.User.ID
-	if token.UserID != counselorRecord.Edges.User.ID {
-		userIDs = append(userIDs, token.UserID)
+	groupExists, err := database.Ent().
+		Group.Query().
+		Where(group.And(
+			group.IDEQ(req.GroupID),
+			group.HasUsersWith(user.Or(
+				user.IDEQ(token.UserID),
+				user.IDEQ(req.CounselorID),
+			)),
+		)).
+		Exist(ctx)
+	if err != nil {
+		InternalServerError(ctx, err, "Database Error")
+		return
+	}
+
+	if !groupExists {
+		InternalServerError(ctx, nil, "permission denied")
+		return
 	}
 
 	roomRecord, err := database.Ent().
 		Room.Create().
 		SetGroupID(req.GroupID).
-		AddUserIDs(userIDs...).
+		AddUserIDs(token.UserID, req.CounselorID).
 		Save(ctx)
 	if err != nil {
 		InternalServerError(ctx, err, "failed to create room")
@@ -169,6 +176,7 @@ func DescribeRoom(ctx *fasthttp.RequestCtx) {
 	token, err := ParseAuthorization(ctx)
 	if err != nil {
 		Unauthorized(ctx, err, "unauthorized")
+		return
 	}
 
 	var req DescribeRoomRequest
