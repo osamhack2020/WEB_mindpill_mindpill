@@ -7,7 +7,7 @@ import React, {
   useEffect
 } from 'react'
 import { Link, useHistory } from 'react-router-dom'
-import Cookies from 'js-cookie'
+import { setCookieToken } from '../../lib/cookietoken'
 import Layout from '../../components/Layout'
 import { useTracked } from '../../state'
 import { AsyncDispatch, useAsyncReducer } from '../../hooks/async'
@@ -64,8 +64,7 @@ export default function LoginPage() {
         type: 'SET_TOKEN',
         token: tokenState.data
       })
-      Cookies.set('MINDPILL_TOKEN', tokenState.data.access)
-      Cookies.set('MINDPILL_REFRESH_TOKEN', tokenState.data.refresh)
+      setCookieToken(tokenState.data)
       history.push('/')
     }
   }, [tokenState])

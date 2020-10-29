@@ -1,6 +1,7 @@
 import React, { useCallback, MouseEvent, useState } from 'react'
 import { Link, NavLink } from 'react-router-dom'
 import { useTracked } from '../state'
+import { clearCookieToken } from '../lib/cookietoken'
 
 export default function Navbar() {
   const [state, dispatch] = useTracked()
@@ -12,6 +13,7 @@ export default function Navbar() {
 
   const logoutHandler = useCallback((e: MouseEvent<HTMLAnchorElement>) => {
     dispatch({ type: 'LOGOUT' })
+    clearCookieToken()
   }, [])
 
   return (
