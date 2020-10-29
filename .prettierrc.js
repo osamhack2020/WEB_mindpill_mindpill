@@ -1,5 +1,6 @@
 const standard = require('prettier-config-standard')
 
 module.exports = {
-  ...standard
+  ...standard,
+  printWidth: 60
 }
