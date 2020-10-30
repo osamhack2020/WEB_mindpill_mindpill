@@ -1,13 +1,19 @@
 import {
   ChangeEvent,
   ChangeEventHandler,
+  Dispatch,
+  SetStateAction,
   useState,
   useCallback
 } from 'react'
 
 export function useInput(
   defValue: string
-): [string, ChangeEventHandler] {
+): [
+  string,
+  ChangeEventHandler,
+  Dispatch<SetStateAction<string>>
+] {
   const [value, setValue] = useState(defValue)
 
   const cb = useCallback(
@@ -17,5 +23,5 @@ export function useInput(
     []
   )
 
-  return [value, cb]
+  return [value, cb, setValue]
 }
