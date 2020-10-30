@@ -1,8 +1,18 @@
-import React, { useEffect, useState, useCallback } from 'react'
+import React, {
+  useEffect,
+  useState,
+  useCallback
+} from 'react'
 import { useHistory } from 'react-router-dom'
 import { useTrackedState } from '../state'
-import { describeUser, DescribeUserResponse } from '../api/describe_user'
-import { createRoom, CreateRoomResponse } from '../api/create_room'
+import {
+  describeUser,
+  DescribeUserResponse
+} from '../api/describe_user'
+import {
+  createRoom,
+  CreateRoomResponse
+} from '../api/create_room'
 import { useAsyncReducer } from '../hooks/async'
 import { useAPI } from '../hooks/api'
 import { NoteList } from './NoteList'
@@ -33,16 +43,26 @@ export function CounselorProfile({
       {user != null && (
         <div className="counselor-profile">
           <div className="profile-header">
-            <p className="profile-name">{user.name} 상담관</p>
-            <p className="profile-call">{user.phone_number}</p>
+            <p className="profile-name">
+              {user.name} 상담관
+            </p>
+            <p className="profile-call">
+              {user.phone_number}
+            </p>
           </div>
           {isCounselor || isManager ? (
             <div className="counselor-notes">
-              <NoteList counselorID={counselorID} groupID={groupID} />
+              <NoteList
+                counselorID={counselorID}
+                groupID={groupID}
+              />
             </div>
           ) : (
             <div className="profile-footer">
-              <CreateRoomButton counselorID={counselorID} groupID={groupID} />
+              <CreateRoomButton
+                counselorID={counselorID}
+                groupID={groupID}
+              />
             </div>
           )}
         </div>
@@ -62,7 +82,9 @@ function CreateRoomButton({
 }: CreateRoomButtonProps) {
   const history = useHistory()
   const state = useTrackedState()
-  const [ roomResponse, roomDispatch ] = useAPI<CreateRoomResponse>()
+  const [roomResponse, roomDispatch] = useAPI<
+    CreateRoomResponse
+  >()
 
   const clickHandler = useCallback(() => {
     const { token } = state
@@ -85,6 +107,10 @@ function CreateRoomButton({
   }, [roomResponse])
 
   return (
-    <a className="button" onClick={clickHandler}>상담하기</a>
+    <a
+      className="button create-room is-primary is-radiusless"
+      onClick={clickHandler}>
+      상담하기
+    </a>
   )
 }
