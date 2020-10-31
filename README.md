@@ -1,7 +1,3 @@
-# mindpill
-
-국군 상담 플랫폼
-
 # MindPill
 
 ![MindPill Logo](./MindPill-Logo.png)
@@ -11,14 +7,32 @@
 1. 김현우(clo3olb@gmail.com) - 팀장
 2. 김용빈(iam@yongbin.kim)
 
+### 우리나라를 지키는 자랑스러운 국군. 하지만 우리 국군에게도 누군가에게는 말못할 고민이 있지 않을까요?
+용맹하고 자랑스러운 우리 국군 장병들에게도, 남에게는 말못할 고충과 힘든 일들이 있습니다. 그런 고민들을 모두 누군가와 대면하여 상담을 하기란 쉽지 않은 일입니다. 
+
+### 마인드필을 사용해보는것은 어떨까요?
+시간과 장소에 제약을 받지 않고, 원할 때 편하게 할 수 있는 상담. 
+마인드필은 그런 상담 서비스를 국국 모두가 누릴 수 있도록 플랫폼으로 활성화 시킴과 동시에 실시간 채팅 기능을 갖춘 상담이 어떠한 규모에서도 쉽게 구축될 수 있도록 설계된 국군 상담 플랫폼입니다.
+
+### 시연영상
+<!-- 임시로 넣어놓은 링크입니다. 추후 영상을 촬영하여 링크를 변경해야 합니다. -->
 [![Youtube Badge](https://img.shields.io/badge/Youtube-ff3333?style=for-the-badge&&logo=Youtube&link=https://youtu.be/ANlnm6GSKBA?t)](https://youtu.be/ANlnm6GSKBA?t=0s)
 
 ## 기능 설계
+<!-- 임시로 넣어놓은 Oven Badge 입니다. 추후 정상적인 링크로 변경해야 합니다. -->
 [![OVEN BADGE](https://img.shields.io/badge/Oven-eeeeee?style=for-the-badge&&logo=oven&link=https://ovenapp.io/view/AHcBoMRVeyWNMQCxalwQzFjiFoj1sWRS/)](https://ovenapp.io/view/AHcBoMRVeyWNMQCxalwQzFjiFoj1sWRS/)
 
-### 페이지 구성
-#### 상담 페이지
-#### 상담 페이지
+### 사용자 및 기능 구성
+#### 피상담자
+자신이 원할 때에 자신을 상담해 줄 수 있는 상담관 목록을 손쉽게 볼 수 있고, 간편하게 상담을 시작할 수 있습니다.
+#### 상담관
+자신에게 요청된 상담을 채팅방 구조로 확인하여 상담을 진행할 수 있고, 필요하다고 판단될 때에는 피상담자의 해당부대 지휘관과 연락하여 적절한 조치를 요구할 수 있습니다.
+#### 지휘관
+자신의 부대에서 진행되는 상담 중, 필요한 조치가 있을 때에는 상담관과 논의하여 적절한 조치를 취할 수 있습니다.
+#### 부대 관리자
+부대의 신규 가입자를 관리하고, 지휘관과 상담관을 간편하게 임명할 수 있습니다.
+#### 서비스 관리자
+부대 생성 및 관리, 신규 부대 관리자 생성 및 관리를 손쉽게 할 수 있습니다.
 
 
 ## 컴퓨터 구성 / 필수 조건 안내 (Prerequisites)
