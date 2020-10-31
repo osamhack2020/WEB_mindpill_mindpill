@@ -24,7 +24,5 @@ func SetupDatabase(ctx *cli.Context) error {
 		return err
 	}
 
-	// TODO: insert default data
-
 	return nil
 }

@@ -32,29 +32,21 @@
 
 ## 컴퓨터 구성 / 필수 조건 안내 (Prerequisites)
 
-최신 크롬 브라우저를 권장하지만, 다음 브라우저도 지원합니다.
+최신 안드로이드 Chrome 브라우저를 권장합니다.
 
-<!-- TODO: 임시로 작성하였고, 추후 다시 작성해야 함! -->
-
-- Internet Explorer 11
-- chrome 49 이상
-- edge 18 이상
-- firefox 35 이상
-- safari 10.1 이상
-
-서버는 다음 OS를 지원합니다. MariaDB 10.5 이상이 설치되어 있어야 합니다.
+서버는 다음 OS를 지원합니다. MariaDB 10.5 이상과 nodejs 12가 설치되어 있어야 합니다.
 
 - linux
 - macOS
 
 ## 기술 스택 (Technique Used)
 
-<!-- TODO: 보기 좋은 이미지 만들기 -->
-
 ### Server(back-end)
 
 - Go 1.15
 - MariaDB 10.5
+- NodeJS 12
+- 라이브러리는 [go.mod](./go.mod)를 참조하세요.
 
 ### front-end
 
@@ -79,26 +71,26 @@ make build
 다음 명령으로 데이터베이스 초기 세팅을 할 수 있습니다.
 
 ```bash
-./mindpill -setup-database
+./mindpill setup-database
 ```
 
-이후 복잡한 구성 없이, 이 파일을 **어디에든** 두고 실행하면 서버가 실행됩니다.
+이후 DB에 접속하여 초기 데이터를 세팅하고, dist 디렉토리를 원하는 곳에 둔 후, 다음 명령으로 서버를 실행할 수 있습니다.
+
+```bash
+NODE_ID=0 ./mindpill serve
+```
 
 ## 프로젝트 사용법 (Getting Started)
 
 다음 명령을 통해 서버를 실행합니다.
 
 ```bash
-./mindpill -serve
+./mindpill serve
 ```
 
 사이트는 다음 주소를 통해 접속 가능합니다. (기본값)
 
 - http://localhost:7080/
-
-또한 초기 세팅한 데이터베이스의 경우 최고 관리자 ID/PW는 다음과 같습니다.
-
-- `admin` / `admin`
 
 TODO: 실제 실행 화면 추가
 
