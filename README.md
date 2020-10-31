@@ -15,11 +15,9 @@
 마인드필은 그런 상담 서비스를 국국 모두가 누릴 수 있도록 플랫폼으로 활성화 시킴과 동시에 실시간 채팅 기능을 갖춘 상담이 어떠한 규모에서도 쉽게 구축될 수 있도록 설계된 국군 상담 플랫폼입니다.
 
 ### 시연영상
-<!-- 임시로 넣어놓은 링크입니다. 추후 영상을 촬영하여 링크를 변경해야 합니다. -->
-[![Youtube Badge](https://img.shields.io/badge/Youtube-ff3333?style=for-the-badge&&logo=Youtube&link=https://youtu.be/ANlnm6GSKBA?t)](https://youtu.be/ANlnm6GSKBA?t=0s)
+[![Youtube Badge](https://img.shields.io/badge/Youtube-ff3333?style=for-the-badge&&logo=Youtube&link=https://youtu.be/SwtnIQTzb6s)](https://youtu.be/SwtnIQTzb6s)
 
 ## 기능 설계
-<!-- 임시로 넣어놓은 Oven Badge 입니다. 추후 정상적인 링크로 변경해야 합니다. -->
 [![OVEN BADGE](https://img.shields.io/badge/Oven-eeeeee?style=for-the-badge&&logo=oven&link=https://ovenapp.io/view/AHcBoMRVeyWNMQCxalwQzFjiFoj1sWRS/)](https://ovenapp.io/view/AHcBoMRVeyWNMQCxalwQzFjiFoj1sWRS/)
 
 ### 사용자 및 기능 구성
