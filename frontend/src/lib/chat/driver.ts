@@ -1,26 +1,32 @@
-export type OnErrorParam = Pick<CloseEvent, 'code' | 'reason'>
+export type OnErrorParam = Pick<
+  CloseEvent,
+  'code' | 'reason'
+>
 
 export type OnMessageCallback = (msg: ArrayBuffer) => any
 export type OnErrorCallback = (err: OnErrorParam) => any
+export type OnCloseCallback = (e: CloseEvent) => any
 
 export interface Driver {
   onmessage: OnMessageCallback
   onerror: OnErrorCallback
+  onclose: OnCloseCallback
   send(buf: ArrayBuffer): void
-  close(): void
+  close(code?: number, reason?: string): void
 }
 
 export class WebSocketDriver implements Driver {
   private _sock: WebSocket
   private _callback?: OnMessageCallback
   private _errCallback?: OnErrorCallback
+  private _closeCallback?: OnCloseCallback
 
   public get connection(): WebSocket {
     return this._sock
   }
 
   public get onmessage(): OnMessageCallback {
-    return this._emit
+    return this._callback || (() => {})
   }
 
   public set onmessage(v: OnMessageCallback) {
@@ -28,11 +34,19 @@ export class WebSocketDriver implements Driver {
   }
 
   public get onerror(): OnErrorCallback {
-    return this._emitError
+    return this._errCallback || (() => {})
   }
 
   public set onerror(v: OnErrorCallback) {
     this._errCallback = v
+  }
+
+  public get onclose(): OnCloseCallback {
+    return this._closeCallback || (() => {})
+  }
+
+  public set onclose(v: OnCloseCallback) {
+    this._closeCallback = v
   }
 
   public static async connect(
@@ -47,7 +61,11 @@ export class WebSocketDriver implements Driver {
       }
       sock.onclose = e => {
         if (e.wasClean) {
-          reject(new Error('connection to the server was unexpectedly lost'))
+          reject(
+            new Error(
+              'connection to the server was unexpectedly lost'
+            )
+          )
         } else {
           reject(new Error(`${e.code} ${e.reason}`))
         }
@@ -66,7 +84,10 @@ export class WebSocketDriver implements Driver {
       })
   }
 
-  public constructor(sock: WebSocket, cb?: OnMessageCallback) {
+  public constructor(
+    sock: WebSocket,
+    cb?: OnMessageCallback
+  ) {
     if (sock.readyState !== WebSocket.OPEN) {
       throw new Error('room connection must be open')
     }
@@ -76,30 +97,14 @@ export class WebSocketDriver implements Driver {
 
     this._sock.onmessage = this._onSocketMessage.bind(this)
     this._sock.onclose = this._onSocketError.bind(this)
-
-    this._emit = this._emit.bind(this)
   }
 
   public send(buf: ArrayBuffer) {
     this._sock.send(buf)
   }
 
-  public close() {
-    this._sock.close()
-  }
-
-  private _emit(msg: ArrayBuffer) {
-    if (this._callback == null) {
-      return
-    }
-    this._callback(msg)
-  }
-
-  private _emitError(e: OnErrorParam) {
-    if (this._errCallback == null) {
-      return
-    }
-    this._errCallback(e)
+  public close(code?: number, reason?: string) {
+    this._sock.close(code, reason)
   }
 
   private async _onSocketMessage(e: MessageEvent) {
@@ -113,14 +118,15 @@ export class WebSocketDriver implements Driver {
     } else {
       throw new Error('unsupported type')
     }
-    this._emit(data)
+    this.onmessage(data)
   }
 
   private _onSocketError(ev: CloseEvent) {
+    this.onclose(ev)
     if (ev.wasClean) {
       return
     }
-    this._emitError({
+    this.onerror({
       code: ev.code,
       reason: ev.reason
     })

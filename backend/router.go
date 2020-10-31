@@ -22,9 +22,13 @@ func CreateRouter() *router.Router {
 	r.GET("/api/describe_user", api.DescribeUser)
 	r.GET("/api/update_user", api.UpdateUser)
 
+	r.POST("/api/list_rank", api.ListRank)
+
 	// Group APIs
 	r.POST("/api/create_group", api.CreateGroup)
+	r.GET("/api/list_my_group", api.ListMyGroup)
 	r.GET("/api/describe_group", api.DescribeGroup)
+	r.POST("/api/search_group", api.SearchGroup)
 
 	r.POST("/api/create_manager", api.CreateManager)
 	r.POST("/api/delete_manager", api.DeleteManager)
@@ -34,10 +38,16 @@ func CreateRouter() *router.Router {
 
 	// Chat APIs
 	r.POST("/api/create_room", api.CreateRoom)
+	r.POST("/api/list_my_room", api.ListMyRoom)
+	r.POST("/api/describe_room", api.DescribeRoom)
+	r.POST("/api/close_room", api.CloseRoom)
+	r.POST("/api/load_message", api.LoadMessage)
 	r.GET("/api/connect_room", api.ConnectRoom)
 
 	// Note APIs
 	r.POST("/api/create_note", api.CreateNote)
+	r.POST("/api/list_notes_from_counselor", api.ListNotesFromCounselor)
+	r.POST("/api/list_notes_from_room", api.ListNotesFromRoom)
 
 	// Frontend
 	r.NotFound = handlers.FrontendHandler()

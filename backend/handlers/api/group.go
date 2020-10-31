@@ -2,6 +2,7 @@ package api
 
 import (
 	"mindpill/backend/internal/database"
+	"mindpill/ent"
 	"mindpill/ent/counselor"
 	"mindpill/ent/group"
 	"mindpill/ent/manager"
@@ -51,10 +52,90 @@ func CreateGroup(ctx *fasthttp.RequestCtx) {
 	})
 }
 
+type ListMyGroupResponseGroup struct {
+	ID   int    `json:"id"`
+	Name string `json:"name"`
+}
+
+func listMyGroupResponseGroupsFromRecords(records []*ent.Group) []ListMyGroupResponseGroup {
+	groups := make([]ListMyGroupResponseGroup, len(records))
+	for i, record := range records {
+		groups[i] = ListMyGroupResponseGroup{
+			ID:   record.ID,
+			Name: record.Name,
+		}
+	}
+	return groups
+}
+
+type ListMyGroupResponse struct {
+	Groups          []ListMyGroupResponseGroup `json:"groups"`
+	CounselorGroups []ListMyGroupResponseGroup `json:"counselor_groups"`
+	ManagerGroups   []ListMyGroupResponseGroup `json:"manager_groups"`
+}
+
+func ListMyGroup(ctx *fasthttp.RequestCtx) {
+	token, err := ParseAuthorization(ctx)
+	if err != nil {
+		Unauthorized(ctx, err, "unauthorized")
+		return
+	}
+
+	userGroupRecords, err := database.Ent().
+		Group.Query().
+		Where(
+			group.HasUsersWith(user.IDEQ(token.UserID)),
+		).
+		All(ctx)
+	if err != nil {
+		InternalServerError(ctx, err, "database error")
+		return
+	}
+	userGroups := listMyGroupResponseGroupsFromRecords(userGroupRecords)
+
+	counselorGroupRecords, err := database.Ent().
+		Group.Query().
+		Where(
+			group.HasCounselorsWith(
+				counselor.HasUserWith(user.IDEQ(token.UserID)),
+			),
+		).
+		All(ctx)
+	if err != nil {
+		InternalServerError(ctx, err, "database error")
+		return
+	}
+	counselorGroups := listMyGroupResponseGroupsFromRecords(counselorGroupRecords)
+
+	managerGroupRecords, err := database.Ent().
+		Group.Query().
+		Where(
+			group.HasManagersWith(
+				manager.HasUserWith(user.IDEQ(token.UserID)),
+			),
+		).
+		All(ctx)
+	if err != nil {
+		InternalServerError(ctx, err, "database error")
+		return
+	}
+	managerGroups := listMyGroupResponseGroupsFromRecords(managerGroupRecords)
+
+	SendResponse(ctx, &ListMyGroupResponse{
+		Groups:          userGroups,
+		CounselorGroups: counselorGroups,
+		ManagerGroups:   managerGroups,
+	})
+}
+
 type DescribeGroupResponse struct {
-	Name      string    `json:"name"`
-	CreatedAt time.Time `json:"created_at"`
-	UpdatedAt time.Time `json:"updated_at"`
+	Name       string    `json:"name"`
+	Counselors []int     `json:"counselors"`
+	CreatedAt  time.Time `json:"created_at"`
+	UpdatedAt  time.Time `json:"updated_at"`
+
+	IsCounselor bool `json:"is_counselor"`
+	IsManager   bool `json:"is_manager"`
 }
 
 func DescribeGroup(ctx *fasthttp.RequestCtx) {
@@ -68,16 +149,94 @@ func DescribeGroup(ctx *fasthttp.RequestCtx) {
 	groupRecord, err := database.Ent().
 		Group.Query().
 		Where(group.IDEQ(int(groupID))).
+		WithCounselors().
 		Only(ctx)
 	if err != nil {
 		NotFound(ctx, err, "group not found")
 		return
 	}
 
+	counselors := make([]int, len(groupRecord.Edges.Counselors))
+	for i, counselor := range groupRecord.Edges.Counselors {
+		counselors[i] = counselor.ID
+	}
+
+	var (
+		isCounselor bool
+		isManager   bool
+	)
+
+	token, err := ParseAuthorization(ctx)
+	if err != nil {
+		isCounselor = false
+		isManager = false
+	} else {
+		isCounselor, err = database.Ent().
+			Counselor.Query().
+			Where(counselor.And(
+				counselor.HasGroupWith(group.IDEQ(int(groupID))),
+				counselor.HasUserWith(user.IDEQ(token.UserID)),
+			)).
+			Exist(ctx)
+		isManager, err = database.Ent().
+			Manager.Query().
+			Where(manager.And(
+				manager.HasGroupWith(group.IDEQ(int(groupID))),
+				manager.HasUserWith(user.IDEQ(token.UserID)),
+			)).
+			Exist(ctx)
+	}
+
 	SendResponse(ctx, &DescribeGroupResponse{
-		Name:      groupRecord.Name,
-		CreatedAt: groupRecord.CreatedAt,
-		UpdatedAt: groupRecord.UpdatedAt,
+		Name:       groupRecord.Name,
+		Counselors: counselors,
+		CreatedAt:  groupRecord.CreatedAt,
+		UpdatedAt:  groupRecord.UpdatedAt,
+
+		IsCounselor: isCounselor,
+		IsManager:   isManager,
+	})
+}
+
+type SearchGroupRequest struct {
+	Keyword string `json:"keyword"`
+}
+
+type SearchGroupResponseGroup struct {
+	ID   int    `json:"id"`
+	Name string `json:"name"`
+}
+
+type SearchGroupResponse struct {
+	Groups []SearchGroupResponseGroup `json:"groups"`
+}
+
+func SearchGroup(ctx *fasthttp.RequestCtx) {
+	var req SearchGroupRequest
+	if err := ParseRequestBody(ctx, &req); err != nil {
+		BadRequest(ctx, err, "failed to parse request body")
+		return
+	}
+
+	groupRecords, err := database.Ent().
+		Group.Query().
+		Where(group.NameContains(req.Keyword)).
+		Limit(10).
+		All(ctx)
+	if err != nil {
+		InternalServerError(ctx, err, "database error")
+	}
+
+	groups := make([]SearchGroupResponseGroup, len(groupRecords))
+	for i, record := range groupRecords {
+		groups[i] = SearchGroupResponseGroup{
+			ID:   record.ID,
+			Name: record.Name,
+		}
+	}
+
+	SendResponse(ctx, &SearchGroupResponse{
+		Groups: groups,
 	})
 }
 

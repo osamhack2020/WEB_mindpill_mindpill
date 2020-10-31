@@ -2,9 +2,15 @@ package chat
 
 import (
 	"bytes"
+	"context"
+	"mindpill/backend/internal/database"
 	"sync"
 	"time"
+
+	"go.uber.org/zap"
 )
+
+const MessageSetSize = 10240
 
 type clientMessage struct {
 	userID    int
@@ -15,7 +21,8 @@ type clientMessage struct {
 type Session struct {
 	sync.Mutex
 
-	clients map[*Client]struct{}
+	clients  map[*Client]struct{}
+	messages []byte
 
 	lastUserID    int
 	lastTimestamp time.Time
@@ -23,15 +30,20 @@ type Session struct {
 	input      chan clientMessage
 	register   chan *Client
 	unregister chan *Client
+
+	roomID int
 }
 
-func newSession() *Session {
+func newSession(roomID int) *Session {
 	return &Session{
-		clients: make(map[*Client]struct{}),
+		clients:  make(map[*Client]struct{}),
+		messages: make([]byte, 0, 10240),
 
 		input:      make(chan clientMessage, sessionSize),
 		register:   make(chan *Client, sessionSize),
 		unregister: make(chan *Client, sessionSize),
+
+		roomID: roomID,
 	}
 }
 
@@ -44,11 +56,18 @@ func (s *Session) Register(c *Client) {
 	c.readPump()
 }
 
+func (s *Session) Messages() []byte {
+	return s.messages
+}
+
 func (s *Session) SendMessage(c *Client, msg []byte) {
 	s.input <- clientMessage{c.userID, time.Now(), msg}
 }
 
 func (s *Session) do() {
+	s.Lock()
+	defer s.Unlock()
+
 LOOP:
 	for {
 		select {
@@ -78,6 +97,7 @@ LOOP:
 			}
 
 			buf.Write(msg.data)
+			s.messages = append(s.messages, buf.Bytes()...)
 
 			for client := range s.clients {
 				select {
@@ -88,9 +108,40 @@ LOOP:
 				}
 			}
 		}
+
+		if len(s.messages) > MessageSetSize {
+			s.saveMessage()
+		}
 	}
 
 	for client := range s.clients {
 		close(client.send)
+	}
+
+	s.saveMessage()
+	logger.Debug("Session closed", zap.Int("roomID", s.roomID))
+}
+
+func (s *Session) saveMessage() {
+	if len(s.messages) == 0 {
+		return
+	}
+	now := time.Now()
+	logger.Debug("Saving messages...", zap.Int("roomID", s.roomID), zap.Time("time", now))
+	ctx, cancel := context.WithTimeout(
+		context.Background(),
+		10*time.Second,
+	)
+	defer cancel()
+	_, err := database.Ent().
+		Message.Create().
+		SetRoomID(s.roomID).
+		SetContent(s.messages).
+		SetCreatedAt(now).
+		Save(ctx)
+	if err != nil {
+		logger.Error("chat/session: Failed to save messages", zap.Error(err))
+	} else {
+		s.messages = s.messages[:0]
 	}
 }

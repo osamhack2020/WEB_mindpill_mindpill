@@ -1,122 +1,78 @@
-import React, { useEffect, useState } from 'react'
-import Layout from './pages/Layout'
-import axios from 'axios'
-import database from './tempDatabase'
+import React, { useEffect } from 'react'
+import Cookies from 'js-cookie'
+import { AsyncDispatch, useAsyncReducer } from './hooks/async'
 import { Router } from './routes'
+import { useTracked } from './state'
+import { DescribeTokenResponse } from './types/api/describe_token'
+import TokenGroup from './types/group'
+import User from './types/user'
+import { get } from './utils/http'
 
-export type GlobalData = {
-  user: User | null
-  showCurrentRoom: number
-  changeCurrentRoom: (id: number) => void
+async function describeToken(token: string, dispatch: AsyncDispatch<User>) {
+  const response = await get<DescribeTokenResponse>('/api/describe_token', {
+    headers: {
+      Authorization: `Bearer ${token}`
+    }
+  })
 
-  showProfile: number
-  changeProfile: (id: number) => void
+  if (response.status !== 200) {
+    dispatch({ type: 'ERROR', error: response.data })
+    return
+  }
 
-  handleLogin: (email: string, password: string) => void
-  accessToken: string
-}
+  const { data } = response
+  const groups = data.groups.map<TokenGroup>(group => ({
+    id: group.id,
+    isManager: group.manager,
+    isCounselor: group.counselor
+  }))
+  const user: User = {
+    id: data.uid,
+    isAdmin: data.admin,
+    groups: groups,
+    email: data.email,
+    name: data.name
+  }
 
-export type User = {
-  id: number
-  email: string
-  name: string
-  sv_number: string
-  phone_number: string
-  authority: number
+  dispatch({ type: 'SUCCESS', data: user })
 }
 
 export default function App() {
-  const [user, setUser] = useState<User | null>(null)
-  const [accessToken, setAccessToken] = useState<string>('')
-  const [showCurrentRoom, setShowCurrentRoom] = useState<number>(0)
-  const [showProfile, setShowProfile] = useState<number>(0)
-
-  const globalData = {
-    user,
-    showCurrentRoom,
-    changeCurrentRoom,
-
-    showProfile,
-    changeProfile,
-
-    handleLogin,
-    accessToken
-  }
-  function changeProfile(id: number) {
-    setShowProfile(id)
-  }
-  function changeCurrentRoom(id: number) {
-    setShowCurrentRoom(id)
-  }
-
-  function handleLogin(email: string, password: string) {
-    // 초기 access token 과 refresh token 을 받는 곳입니다.
-    axios({
-      method: 'post',
-      url: '/api/create_token',
-      params: {
-        request_type: 'password'
-      },
-      data: {
-        email,
-        password
-      }
-    })
-      .then(response => {
-        const { access_token, refresh_token } = response.data
-        setAccessToken(access_token)
-        localStorage.setItem('refreshToken', refresh_token)
-        console.log({ access_token, refresh_token })
-      })
-      .catch(error => {
-        console.log(error)
-      })
-  }
-
-  function handleLogout() {}
-
-  function refreshAccessToken(refresh_token: string) {
-    axios({
-      method: 'post',
-      url: '/api/create_token',
-      params: {
-        request_type: 'refresh'
-      },
-      data: {
-        refresh_token
-      }
-    })
-      .then(response => {
-        const { access_token, refresh_token } = response.data
-        setAccessToken(access_token)
-        //암호화 해야합니다.
-        localStorage.setItem('refreshToken', refresh_token)
-        console.log({ access_token, refresh_token })
-      })
-      .catch(error => {
-        console.log(error)
-      })
-  }
-
-  function authenticateUser(value: number) {
-    //refresh token 을 다룰 곳입니다.
-    console.log('authenticate', value)
-    const user = database.API_AUTHENTICATE_USER[value - 1]
-    setUser(user)
-  }
+  const [state, dispatch] = useTracked()
+  const [userState, userDispatch] = useAsyncReducer<User>()
 
   useEffect(() => {
-    //암호화 해야합니다.
-    console.log(localStorage.getItem('refreshToken'))
-    const refreshToken = localStorage.getItem('refreshToken')
-    if (refreshToken) {
-      refreshAccessToken(refreshToken)
+    const { token } = state
+    if (token == null) {
+      return
     }
+    describeToken(token.access, userDispatch)
+  }, [state])
+
+  useEffect(() => {
+    if (userState.data != null) {
+      dispatch({
+        type: 'SET_USER',
+        user: userState.data
+      })
+    }
+  }, [userState])
+
+  useEffect(() => {
+    const accessToken = Cookies.get('MINDPILL_TOKEN')
+    const refreshToken = Cookies.get('MINDPILL_REFRESH_TOKEN')
+    if (accessToken == null || refreshToken == null) {
+      return
+    }
+
+    dispatch({
+      type: 'SET_TOKEN',
+      token: {
+        access: accessToken,
+        refresh: refreshToken
+      }
+    })
   }, [])
 
-  return (
-    <Layout changeUser={authenticateUser} globalData={globalData}>
-      <Router globalData={globalData} />
-    </Layout>
-  )
+  return <Router />
 }

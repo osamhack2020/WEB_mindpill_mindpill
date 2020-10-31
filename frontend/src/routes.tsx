@@ -1,89 +1,62 @@
 import React from 'react'
-import { RouteProps } from 'react-router'
+import {
+  RouteProps as ReactRouterRouteProps,
+  RouteComponentProps
+} from 'react-router'
 import { Route, Switch } from 'react-router-dom'
-import PageHome from './pages/Home'
-import PageJoin from './pages/Join'
-import PageLogin from './pages/Login'
-import PageCounselRooms from './pages/CounselRooms'
-import PageFriends from './pages/Friends'
-import ChatTestPage from './pages/ChatTest'
-import PageManage from './pages/Manage'
+
+// Pages
+import PageHome from './pages/HomePage'
+import LoginPage from './pages/user/LoginPage'
+import RegisterPage from './pages/user/RegisterPage'
+import GroupPage from './pages/GroupPage'
+import RoomPage from './pages/RoomPage'
 import PageNotFound from './pages/NotFound'
-import { GlobalData, User } from './App'
+// import PageChatTest from './pages/ChatTest'
 
-export function checkAuthority(
-  authority: number | undefined,
-  passingAuthorities: number[]
-) {
-  if (authority && passingAuthorities.includes(authority)) {
-    return true
-  }
-  return false
+type RouteProps = ReactRouterRouteProps & {
+  path: string
+  component: React.ComponentType<RouteComponentProps<any>>
 }
 
-export function parseAuthority(value: number | null | undefined) {
-  switch (value) {
-    case 1:
-      return '서비스관리자'
-    case 2:
-      return '부대관리자'
-    case 3:
-      return '상담관'
-    case 4:
-      return '지휘관'
-    case 5:
-      return '일반사용자'
-    default:
-      return '로그인 정보 없음'
-  }
-}
-
-const routes: RouteProps[] = [
+const routes: Array<RouteProps> = [
   {
     exact: true,
-    path: '/'
+    path: '/',
+    component: PageHome
   },
   {
-    path: '/join'
+    exact: true,
+    path: '/user/login',
+    component: LoginPage
   },
   {
-    path: '/login'
+    exact: true,
+    path: '/user/register',
+    component: RegisterPage
   },
   {
-    path: '/counsel'
+    path: '/group/:id',
+    component: GroupPage
   },
   {
-    path: '/manage'
-  },
-  {
-    path: '/chattest'
+    path: '/room/:id',
+    component: RoomPage
   }
+  // {
+  //   // DEBUG ONLY
+  //   exact: true,
+  //   path: '/chattest',
+  //   component: PageChatTest
+  // }
 ]
 
-type RouterProps = {
-  globalData: GlobalData
-}
-
-export function Router({ globalData }: RouterProps) {
+export function Router() {
   return (
     <Switch>
-      <Route exact path="/" render={() => <PageHome globalData={globalData} />} />
-      <Route exact path="/chattest" render={() => <ChatTestPage />} />
-        
-      {/**
-      {checkAuthority(user?.authority, [3, 5]) && <Route path="/counsel" render={() => <PageCounsel user={user} />} />}
-      {checkAuthority(user?.authority, [1, 2, 3, 4]) && <Route path="/manage" render={() => <PageManage user={user} />} />}
-      {!user && <Route path="/login" render={() => <PageLogin user={user} />} />}
-      {!user && <Route path="/join" render={() => <PageJoin user={user} />} />}
-      */}
-
-      <Route path="/login" render={() => <PageLogin globalData={globalData} />} />
-      <Route path="/join" render={() => <PageJoin globalData={globalData} />} />
-      <Route path="/counselrooms" render={() => <PageCounselRooms globalData={globalData} />} />
-      <Route path="/friends" render={() => <PageFriends globalData={globalData} />} />
-
-      <Route path="/manage" render={() => <PageManage globalData={globalData} />} />
-
+      {routes.map(route => (
+        <Route key={route.path} {...route} />
+      ))}
       <Route component={PageNotFound} />
     </Switch>
   )

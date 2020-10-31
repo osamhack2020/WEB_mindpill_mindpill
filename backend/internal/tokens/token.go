@@ -20,7 +20,7 @@ var (
 type TokenGroup struct {
 	ID          int  `json:"id"`
 	IsManager   bool `json:"manager"`
-	IsCounselor bool `json:"counseler"`
+	IsCounselor bool `json:"counselor"`
 }
 
 func GroupMapFromRecords(groupRecords ...*ent.Group) map[int]TokenGroup {

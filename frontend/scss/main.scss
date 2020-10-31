@@ -1,0 +1,12 @@
+$orange: #ffb74d;
+$primary: $orange;
+$primary-invert: white;
+
+@import '~bulma/bulma.sass';
+
+@import './pages/home';
+@import './pages/group';
+@import './pages/room';
+
+@import './components/note';
+@import './components/search_select';

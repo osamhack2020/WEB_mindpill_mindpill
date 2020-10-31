@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"encoding/json"
 	"mindpill/backend/internal/database"
-	"mindpill/ent/group"
 	"mindpill/ent/user"
 	"strconv"
 	"time"
@@ -79,13 +78,14 @@ func CreateUser(ctx *fasthttp.RequestCtx) {
 }
 
 type DescribeUserResponse struct {
-	SvNumber    string      `json:"sv_number,omitempty"`
-	Email       string      `json:"email,omitempty"`
-	Name        string      `json:"name,omitempty"`
-	Gender      user.Gender `json:"gender,omitempty"`
-	PhoneNumber *string     `json:"phone_number,omitempty"`
-	CreatedAt   time.Time   `json:"created_at,omitempty"`
-	UpdatedAt   time.Time   `json:"updated_at,omitempty"`
+	SvNumber    string      `json:"sv_number"`
+	Email       string      `json:"email"`
+	Name        string      `json:"name"`
+	Gender      user.Gender `json:"gender"`
+	PhoneNumber *string     `json:"phone_number"`
+	Rank        string      `json:"rank"`
+	CreatedAt   time.Time   `json:"created_at"`
+	UpdatedAt   time.Time   `json:"updated_at"`
 }
 
 func DescribeUser(ctx *fasthttp.RequestCtx) {
@@ -96,51 +96,26 @@ func DescribeUser(ctx *fasthttp.RequestCtx) {
 		return
 	}
 
-	userPred := user.IDEQ(int(userID))
-
 	userRecord, err := database.Ent().
 		User.Query().
-		Where(userPred).
+		Where(user.IDEQ(int(userID))).
+		WithRank().
 		Only(ctx)
 	if err != nil {
 		NotFound(ctx, err, "user not found")
 		return
 	}
 
-	groupRecords, err := database.Ent().
-		Group.Query().
-		Where(group.HasUsersWith(userPred)).
-		All(ctx)
-	if err != nil {
-		InternalServerError(ctx, err, "failed to query group records")
-		return
-	}
-
-	groupIDs := make([]int, len(groupRecords))
-	for i, record := range groupRecords {
-		groupIDs[i] = record.ID
-	}
-
-	var resp *DescribeUserResponse
-	if t, _ := ParseAuthorization(ctx); t != nil &&
-		(t.IsAdmin || t.IsManagerOf(groupIDs...) || t.IsOwner(userRecord.ID)) {
-		resp = &DescribeUserResponse{
-			SvNumber:    userRecord.SvNumber,
-			Email:       userRecord.Email,
-			Name:        userRecord.Name,
-			Gender:      userRecord.Gender,
-			PhoneNumber: userRecord.PhoneNumber,
-			CreatedAt:   userRecord.CreatedAt,
-			UpdatedAt:   userRecord.UpdatedAt,
-		}
-	} else {
-		resp = &DescribeUserResponse{
-			Name: userRecord.Name,
-		}
-	}
-
-	// Remove the hashed password for security reason.
-	SendResponse(ctx, resp)
+	SendResponse(ctx, &DescribeUserResponse{
+		SvNumber:    userRecord.SvNumber,
+		Email:       userRecord.Email,
+		Name:        userRecord.Name,
+		Gender:      userRecord.Gender,
+		PhoneNumber: userRecord.PhoneNumber,
+		Rank:        userRecord.Edges.Rank.Name,
+		CreatedAt:   userRecord.CreatedAt,
+		UpdatedAt:   userRecord.UpdatedAt,
+	})
 }
 
 type UpdateUserRequest struct {

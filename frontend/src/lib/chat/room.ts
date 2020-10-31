@@ -17,9 +17,14 @@ export type TextListener = (msg: TextMessage) => void
 export type ImageListener = (msg: ImageMessage) => void
 export type AudioListener = (msg: AudioMessage) => void
 export type VideoListener = (msg: VideoMessage) => void
-export type UserChangedListener = (msg: UserChangedMessage) => void
-export type TimeChangedListener = (msg: TimeChangedMessage) => void
+export type UserChangedListener = (
+  msg: UserChangedMessage
+) => void
+export type TimeChangedListener = (
+  msg: TimeChangedMessage
+) => void
 export type ErrorListener = (e: ErrorMessage) => void
+export type CloseListener = (e: CloseEvent) => void
 
 export class Room {
   private _textEvent?: TextListener
@@ -29,6 +34,7 @@ export class Room {
   private _userEvent?: UserChangedListener
   private _timeEvent?: TimeChangedListener
   private _errorEvent?: ErrorListener
+  private _closeEvent?: CloseListener
 
   private _lastUpdatedTimestamp: JSBI = JSBI.BigInt(0)
 
@@ -39,6 +45,7 @@ export class Room {
 
     this._driver.onmessage = this.onMessage.bind(this)
     this._driver.onerror = this.onError.bind(this)
+    this._driver.onclose = this.onClose.bind(this)
   }
 
   get ontext() {
@@ -97,13 +104,21 @@ export class Room {
     this._errorEvent = fn
   }
 
+  get onclose(): CloseListener {
+    return this._closeEvent || (() => {})
+  }
+
+  set onclose(fn: CloseListener) {
+    this._closeEvent = fn
+  }
+
   public send(msg: Message) {
     const buf = encode(msg)
     this._driver.send(buf)
   }
 
-  public close() {
-    this._driver.close()
+  public close(code?: number, reason?: string) {
+    this._driver.close(code, reason)
   }
 
   private onMessage(msg: ArrayBuffer) {
@@ -132,6 +147,10 @@ export class Room {
         })
       }
     })
+  }
+
+  private onClose(e: CloseEvent) {
+    this._closeEvent?.(e)
   }
 
   private onError(err: OnErrorParam) {

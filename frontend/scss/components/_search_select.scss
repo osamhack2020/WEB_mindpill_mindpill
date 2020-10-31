@@ -1,0 +1,42 @@
+.search-select {
+  position: relative;
+
+  .search-results {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    display: none;
+    background: white;
+    border-radius: 4px;
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16),
+      0 3px 6px rgba(0, 0, 0, 0.23);
+    overflow: hidden;
+    z-index: 1;
+
+    &:hover,
+    &:active {
+      &.is-active {
+        display: block;
+      }
+    }
+
+    .search-item {
+      padding: 0.5rem 1rem;
+      cursor: pointer;
+      transition: background-color 150ms;
+
+      &:hover,
+      &:active {
+        background-color: rgba(0, 0, 0, 0.2);
+      }
+    }
+  }
+
+  .input:focus,
+  .input:active {
+    & + .search-results.is-active {
+      display: block;
+    }
+  }
+}

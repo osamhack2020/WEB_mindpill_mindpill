@@ -1,5 +1,6 @@
 import JSBI from 'jsbi'
 import { CursorView } from './cursorview'
+import Base64Binary from './base64'
 
 export type MessageToken =
   | string
@@ -9,6 +10,12 @@ export type MessageToken =
   | { type: 'uid'; id: Uint8Array }
   | { type: 'timestamp'; timestamp: JSBI }
   | { type: 'error'; code: number }
+
+export function decodeBase64(str: string) {
+  const buf = Base64Binary.decodeArrayBuffer(str)
+  const arr = new Uint8Array(buf)
+  return decode(arr)
+}
 
 export function decode(arr: Uint8Array) {
   const view = new CursorView(arr)
