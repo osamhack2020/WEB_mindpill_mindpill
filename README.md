@@ -4,22 +4,22 @@
 
 # MindPill
 
-TODO: (INSERT_LOGO_HERE)
-
 ![MindPill Logo](./MindPill-Logo.png)
 
-## 팀소개 및 프로잭트 설명 동영상
+## 팀소개 및 프로젝트 설명 동영상
 
-TODO
+1. 김현우(clo3olb@gmail.com) - 팀장
+2. 김용빈(iam@yongbin.kim)
+
+[![Youtube Badge](https://img.shields.io/badge/Youtube-ff3333?style=for-the-badge&&logo=Youtube&link=https://youtu.be/ANlnm6GSKBA?t)](https://youtu.be/ANlnm6GSKBA?t=0s)
 
 ## 기능 설계
+[![OVEN BADGE](https://img.shields.io/badge/Oven-eeeeee?style=for-the-badge&&logo=oven&link=https://ovenapp.io/view/AHcBoMRVeyWNMQCxalwQzFjiFoj1sWRS/)](https://ovenapp.io/view/AHcBoMRVeyWNMQCxalwQzFjiFoj1sWRS/)
 
-<!--
-    어떤 내용을 쓰라는건지 잘 이해가 안되네요.
-    일단 다른 프로젝트 올라오는 거 보고 작업해야 할 것 같습니다.
--->
+### 페이지 구성
+#### 상담 페이지
+#### 상담 페이지
 
-TODO
 
 ## 컴퓨터 구성 / 필수 조건 안내 (Prerequisites)
 
@@ -95,7 +95,7 @@ TODO: 실제 실행 화면 추가
 
 ## 팀 정보 (Team Information)
 
-- Hyunwoo Kim (clo3olb@gmail.com) Github ID: @clo3olb
+- Hyeonwoo Kim (clo3olb@gmail.com) Github ID: @clo3olb
 - Yongbin Kim (iam@yongbin.kim) Github ID: @ybkimm
 
 ## 저작권 및 사용권 정보 (Copyleft / End User License)
