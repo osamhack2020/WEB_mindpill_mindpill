@@ -123,6 +123,7 @@ func ListMyRoom(ctx *fasthttp.RequestCtx) {
 	roomRecords, err := database.Ent().
 		Room.Query().
 		Where(room.And(
+			room.IsClosed(false),
 			room.HasGroupWith(group.IDEQ(req.GroupID)),
 			room.HasUsersWith(user.IDEQ(token.UserID)),
 		)).
@@ -318,13 +319,13 @@ func ConnectRoom(ctx *fasthttp.RequestCtx) {
 }
 
 type LoadMessageRequest struct {
-	RoomID    int   `json:"room_id"`
-	Timestamp int64 `json:"timestamp"`
+	RoomID    int    `json:"room_id"`
+	Timestamp string `json:"timestamp"` // Web browser does not supports int64...
 }
 
 type LoadMessageResponse struct {
-	Message   []byte    `json:"message"`
-	CreatedAt time.Time `json:"created_at"`
+	Message   []byte `json:"message"`
+	Timestamp string `json:"timestamp"`
 }
 
 func LoadMessage(ctx *fasthttp.RequestCtx) {
@@ -340,39 +341,64 @@ func LoadMessage(ctx *fasthttp.RequestCtx) {
 		return
 	}
 
-	isRoomUser, err := database.Ent().
+	reqTimestamp, err := strconv.ParseInt(req.Timestamp, 10, 64)
+	if err != nil {
+		BadRequest(ctx, err, "timestamp must be number expressed as a string")
+	}
+
+	logger.Debug("loadMessage", zap.Int64("timestamp", reqTimestamp))
+
+	roomExists, err := database.Ent().
 		Room.Query().
 		Where(
 			room.IDEQ(req.RoomID),
 			room.HasUsersWith(user.IDEQ(token.UserID)),
+			room.IsClosed(false),
 		).
 		Exist(ctx)
 	if err != nil {
 		InternalServerError(ctx, err, "database error")
-		return
 	}
-	if !isRoomUser {
+	if !roomExists {
 		Forbidden(ctx, nil, "permission denied")
-		return
 	}
 
-	timestamp := time.Unix(req.Timestamp, 0)
-
-	messageRecord, err := database.Ent().
+	messageRecords, err := database.Ent().
 		Message.Query().
 		Where(
 			message.HasRoomWith(room.IDEQ(req.RoomID)),
-			message.CreatedAtLTE(timestamp),
+			message.CreatedAtLT(time.Unix(reqTimestamp, 0)),
 		).
-		Order(ent.Desc(message.FieldCreatedAt)).
-		First(ctx)
+		Order(ent.Asc(message.FieldCreatedAt)).
+		All(ctx)
 	if err != nil {
 		InternalServerError(ctx, err, "database error")
 		return
 	}
 
+	var (
+		buf       = make([]byte, 0, 2*chat.MessageSetSize+1024)
+		timestamp = time.Unix(0, 0)
+	)
+	var n int
+	for _, record := range messageRecords {
+		buf = append(buf, record.Content...)
+		timestamp = record.CreatedAt
+		if len(record.Content)+n < chat.MessageSetSize {
+			n += len(record.Content)
+			continue
+		}
+		break
+	}
+
+	sess := sessPool.GetSession(req.RoomID, true)
+	if sess != nil {
+		msg := sess.Messages()
+		buf = append(buf, msg...)
+	}
+
 	SendResponse(ctx, &LoadMessageResponse{
-		Message:   messageRecord.Content,
-		CreatedAt: messageRecord.CreatedAt,
+		Message:   buf,
+		Timestamp: strconv.FormatInt(timestamp.Unix(), 10),
 	})
 }

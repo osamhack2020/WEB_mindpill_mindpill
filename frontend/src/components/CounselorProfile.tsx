@@ -15,7 +15,7 @@ import {
 } from '../api/create_room'
 import { useAsyncReducer } from '../hooks/async'
 import { useAPI } from '../hooks/api'
-import { NoteList } from './NoteList'
+import { GroupNoteList } from './NoteList'
 
 export interface CounselorProfileProps {
   counselorID: number
@@ -52,7 +52,7 @@ export function CounselorProfile({
           </div>
           {isCounselor || isManager ? (
             <div className="counselor-notes">
-              <NoteList
+              <GroupNoteList
                 counselorID={counselorID}
                 groupID={groupID}
               />

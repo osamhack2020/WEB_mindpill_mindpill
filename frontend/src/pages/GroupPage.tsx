@@ -60,8 +60,19 @@ export default function GroupPage({
             <div>
               <h1 className="title">{group.name}</h1>
 
-              {roomResponse != null && (
+              {roomResponse != null &&
+              roomResponse.rooms.length > 0 ? (
                 <RoomList rooms={roomResponse.rooms} />
+              ) : (
+                <div className="message is-primary">
+                  <div className="message-header">
+                    <p>상담중인 채팅방이 없습니다.</p>
+                  </div>
+                  <div className="message-body">
+                    아래에서 원하는 상담관님과 상담을
+                    시작해보세요!
+                  </div>
+                </div>
               )}
 
               <h2 className="title is-4">상담관 목록</h2>

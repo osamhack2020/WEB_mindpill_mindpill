@@ -6,7 +6,7 @@ export interface CloseRoomRequest {
   room_id: number
 }
 
-export function describeGroup(
+export function closeRoom(
   req: CloseRoomRequest,
   token: string,
   dispatch: AsyncDispatch<{}>

@@ -22,10 +22,13 @@ func NewPool() *SessionPool {
 	}
 }
 
-func (pool *SessionPool) GetSession(roomID int) *Session {
+func (pool *SessionPool) GetSession(roomID int, doNotCreate ...bool) *Session {
 	sess, ok := pool.sessions[roomID]
 	if ok {
 		return sess
+	}
+	if len(doNotCreate) > 0 && doNotCreate[0] {
+		return nil
 	}
 	sess, err := pool.createSession(roomID)
 	if err != nil {

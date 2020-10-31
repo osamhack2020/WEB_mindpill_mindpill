@@ -6,14 +6,16 @@ export interface DescribeRoomRequest {
   room_id: number
 }
 
+export interface DescribeRoomResponseUser {
+  id: number
+  rank: string
+  name: string
+}
+
 export interface DescribeRoomResponse {
   group_id: number
   is_counselor: boolean
-  users: Array<{
-    id: number
-    rank: string
-    name: string
-  }>
+  users: DescribeRoomResponseUser[]
 }
 
 export function describeRoom(

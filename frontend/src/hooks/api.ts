@@ -1,7 +1,16 @@
-import { useEffect, useState } from 'react'
+import {
+  Dispatch,
+  SetStateAction,
+  useEffect,
+  useState
+} from 'react'
 import { AsyncDispatch, useAsyncReducer } from './async'
 
-export function useAPI<T>(): [T | null, AsyncDispatch<T>] {
+export function useAPI<T>(): [
+  T | null,
+  AsyncDispatch<T>,
+  Dispatch<SetStateAction<T | null>>
+] {
   const [state, dispatch] = useAsyncReducer<T>()
   const [result, setResult] = useState<T | null>(null)
 
@@ -11,5 +20,5 @@ export function useAPI<T>(): [T | null, AsyncDispatch<T>] {
     }
   }, [state])
 
-  return [result, dispatch]
+  return [result, dispatch, setResult]
 }

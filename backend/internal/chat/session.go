@@ -37,7 +37,7 @@ type Session struct {
 func newSession(roomID int) *Session {
 	return &Session{
 		clients:  make(map[*Client]struct{}),
-		messages: make([]byte, 0, 1024),
+		messages: make([]byte, 0, 10240),
 
 		input:      make(chan clientMessage, sessionSize),
 		register:   make(chan *Client, sessionSize),
@@ -54,6 +54,10 @@ func (s *Session) Register(c *Client) {
 	}()
 	go c.writePump()
 	c.readPump()
+}
+
+func (s *Session) Messages() []byte {
+	return s.messages
 }
 
 func (s *Session) SendMessage(c *Client, msg []byte) {
@@ -115,10 +119,15 @@ LOOP:
 	}
 
 	s.saveMessage()
+	logger.Debug("Session closed", zap.Int("roomID", s.roomID))
 }
 
 func (s *Session) saveMessage() {
+	if len(s.messages) == 0 {
+		return
+	}
 	now := time.Now()
+	logger.Debug("Saving messages...", zap.Int("roomID", s.roomID), zap.Time("time", now))
 	ctx, cancel := context.WithTimeout(
 		context.Background(),
 		10*time.Second,
@@ -133,6 +142,6 @@ func (s *Session) saveMessage() {
 	if err != nil {
 		logger.Error("chat/session: Failed to save messages", zap.Error(err))
 	} else {
-		s.messages = s.messages[:]
+		s.messages = s.messages[:0]
 	}
 }

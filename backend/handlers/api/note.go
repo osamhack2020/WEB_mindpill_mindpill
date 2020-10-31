@@ -2,6 +2,7 @@ package api
 
 import (
 	"mindpill/backend/internal/database"
+	"mindpill/ent"
 	"mindpill/ent/counselor"
 	"mindpill/ent/group"
 	"mindpill/ent/manager"
@@ -136,6 +137,7 @@ func ListNotesFromCounselor(ctx *fasthttp.RequestCtx) {
 				counselor.IDEQ(req.CounselorID),
 			),
 		)).
+		Order(ent.Desc(note.FieldCreatedAt)).
 		All(ctx)
 	if err != nil {
 		InternalServerError(ctx, err, "database error")
@@ -150,6 +152,56 @@ func ListNotesFromCounselor(ctx *fasthttp.RequestCtx) {
 	}
 
 	SendResponse(ctx, &ListNotesFromCounselorResponse{
+		Notes: notes,
+	})
+}
+
+type ListNotesFromRoomRequest struct {
+	RoomID int `json:"room_id"`
+}
+
+type ListNotesFromRoomResponse struct {
+	Notes []Note `json:"notes"`
+}
+
+func ListNotesFromRoom(ctx *fasthttp.RequestCtx) {
+	token, err := ParseAuthorization(ctx)
+	if err != nil {
+		Unauthorized(ctx, err, "unauthorized")
+		return
+	}
+
+	var req ListNotesFromRoomRequest
+	if err := ParseRequestBody(ctx, &req); err != nil {
+		BadRequest(ctx, err, "failed to parse request body")
+		return
+	}
+
+	noteRecords, err := database.Ent().
+		Note.Query().
+		Where(note.And(
+			note.HasRoomWith(
+				room.IDEQ(req.RoomID),
+			),
+			note.HasCounselorWith(
+				counselor.HasUserWith(user.IDEQ(token.UserID)),
+			),
+		)).
+		Order(ent.Desc(note.FieldCreatedAt)).
+		All(ctx)
+	if err != nil {
+		InternalServerError(ctx, err, "database error")
+		return
+	}
+
+	notes := make([]Note, len(noteRecords))
+	for i, record := range noteRecords {
+		notes[i] = Note{
+			Content: record.Content,
+		}
+	}
+
+	SendResponse(ctx, &ListNotesFromRoomResponse{
 		Notes: notes,
 	})
 }
